@@ -2,10 +2,6 @@ package pl.kuba6000.gtnhextranerf.progression.exam;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumMap;
@@ -29,7 +25,6 @@ public final class CertificationExams {
     public static final String FACTORY_ID = "gtnhextranerf.lv_exam";
     private static final Map<ProgressionTier, ExamDefinition> DEFINITIONS = new EnumMap<>(ProgressionTier.class);
     private static final Map<ProgressionTier, SimpleGuiFactory> FACTORIES = new EnumMap<>(ProgressionTier.class);
-    private static RuntimeException loadFailure;
 
     private CertificationExams() {}
 
@@ -43,38 +38,17 @@ public final class CertificationExams {
             FACTORIES.put(tier, new SimpleGuiFactory(factoryId(tier), new ExamGui(tier, null)));
             return;
         }
-        ExamDefinition definition;
-        try (Reader reader = new InputStreamReader(template(tier), StandardCharsets.UTF_8)) {
-            definition = ExamDefinition.read(reader, tier);
-        } catch (IOException failure) {
-            throw new IllegalStateException("Cannot read bundled " + tier.id() + " exam template", failure);
-        }
-        Path file = configDirectory.toPath()
+        ExamDefinition definition = BundledExams.of(tier);
+        // Exams used to be copied to the configuration directory; they are part of the mod now.
+        Path obsolete = configDirectory.toPath()
             .resolve(GTNHExtraNerf.MODID)
             .resolve(tier.id() + "-exam.json");
-        try {
-            Files.createDirectories(file.getParent());
-            if (!Files.exists(file)) {
-                try (InputStream source = template(tier)) {
-                    Files.copy(source, file);
-                }
-            }
-            try (Reader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
-                definition = ExamDefinition.read(reader, tier);
-            }
-        } catch (IOException | RuntimeException failure) {
-            RuntimeException invalid = new IllegalStateException("Invalid exam config: " + file, failure);
-            if (loadFailure == null) loadFailure = invalid;
-            else loadFailure.addSuppressed(invalid);
-        }
+        if (Files.exists(obsolete)) GTNHExtraNerf.LOG.info(
+            "Ignoring {}: the {} exam is part of the mod and no longer read from the configuration",
+            obsolete,
+            tier.id());
         DEFINITIONS.put(tier, definition);
         FACTORIES.put(tier, new SimpleGuiFactory(factoryId(tier), new ExamGui(definition)));
-    }
-
-    private static InputStream template(ProgressionTier tier) {
-        return Objects.requireNonNull(
-            CertificationExams.class.getResourceAsStream("/assets/gtnhextranerf/exams/" + tier.id() + ".json"),
-            "Missing " + tier.id() + " exam template");
     }
 
     public static ExamDefinition definition() {
@@ -99,7 +73,6 @@ public final class CertificationExams {
 
     public static void verify() {
         AuditManager.run(AuditScope.VERIFY_CERTIFICATION_EXAM, audit -> {
-            if (loadFailure != null) throw loadFailure;
             for (ProgressionTier tier : ProgressionTier.values()) {
                 if (GuiManager.getFactory(factoryId(tier)) != factory(tier))
                     throw new IllegalStateException(tier.id() + " exam GUI factory is missing");

@@ -7,7 +7,6 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 
 import pl.kuba6000.gtnhextranerf.Config;
@@ -23,7 +22,7 @@ public final class TelemetryCommand extends CommandBase implements ICommand {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/extranerftelemetry <status|off|on>";
+        return "gtnhextranerf.telemetry.usage";
     }
 
     @Override
@@ -48,7 +47,7 @@ public final class TelemetryCommand extends CommandBase implements ICommand {
     public void processCommand(ICommandSender sender, String[] arguments) {
         String action = arguments.length == 0 ? "status" : arguments[0];
         if ("status".equals(action)) {
-            sender.addChatMessage(new ChatComponentText(ServerTelemetry.status()));
+            sender.addChatMessage(ServerTelemetry.status());
         } else if ("off".equals(action)) {
             Config.setTelemetryEnabled(false);
             ServerTelemetry.stop();
@@ -56,9 +55,9 @@ public final class TelemetryCommand extends CommandBase implements ICommand {
         } else if ("on".equals(action)) {
             Config.setTelemetryEnabled(true);
             ServerTelemetry.start(MinecraftServer.getServer());
-            sender.addChatMessage(new ChatComponentText(ServerTelemetry.status()));
+            sender.addChatMessage(ServerTelemetry.status());
         } else {
-            sender.addChatMessage(new ChatComponentText(getCommandUsage(sender)));
+            sender.addChatMessage(new ChatComponentTranslation(getCommandUsage(sender)));
         }
     }
 

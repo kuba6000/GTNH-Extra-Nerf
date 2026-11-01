@@ -28,8 +28,8 @@ Left-clicking the icon opens the earliest missing certificate's NEI page (Steam
 before electrical, then the paid voltage tiers from MV through MAX). Certificate
 recipe and usage queries also open this page. It describes activation and has
 a button opening the [electrical exam](CERTIFICATION_EXAM.md). Passing the server-graded
-exam awards a certificate. The initial ten-question bank requires eight
-correct answers and is enabled. There is no survival crafting recipe
+exam awards a certificate. Each ten-question exam requires eight
+correct answers. There is no survival crafting recipe
 or loot entry. Certificates are hidden from the NEI item panel
 and search; players discover the restriction through the machine's error icon.
 The information page still opens from that icon or queries on a held certificate.
@@ -162,7 +162,7 @@ prerequisites resumes processing without paying for retained later tiers again.
   getter reads world certification; client rendering and clicks use the received
   cache. The normal error widget is preserved under the certificate indicator.
 - `CertificateRecipeHandler` supplies informational NEI pages and the exam entry point.
-- `CertificationExams` loads and audits the server's question bank. The MUI2
+- `CertificationExams` registers and audits the bundled exams (`BundledExams`). The MUI2
   `ExamGui` and `ExamSyncHandler` synchronize public text, accept answer choices
   and grade one panel-scoped attempt during the server tick. `DrawingExamWidget`
   keeps pencil/eraser rasters on the client. See [the exam contract](CERTIFICATION_EXAM.md).

@@ -78,9 +78,10 @@ length and scrollbar layout, then resets its scroll position to the top.
 
 ## Authority and threads
 
-The server owns the question bank, answer key, pass threshold and one attempt
-per open exam panel. It sends the public question/option text and availability
-to the client. Clients do not receive the answer key.
+The server owns the answer key, pass threshold and one attempt per open exam
+panel. It sends the question and option texts, as language keys, to the client,
+which shows them in the player's language. The answer key is never part of that
+message.
 
 Only submitting the complete paper sends choices back: one four-bit A-D mask
 per question. Strokes, mouse motion, eraser actions and page changes stay local.
@@ -102,35 +103,34 @@ invalidate Steam spares. The electrical factory/file/tier names remain LV for
 compatibility. Separate server factories choose the reward tier; JSON cannot
 redirect an exam to another certificate.
 
-## Supplying the questions
+## The questions and their translation
 
-The bundled bank contains the ten preliminary questions supplied in
-`gregtech-electrician-exam.md`, their introduction and result messages. It is
-enabled, with a passing threshold of **8/10**. The answer key inferred from the
-provided options is **B, C, A, D, B, C, A, D, C, B**.
+Both exams ship with the mod: `BundledExams` holds the answer key and the pass
+threshold (**8/10**) of each, and `en_US.lang` holds every text. The LV exam is
+**B, C, A, D, B, C, A, D, C, B** and the Steam exam **B, D, A, C, B, A, D, C, A, B**,
+ten questions each. Nothing is copied to the configuration directory and nothing is
+read from it: an `lv-exam.json` or `steam-exam.json` left by an earlier version is
+ignored (a log line says so) and can be deleted. The answer key is part of the
+public source, so it is not hidden from players.
 
-On first startup the bank is copied to `config/gtnhextranerf/lv-exam.json`.
-The Steam bank comes from `high-pressure-operator-exam.md`, retains the supplied
-introduction/questions/options/result text, and uses the supplied key
-**B, D, A, C, B, A, D, C, A, B**. It is enabled and requires **8/10**.
-It is copied independently to `config/gtnhextranerf/steam-exam.json` and uses
-factory `gtnhextranerf.steam_exam`. Its long ninth question uses the existing
-adaptive window and scrollable paper.
-Edit the server's file and restart. Connected clients receive the server's displayed questions, so they
-do not need a matching local file. Literal text and language keys are accepted.
+Every text is a language key. The server sends the keys, and each client looks them up
+in its own language, falling back to English for a missing key:
 
-Each question has a stable `id`, `prompt`, exactly four `options` in A-D order,
-and `correct` set to `"A"`, `"B"`, `"C"` or `"D"`. The top-level `requiredCorrect`
-sets the pass threshold. `introduction`, `passedMessage` and `failedMessage`
-are optional public text fields, also sent by the server.
+| Key | Text |
+| --- | --- |
+| `gtnhextranerf.exam.<tier>.introduction` | Shown before the first question. |
+| `gtnhextranerf.exam.<tier>.passed` / `.failed` | Result message. |
+| `gtnhextranerf.exam.<tier>.qNN.prompt` | Question `NN` (`01` to `10`). |
+| `gtnhextranerf.exam.<tier>.qNN.a` to `.d` | The four options, in A-D order. |
 
-Setting `enabled: false` also supports draft papers with null correct answers.
-Such a bank cannot accept payment or issue certificates. An enabled
-bank with an absent/invalid key fails the startup audit. The parser also checks duplicate
-IDs, question counts, text bounds and the pass threshold. Supported counts are
-1-32; ten is the supplied bank size, not a protocol assumption. Existing config
-files are preserved on restart; updating the bundled bank does not overwrite a
-server administrator's edits.
+`<tier>` is `lv` or `steam`. To translate the exams, add these 106 keys to the language
+file, for example `zh_CN.lang`. A backslash followed by `n` in a value is a line break,
+because a language file cannot hold a real one. `ExamDefinitionTest` checks that every
+key an exam refers to exists in `en_US.lang`.
+
+Adding an exam or changing a question means changing `BundledExams` and the language
+file together. Supported question counts are 1-32 and each question has exactly four
+options.
 
 ## Verification boundaries
 

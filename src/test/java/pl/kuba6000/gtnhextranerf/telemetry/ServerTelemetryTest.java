@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import pl.kuba6000.gtnhextranerf.Config;
+import pl.kuba6000.gtnhextranerf.LangFile;
 
 class ServerTelemetryTest {
 
@@ -33,10 +34,23 @@ class ServerTelemetryTest {
     }
 
     @Test
-    void theJoinNoticeNamesTheOptOutCommandAndThePrivacyPolicy() {
-        String notice = ServerTelemetry.joinNotice();
+    void theJoinNoticeNamesTheOptOutCommandAndThePrivacyPolicy() throws Exception {
+        String notice = LangFile.render(ServerTelemetry.joinNotice());
         assertTrue(notice.contains("/extranerftelemetry off"));
         assertTrue(notice.contains("https://extranerf.kuba6000.pl/privacy"));
+    }
+
+    @Test
+    void theStatusIsATranslatedMessageWithTheStateAsArguments() throws Exception {
+        String status = LangFile.render(ServerTelemetry.status());
+        assertTrue(status.startsWith("enabled=") || status.startsWith("active; last="), status);
+    }
+
+    @Test
+    void theCommandUsageIsATranslationKey() throws Exception {
+        assertTrue(
+            LangFile.text(new TelemetryCommand().getCommandUsage(null))
+                .startsWith("/extranerftelemetry"));
     }
 
     @Test

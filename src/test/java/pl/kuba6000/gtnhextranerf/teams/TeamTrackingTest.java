@@ -24,6 +24,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import pl.kuba6000.gtnhextranerf.Config;
+import pl.kuba6000.gtnhextranerf.LangFile;
 import pl.kuba6000.gtnhextranerf.telemetry.TelemetryClient;
 
 class TeamTrackingTest {
@@ -96,18 +97,47 @@ class TeamTrackingTest {
     }
 
     @Test
-    void joiningPlayersAreToldAboutTeamTrackingAndWhereToReadMore() {
-        String notice = TeamTracking.joinNotice();
+    void joiningPlayersAreToldAboutTeamTrackingAndWhereToReadMore() throws Exception {
+        String notice = LangFile.render(TeamTracking.joinNotice());
         assertTrue(notice.contains("team tracking"));
         assertTrue(notice.contains("Minecraft names"));
         assertTrue(notice.contains("https://extranerf.kuba6000.pl/team-tracking"));
     }
 
     @Test
-    void theOptOutNoticeGivesTheTeamIdAndWhereToSendIt() {
-        String notice = TeamTracking.removalNotice(TEAM.toString());
+    void theOptOutNoticeGivesTheTeamIdAndWhereToSendIt() throws Exception {
+        String notice = LangFile.render(TeamTracking.removalNotice(TEAM.toString()));
         assertTrue(notice.contains(TEAM.toString()));
         assertTrue(notice.contains("extranerf@kuba6000.pl"));
+    }
+
+    @Test
+    void theStatusNamesTheSavedTeamOrTheLackOfOne() throws Exception {
+        String originalId = Config.teamId;
+        String originalLeader = Config.teamLeaderName;
+        boolean originalEnabled = Config.teamTrackingEnabled;
+        try {
+            Config.teamTrackingEnabled = false;
+            Config.teamId = "";
+            assertEquals("Team tracking: off (no team yet)", LangFile.render(TeamTracking.status()));
+            Config.teamId = TEAM.toString();
+            Config.teamLeaderName = "Kuba";
+            assertEquals("Team tracking: off (Kuba's team, ID " + TEAM + ")", LangFile.render(TeamTracking.status()));
+        } finally {
+            Config.teamId = originalId;
+            Config.teamLeaderName = originalLeader;
+            Config.teamTrackingEnabled = originalEnabled;
+        }
+    }
+
+    @Test
+    void theCommandUsageAndTheMissingLeaderMessageAreTranslationKeys() throws Exception {
+        assertTrue(
+            LangFile.text(new TeamCommand().getCommandUsage(null))
+                .startsWith("/extranerfteam"));
+        assertFalse(
+            LangFile.text("gtnhextranerf.team.needs_player")
+                .isEmpty());
     }
 
     @Test

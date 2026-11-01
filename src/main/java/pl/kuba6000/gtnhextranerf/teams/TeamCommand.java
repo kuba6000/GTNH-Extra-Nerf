@@ -8,7 +8,8 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
 
 import pl.kuba6000.gtnhextranerf.Config;
 import pl.kuba6000.gtnhextranerf.telemetry.TelemetryCommand;
@@ -24,7 +25,7 @@ public final class TeamCommand extends CommandBase implements ICommand {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/extranerfteam <status|on|off>";
+        return "gtnhextranerf.team.usage";
     }
 
     @Override
@@ -56,7 +57,7 @@ public final class TeamCommand extends CommandBase implements ICommand {
             // The operator needs the ID to ask for deletion of the data that was already sent.
             if (!Config.teamId.isEmpty()) reply(sender, TeamTracking.removalNotice(Config.teamId));
         } else {
-            reply(sender, getCommandUsage(sender));
+            reply(sender, new ChatComponentTranslation(getCommandUsage(sender)));
         }
     }
 
@@ -72,7 +73,7 @@ public final class TeamCommand extends CommandBase implements ICommand {
         }
         TeamTracking.Member leader = TeamTracking.chooseLeader(commandSender, TeamTracking.onlinePlayers(server));
         if (leader == null) {
-            reply(sender, "Team tracking needs a player to name the team after. Join the server and run it again");
+            reply(sender, new ChatComponentTranslation("gtnhextranerf.team.needs_player"));
             return;
         }
         // The ID is created once and then kept, also across opting out and in again.
@@ -93,8 +94,8 @@ public final class TeamCommand extends CommandBase implements ICommand {
         }
     }
 
-    private static void reply(ICommandSender sender, String text) {
-        sender.addChatMessage(new ChatComponentText(text));
+    private static void reply(ICommandSender sender, IChatComponent message) {
+        sender.addChatMessage(message);
     }
 
     @Override

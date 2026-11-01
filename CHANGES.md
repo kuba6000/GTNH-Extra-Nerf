@@ -4,6 +4,14 @@ This file is a concise summary of the active ruleset. The complete canonical
 catalog, including exact values, conditions and unchanged fields, is
 [`docs/NERFS.md`](docs/NERFS.md).
 
+## Certification exams
+
+- The Steam and LV exams are part of the mod and use language keys for every question,
+  option and message, so they can be translated like any other text. The
+  `config/gtnhextranerf/*-exam.json` files are no longer read and can be deleted.
+- Chat messages and command usage of telemetry, team tracking and the update check, and the
+  startup error screen, use language keys too.
+
 ## Main menu
 
 - Custom Main Menu displays an amber pixel badge with `EXTRA NERF` and the

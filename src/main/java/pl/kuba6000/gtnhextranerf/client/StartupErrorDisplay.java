@@ -3,6 +3,7 @@ package pl.kuba6000.gtnhextranerf.client;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiErrorScreen;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 
 import cpw.mods.fml.client.CustomModLoadingErrorDisplayException;
 import cpw.mods.fml.relauncher.Side;
@@ -20,6 +21,13 @@ public final class StartupErrorDisplay extends CustomModLoadingErrorDisplayExcep
         this.request = request;
     }
 
+    /**
+     * This screen must work even when the language files are not available yet, so the English text is the fallback.
+     */
+    private static String text(String key, String english, Object... arguments) {
+        return StatCollector.canTranslate(key) ? StatCollector.translateToLocalFormatted(key, arguments) : english;
+    }
+
     @Override
     public void initGui(GuiErrorScreen screen, FontRenderer font) {
         GTNHExtraNerf.LOG.info("[Extra Nerf] Startup error screen initialized (preview={})", request.isPreview());
@@ -32,18 +40,27 @@ public final class StartupErrorDisplay extends CustomModLoadingErrorDisplayExcep
         int top = Math.max(12, (screen.height - 150) / 2);
         screen.drawCenteredString(
             font,
-            EnumChatFormatting.RED.toString() + EnumChatFormatting.BOLD + "Extra Nerf cannot start",
+            EnumChatFormatting.RED.toString() + EnumChatFormatting.BOLD
+                + text("gtnhextranerf.error.title", "Extra Nerf cannot start"),
             screen.width / 2,
             top,
             0xFFFFFF);
         int y = top + 28;
-        font.drawSplitString(request.supportMessage(), left, y, width, 0xFFFFFF);
-        y += font.splitStringWidth(request.supportMessage(), width) + 14;
-        String explanation = "The required recipe changes could not be verified. Please use the supported pack version with its original mods and configuration.";
+        String support = text(
+            "gtnhextranerf.error.supported",
+            request.supportMessage(),
+            GTNHExtraNerf.SUPPORTED_GTNH_VERSION);
+        font.drawSplitString(support, left, y, width, 0xFFFFFF);
+        y += font.splitStringWidth(support, width) + 14;
+        String explanation = text(
+            "gtnhextranerf.error.explanation",
+            "The required recipe changes could not be verified. Please use the supported pack version with its original mods and configuration.");
         font.drawSplitString(explanation, left, y, width, 0xCCCCCC);
         y += font.splitStringWidth(explanation, width) + 14;
         font.drawSplitString(
-            "See logs/latest.log for the full error report. Close the game before changing your installation.",
+            text(
+                "gtnhextranerf.error.logs",
+                "See logs/latest.log for the full error report. Close the game before changing your installation."),
             left,
             y,
             width,
@@ -51,7 +68,7 @@ public final class StartupErrorDisplay extends CustomModLoadingErrorDisplayExcep
         if (request.isPreview()) {
             screen.drawCenteredString(
                 font,
-                "Development preview - forced by JVM flag",
+                text("gtnhextranerf.error.preview", "Development preview - forced by JVM flag"),
                 screen.width / 2,
                 screen.height - 18,
                 0xFFCC55);

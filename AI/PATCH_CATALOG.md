@@ -832,15 +832,14 @@ Client callbacks publish immutable paper/result data for the GUI thread.
 `ExamAttempt` caches completion before issuing the reward so duplicate packets
 cannot issue another item. Inventory overflow uses normal server item drops.
 
-`VERIFY_CERTIFICATION_EXAM` checks the registered factory, parsed bank and public
-wire projection. The initial `config/gtnhextranerf/lv-exam.json` is copied from the
-enabled ten-question bank supplied by the user, requiring 8/10 correct answers.
-The inferred key is B,C,A,D,B,C,A,D,C,B. Enabled banks require valid A-D keys;
-disabled drafts can omit the key and never award items. Clients receive the server
-text, introduction and result messages without its key. The independent Steam
-factory/config uses the supplied ten-question pressure paper and key
-B,D,A,C,B,A,D,C,A,B, with the same 8/10 threshold. The registered factory chooses
-the reward certificate independently of JSON. See [the exam contract](../docs/CERTIFICATION_EXAM.md).
+`VERIFY_CERTIFICATION_EXAM` checks the registered factory and the public wire
+projection. The LV exam has ten questions, the key B,C,A,D,B,C,A,D,C,B and a pass
+threshold of 8/10; the independent Steam factory uses the key B,D,A,C,B,A,D,C,A,B with
+the same threshold. Both are defined in `BundledExams`, and the registered factory
+chooses the reward certificate. The questions, options, introduction and result
+messages are language keys (`gtnhextranerf.exam.<tier>...`) stored in `en_US.lang`;
+the server sends the keys and each client translates them. There is no exam file in
+the configuration directory any more. See [the exam contract](../docs/CERTIFICATION_EXAM.md).
 
 `MixinElectricalCableFire` wraps the successful fire-block replacement in
 `BaseTileEntity.setToFire`, capturing a live `MTECable` before the tile is

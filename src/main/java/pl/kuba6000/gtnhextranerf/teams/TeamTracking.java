@@ -18,9 +18,10 @@ import java.util.regex.Pattern;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
@@ -135,23 +136,16 @@ public final class TeamTracking implements AutoCloseable {
     @SubscribeEvent
     public void playerJoined(PlayerEvent.PlayerLoggedInEvent event) {
         if (closed || active != this || !(event.player instanceof EntityPlayerMP)) return;
-        event.player.addChatMessage(
-            new ChatComponentText(joinNotice()).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)));
+        event.player.addChatMessage(joinNotice().setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)));
     }
 
-    public static String joinNotice() {
-        return "This server has Extra Nerf team tracking enabled: its team, progression tier and the Minecraft names of its players are shown publicly on "
-            + SITE
-            + ". Details: "
-            + POLICY_URL;
+    public static ChatComponentTranslation joinNotice() {
+        return new ChatComponentTranslation("gtnhextranerf.team.notice", SITE, POLICY_URL);
     }
 
     /** Shown to the operator who turns team tracking off: the stored data stays until it is requested to be deleted. */
-    public static String removalNotice(String teamId) {
-        return "Team tracking is off. Data already sent stays on the server until it expires after one year. To have it deleted now, email "
-            + CONTACT
-            + " with this team ID: "
-            + teamId;
+    public static ChatComponentTranslation removalNotice(String teamId) {
+        return new ChatComponentTranslation("gtnhextranerf.team.removed", CONTACT, teamId);
     }
 
     @SubscribeEvent
@@ -278,20 +272,19 @@ public final class TeamTracking implements AutoCloseable {
         return teamName(Config.teamLeaderName);
     }
 
-    public static String status() {
+    public static IChatComponent status() {
         TeamTracking current = active;
-        String saved = Config.teamId.isEmpty() ? "no team yet" : teamName() + ", ID " + Config.teamId;
-        if (current == null)
-            return "off".equals(inactiveReason) || !Config.teamTrackingEnabled ? "Team tracking: off (" + saved + ")"
-                : "Team tracking: on but inactive: " + inactiveReason + " (" + saved + ")";
-        return "Team tracking: on (" + saved
-            + "); last="
-            + current.lastStatus
-            + "; sending="
-            + current.inFlight.get()
-            + "; next="
-            + Math.max(0, (Math.max(current.nextDue, current.blockedUntil) - nowMillis()) / 1000)
-            + "s";
+        IChatComponent saved = Config.teamId.isEmpty() ? new ChatComponentTranslation("gtnhextranerf.team.saved.none")
+            : new ChatComponentTranslation("gtnhextranerf.team.saved.team", teamName(), Config.teamId);
+        if (current == null) return "off".equals(inactiveReason) || !Config.teamTrackingEnabled
+            ? new ChatComponentTranslation("gtnhextranerf.team.status.off", saved)
+            : new ChatComponentTranslation("gtnhextranerf.team.status.inactive", inactiveReason, saved);
+        return new ChatComponentTranslation(
+            "gtnhextranerf.team.status.active",
+            saved,
+            current.lastStatus,
+            current.inFlight.get(),
+            Math.max(0, (Math.max(current.nextDue, current.blockedUntil) - nowMillis()) / 1000));
     }
 
     private void assertOwner() {

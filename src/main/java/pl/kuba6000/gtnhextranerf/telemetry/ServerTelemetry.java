@@ -12,9 +12,10 @@ import java.util.function.Supplier;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
@@ -132,14 +133,11 @@ public final class ServerTelemetry implements AutoCloseable {
     public void playerJoined(PlayerEvent.PlayerLoggedInEvent event) {
         if (closed || active != this || !(event.player instanceof EntityPlayerMP)) return;
         if (!new TelemetryCommand().canCommandSenderUseCommand(event.player)) return;
-        event.player.addChatMessage(
-            new ChatComponentText(joinNotice()).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)));
+        event.player.addChatMessage(joinNotice().setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)));
     }
 
-    public static String joinNotice() {
-        return "Extra Nerf telemetry is on: this server reports how many players are online and its progression tier for community statistics, never names or UUIDs. "
-            + "Turn it off with /extranerftelemetry off. Privacy policy: "
-            + PRIVACY_URL;
+    public static ChatComponentTranslation joinNotice() {
+        return new ChatComponentTranslation("gtnhextranerf.telemetry.notice", PRIVACY_URL);
     }
 
     @SubscribeEvent
@@ -238,15 +236,17 @@ public final class ServerTelemetry implements AutoCloseable {
         }
     }
 
-    public static String status() {
+    public static IChatComponent status() {
         ServerTelemetry current = active;
-        return current == null ? "enabled=" + Config.telemetryEnabled + "; inactive: " + inactiveReason
-            : "active; last=" + current.lastStatus
-                + "; sending="
-                + current.inFlight.get()
-                + "; next="
-                + Math.max(0, (Math.max(current.nextDue, current.blockedUntil) - nowMillis()) / 1000)
-                + "s";
+        if (current == null) return new ChatComponentTranslation(
+            "gtnhextranerf.telemetry.status.inactive",
+            Config.telemetryEnabled,
+            inactiveReason);
+        return new ChatComponentTranslation(
+            "gtnhextranerf.telemetry.status.active",
+            current.lastStatus,
+            current.inFlight.get(),
+            Math.max(0, (Math.max(current.nextDue, current.blockedUntil) - nowMillis()) / 1000));
     }
 
     private void assertOwner() {

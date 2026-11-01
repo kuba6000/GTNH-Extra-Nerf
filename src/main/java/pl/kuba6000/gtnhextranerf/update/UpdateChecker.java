@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -168,12 +168,8 @@ public final class UpdateChecker implements AutoCloseable {
         return newerVersion;
     }
 
-    public static String message(String latest, String current) {
-        return "A newer GTNH Extra Nerf release is available: " + latest
-            + " (installed: "
-            + current
-            + "). Download: "
-            + DOWNLOAD_URL;
+    public static ChatComponentTranslation message(String latest, String current) {
+        return new ChatComponentTranslation("gtnhextranerf.update.available", latest, current, DOWNLOAD_URL);
     }
 
     /** Operators and the integrated-server owner are told; other players are not. */
@@ -193,8 +189,7 @@ public final class UpdateChecker implements AutoCloseable {
         if (!mayReceive(operator, server.isDedicatedServer(), server.getServerOwner(), player.getCommandSenderName()))
             return;
         player.addChatMessage(
-            new ChatComponentText(message(latest, currentVersion))
-                .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)));
+            message(latest, currentVersion).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)));
     }
 
     @Override

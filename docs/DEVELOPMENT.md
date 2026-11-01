@@ -47,6 +47,17 @@ replaces and why a smaller injection was not suitable.
 Ordinal-based injection is fragile. Validate the actual recipe builder or
 arguments before mutating them, and exercise the final recipes in a full pack.
 
+## Translations
+
+Every text a player sees is a language key in `src/main/resources/assets/gtnhextranerf/lang/en_US.lang`;
+add another language by creating `<locale>.lang` (for example `zh_CN.lang`) next to it. A missing key falls back
+to English. Long machine descriptions live in `lang/<locale>/tooltip/*.md`. The certification exams are
+translated the same way (106 keys, see [the exam contract](CERTIFICATION_EXAM.md)), and so are the chat messages and
+command usage of telemetry, team tracking and the update check: the server sends a key with its arguments and
+each client translates it. In a value, `%s` is an argument and a backslash followed by `n` is a line break where
+the exam shows one. The startup error screen prefers the translation and falls back to English when language
+files are not loaded yet. Do not add player-visible text as a Java string: use a key, and add it to `en_US.lang`.
+
 ## Updating documentation
 
 The human catalog must describe actual final behavior, not an old diff. State

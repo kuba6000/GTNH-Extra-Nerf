@@ -74,7 +74,7 @@ public final class DrawingExamWidget extends Widget<DrawingExamWidget> implement
                 boolean passed = exam.result()
                     .status() == ExamAttempt.Status.PASSED;
                 String message = passed ? paper.passedMessage() : paper.failedMessage();
-                active = new Page(message);
+                active = new Page(display(message));
             } else if (index < 0) {
                 String introduction = paper.introduction()
                     .isEmpty()
@@ -83,7 +83,7 @@ public final class DrawingExamWidget extends Widget<DrawingExamWidget> implement
                             paper.requiredCorrect(),
                             paper.questions()
                                 .size())
-                        : paper.introduction();
+                        : display(paper.introduction());
                 active = new Page(introduction + "\n\n" + StatCollector.translateToLocal("gtnhextranerf.exam.begin"));
             } else active = pages.computeIfAbsent(
                 index,
@@ -170,8 +170,13 @@ public final class DrawingExamWidget extends Widget<DrawingExamWidget> implement
         return true;
     }
 
+    /**
+     * A language key shows in the player's language; any other text shows as it is. Lang files cannot hold a real line
+     * break, so a backslash followed by "n" in a translation stands for one.
+     */
     private static String display(String text) {
-        return StatCollector.canTranslate(text) ? StatCollector.translateToLocal(text) : text;
+        String shown = StatCollector.canTranslate(text) ? StatCollector.translateToLocal(text) : text;
+        return shown.replace("\\n", "\n");
     }
 
     private static final class Page {

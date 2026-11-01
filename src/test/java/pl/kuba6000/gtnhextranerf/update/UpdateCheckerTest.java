@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
+import pl.kuba6000.gtnhextranerf.LangFile;
+
 class UpdateCheckerTest {
 
     private static UpdateChecker checker(String current, UpdateChecker.Fetcher fetcher) {
@@ -80,8 +82,8 @@ class UpdateCheckerTest {
     }
 
     @Test
-    void messageNamesBothVersionsAndTheDownloadPage() {
-        String message = UpdateChecker.message("0.0.7", "0.0.6");
+    void messageNamesBothVersionsAndTheDownloadPage() throws Exception {
+        String message = LangFile.render(UpdateChecker.message("0.0.7", "0.0.6"));
         assertTrue(message.contains("0.0.7"));
         assertTrue(message.contains("0.0.6"));
         assertTrue(message.contains("https://extranerf.kuba6000.pl/download"));
