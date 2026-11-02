@@ -6,8 +6,8 @@ catalog, including exact values, conditions and unchanged fields, is
 
 ## Startup
 
-- Narrowed the coremod transformer exclusion so Extra Nerf mixins can load
-  instead of being rejected with `PACKAGE_TRANSFORMER_EXCLUSION`.
+- Narrowed the coremod transformer exclusion to remove
+  `PACKAGE_TRANSFORMER_EXCLUSION` messages for Extra Nerf mixins.
 
 ## Certification exams
 

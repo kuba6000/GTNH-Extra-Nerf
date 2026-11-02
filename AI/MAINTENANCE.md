@@ -112,9 +112,11 @@ Do not copy generated submodule build outputs into the root repository.
 
 ### `PACKAGE_TRANSFORMER_EXCLUSION` for Extra Nerf mixins
 
-Transformer exclusions match class-name prefixes. Keep the coremod exclusion
-scoped to its entry class; excluding the entire mod package also excludes its
-mixin classes and prevents them from loading.
+Transformer exclusions match class-name prefixes. Keeping the coremod exclusion
+scoped to its entry class avoids these messages for the mod's mixin classes.
+In the observed GTNH runtime, the error was logged even for mixins that were
+subsequently applied. Check the later mixin logs and behavior before concluding
+that an exclusion prevented a particular mixin from applying.
 
 ### `expected exactly 1, observed 0`
 
