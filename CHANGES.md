@@ -31,6 +31,11 @@ catalog, including exact values, conditions and unchanged fields, is
 - The Industrial Apiary requires certificates only up to HV instead of UV, which is the
   tier GregTech registers it at.
 
+## Physical configuration circuits
+
+- Machines and input buses below HV return the physical circuit in the reserved
+  slot when broken, preserving its NBT and native explosion-drop handling.
+
 ## Main menu
 
 - Custom Main Menu displays an amber pixel badge with `EXTRA NERF` and the

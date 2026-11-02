@@ -310,7 +310,14 @@ Small Coal Boiler production.
   input without exposing free ghost selection.
 - The widget injection clears a saved circuit with `stackSize <= 0` on the
   server when the GUI first creates the physical slot.
+- `MixinPhysicalCircuitBlockDrop` and `MixinPhysicalCircuitExplosionDrop`
+  include that real reserved-slot circuit in GT's normal block-break and
+  explosion inventory-drop paths. Both retain GT's native item and NBT handling;
+  phantom circuits and non-circuit slots remain subject to native rules.
+- `PhysicalCircuitSlots` shares the tier and slot eligibility between the GUI
+  and the two drop hooks.
 - Injector requirement: exactly one widget factory method (`require = 1`).
+- Each drop wrapper requires exactly one native slot-validity call.
 - Audit: mixin application only.
 
 ### `MixinMTELargeChemicalReactor`

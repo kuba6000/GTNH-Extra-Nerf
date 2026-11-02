@@ -452,6 +452,8 @@ reduces power failures on steam multiblocks with high per-tick demand.
   Integrated Circuit slot below HV instead of the built-in ghost selector.
 - The physical slot accepts exactly one Integrated Circuit. The circuit must
   match the recipe configuration but is not consumed.
+- A physical circuit is returned with its NBT when its machine or input bus
+  is dismantled, and follows the normal inventory-drop rules during explosions.
 - HV and higher tiers keep their existing ghost selector behavior.
 - Saved zero-size phantom circuits are cleared server-side when a gated
   machine first opens its GUI and creates the physical slot. A real Integrated

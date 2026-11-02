@@ -157,6 +157,7 @@ All paths below start at
 | `support/GeneratorEfficiency.java` | Shared tier-relative efficiency curve for generator mixins. |
 | `support/SteamConsumption.java` | Shared fivefold steam multiplier and single-block conversion. |
 | `support/PhysicalCircuitItemStackHandler.java` | One real Integrated Circuit mapped to a machine's reserved circuit slot. |
+| `support/PhysicalCircuitSlots.java` | Shared tier and reserved-slot eligibility for physical circuits and their drops. |
 | `support/ProcessingWireRecipeTransformer.java` | Semantic transformer shared by the Processing Wire receiver mixin. |
 
 ## Early mixins
@@ -187,6 +188,8 @@ All paths below start at
 | `mixins/late/MixinMTELargeChemicalReactor.java` | `MTELargeChemicalReactor` | 3/4 overclock and tooltip. |
 | `mixins/late/MixinMetaTileEntity.java` | `MetaTileEntity` | Steam fill conversion. |
 | `mixins/late/MixinConfigurationCircuitSupport.java` | `CommonWidgets.createCircuitSlot` | Physical Integrated Circuit slot below HV for every tiered machine with configuration-circuit support. |
+| `mixins/late/MixinPhysicalCircuitBlockDrop.java` | `BlockMachines.breakBlock` | Include the reserved physical circuit in ordinary inventory drops. |
+| `mixins/late/MixinPhysicalCircuitExplosionDrop.java` | `BaseMetaTileEntity.doExplosion` | Include the reserved physical circuit in native protected explosion drops. |
 | `mixins/late/MixinCraftingMaterialLoader.java` | BartWorks `CraftingMaterialLoader` | Workstoff ring crafting. |
 | `mixins/late/MixinMTESemiFluidGenerator.java` | GT++ `MTESemiFluidGenerator` | Efficiency. |
 | `mixins/late/MixinProcessingWire.java` | GregTech `ProcessingWire` | PPS foil in five cable recipe families. |
@@ -215,6 +218,7 @@ All paths below start at
 | `src/test/java/.../recipes/RecipeRegistryTest.java` | Registration order and committed audit counts. |
 | `src/test/java/.../recipes/RecipeMatchTest.java` | Fluent matching, exact ingredients, alternatives and defensive snapshots. |
 | `src/test/java/.../mixins/support/PhysicalCircuitItemStackHandlerTest.java` | Physical Integrated Circuit insertion, extraction and validation. |
+| `src/integrationTest/java/.../PhysicalCircuitDropIntegrationTests.java` | Physical circuit and ordinary inventory drops from real machines and input buses. |
 | `src/test/java/.../mixins/support/GeneratorEfficiencyTest.java` | Standard and EV-relative generator efficiency curves. |
 
 ## CI and auxiliary tooling

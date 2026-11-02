@@ -174,6 +174,7 @@ the following together:
 | `MixinMTELargeChemicalReactor` | GregTech | `@ModifyReturnValue` + redirect | returned processing logic and tooltip call |
 | `MixinMetaTileEntity` | GregTech | `@ModifyConstant(require = 2, allow = 2)` | two literal `2` values in `fill`, replaced by the shared steam conversion |
 | `MixinConfigurationCircuitSupport` | GregTech | cancellable `@Inject(require = 1)` | `CommonWidgets.createCircuitSlot`; physical circuit for every tiered pre-HV machine with configuration-circuit support |
+| `MixinPhysicalCircuitBlockDrop`, `MixinPhysicalCircuitExplosionDrop` | GregTech | 2 `@WrapOperation(require = 1)` | Share `PhysicalCircuitSlots` eligibility with the GUI; include real reserved-slot circuits in native block and explosion drops |
 | `MixinCraftingMaterialLoader` | BartWorks | `@WrapOperation` | exact ring pattern and output material association |
 | `MixinMTESemiFluidGenerator` | GT++ | `@ModifyReturnValue` | shared `GeneratorEfficiency` curve starting at LV |
 | `MixinProcessingWire` | GregTech | `@ModifyReceiver` | every `addTo` receiver, then map/prefix/material/recipe-shape validation |

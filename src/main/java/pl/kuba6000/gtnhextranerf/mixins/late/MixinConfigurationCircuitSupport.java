@@ -11,12 +11,11 @@ import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
-import gregtech.api.enums.VoltageIndex;
 import gregtech.api.interfaces.IConfigurationCircuitSupport;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
-import gregtech.api.metatileentity.implementations.MTETieredMachineBlock;
 import gregtech.api.modularui2.common.CommonWidgets;
 import pl.kuba6000.gtnhextranerf.mixins.support.PhysicalCircuitItemStackHandler;
+import pl.kuba6000.gtnhextranerf.mixins.support.PhysicalCircuitSlots;
 
 @Mixin(value = CommonWidgets.class, remap = false)
 public abstract class MixinConfigurationCircuitSupport {
@@ -25,18 +24,13 @@ public abstract class MixinConfigurationCircuitSupport {
     private static void gtnhextranerf$usePhysicalCircuitBeforeHv(PanelSyncManager syncManager,
         IMetaTileEntity baseMachine, CallbackInfoReturnable<Widget<? extends Widget<?>>> callback) {
         if (!(baseMachine instanceof IConfigurationCircuitSupport circuitSupport)
-            || !gtnhextranerf$requiresPhysicalCircuit(baseMachine)) return;
+            || !PhysicalCircuitSlots.requiresPhysicalCircuit(baseMachine)) return;
 
         gtnhextranerf$clearSavedPhantomCircuit(baseMachine, circuitSupport);
         callback.setReturnValue(
             new ItemSlot().slot(
                 new ModularSlot(new PhysicalCircuitItemStackHandler(baseMachine, circuitSupport.getCircuitSlot()), 0)
                     .singletonSlotGroup()));
-    }
-
-    @Unique
-    private static boolean gtnhextranerf$requiresPhysicalCircuit(IMetaTileEntity baseMachine) {
-        return baseMachine instanceof MTETieredMachineBlock tieredMachine && tieredMachine.mTier < VoltageIndex.HV;
     }
 
     @Unique

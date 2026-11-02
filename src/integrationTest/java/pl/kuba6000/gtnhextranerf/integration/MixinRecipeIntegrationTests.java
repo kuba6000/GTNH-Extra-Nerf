@@ -66,6 +66,8 @@ public final class MixinRecipeIntegrationTests {
             ProgressionIntegrationTests.verify(DimensionManager.getWorld(0));
             SteamIntegrationTests.verify(DimensionManager.getWorld(0));
             EvergladesIntegrationTests.verify(DimensionManager.getWorld(0));
+            PhysicalCircuitDropIntegrationTests.verify(DimensionManager.getWorld(0));
+            GTNHExtraNerf.LOG.info("Extra Nerf physical circuit drop integration tests PASSED");
         } catch (Exception | LinkageError | AssertionError failure) {
             // Forge can report startup-handler failures after Done and still exit with code zero.
             throw new IllegalStateException("GTNH Extra Nerf integrity check failed: server integration", failure);

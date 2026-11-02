@@ -150,7 +150,11 @@ public enum Mixin implements IMixins {
         .addRequiredMod(GT5U)
         .addExcludedMod(GT6)
         .setPhase(LATE)),
-    ConfigurationCircuitSupport(new MixinBuilder().addCommonMixins("MixinConfigurationCircuitSupport")
+    ConfigurationCircuitSupport(new MixinBuilder()
+        .addCommonMixins(
+            "MixinConfigurationCircuitSupport",
+            "MixinPhysicalCircuitBlockDrop",
+            "MixinPhysicalCircuitExplosionDrop")
         .addRequiredMod(GT5U)
         .addExcludedMod(GT6)
         .setPhase(LATE)),
