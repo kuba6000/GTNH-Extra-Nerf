@@ -1,5 +1,24 @@
 # Audyt nerfów i receptur — 2 listopada 2026
 
+## Decyzje i poprawki po audycie
+
+Poniższe ustalenia i liczby opisują stan z commita podanego w zakresie audytu;
+nie są opisem bieżących wyników po poprawkach. Decyzje i zmiany z 3 listopada:
+
+| Ustalenie | Stan |
+| --- | --- |
+| Ruby Juice, Samarium, Endstone, Raw Neutronium, Indium Comb oraz uzyski Ilmenite Slag i Sphalerite w maszynach przemysłowych | Poprawione w `1419ceb`; obie mapy są sprawdzane przez testy receptur. |
+| Stare receptury stali i aluminium w Alloy Blast Smelterze | Poprawione w `0c17277`, także dla aluminium z TConstruct. |
+| Utrata fizycznego Integrated Circuit przy niszczeniu maszyny | Poprawiona w `0fb72d3`, również dla natywnej ścieżki dropu przy wybuchu. |
+| Najwyższa warstwa świata dla Lightning Rod | Poprawiona w `5656f6a`. |
+| Tańsze przepisy Circuit Assembly Line | Zamierzone; nie są błędem i pozostały bez zmian. |
+| Advanced Seismic Prospector przyjmuje materiały bez certyfikatu | Świadomie pozostawione bez zmian jako mało istotne; sama praca pozostaje blokowana. |
+| Zapisany ghost circuit działa do pierwszego otwarcia GUI | Świadomie pozostawione zachowanie migracji istniejących zapisów. |
+
+Poprawka zużycia pary z równoległej pracy została wcześniej zapisana w
+`4410124`; nie była częścią pierwotnego audytu. Testy integracyjne po powyższych
+zmianach ponownie sprawdziły objęte nimi maszyny i wskazania pary.
+
 ## Zakres i sposób weryfikacji
 
 Punkt odniesienia Extra Nerf: commit `7977d2c634aa471a5cd8a1798b6de3f23b8db60a`. Przegląd porównuje dokumentację z kodem moda, GT5-Unofficial **5.09.54.261** (`eee6ffbb00d8f7b404f8e8d6db87462f8d680e95`, z BartWorks, GT++, Good Generator, TecTech i pozostałymi dodatkami scalonymi z GT5) oraz NewHorizonsCoreMod **2.9.99** (`9f108160f88f7d6ba7e20d830eeee760d7198144`). To wersje z `dependencies.gradle`.
@@ -63,7 +82,9 @@ Przykładowe czasy bazowe przed OC wynoszą **60 s bez gazu** i **48 s z 1000 mB
 
 **Dowód: rejestr i kod.** [`modifyPraseodymiumCentrifuge`](../src/main/java/pl/kuba6000/gtnhextranerf/loader/recipes/CoreModRecipeNerf.java) zmienia `centrifugeRecipes`, ale nie jej przemysłową kopię. Dla 8 Indium Comb i 1000 mB zużytego paliwa torowego wynik Indium to **8 dust z 50% szansą** w zwykłej wirówce oraz nadal **12 dust z 50% szansą** w przemysłowej.
 
-### P2. Circuit Assembly Line produkuje obwody poza zmienionymi recepturami
+### Decyzja projektowa. Circuit Assembly Line produkuje obwody poza zmienionymi recepturami
+
+Tańsza Circuit Assembly Line jest zamierzona, więc nie wymaga naprawy.
 
 **Dowód: rejestr dla Mainframe, Nano i Quantum; kod dla Good Circuit.** Nerfy w [`CoreModRecipeNerf`](../src/main/java/pl/kuba6000/gtnhextranerf/loader/recipes/CoreModRecipeNerf.java) i [`MixinCircuitAssemblerRecipes`](../src/main/java/pl/kuba6000/gtnhextranerf/mixins/late/MixinCircuitAssemblerRecipes.java) działają na `circuitAssemblerRecipes`; nie zmieniają oddzielnej mapy BartWorks `bw.recipe.cal`.
 
@@ -72,7 +93,7 @@ Przykładowe czasy bazowe przed OC wynoszą **60 s bez gazu** i **48 s z 1000 mB
 - **Integrated Logic Circuit:** [kod NHCore](https://github.com/GTNewHorizons/NewHorizonsCoreMod/blob/9f108160f88f7d6ba7e20d830eeee760d7198144/src/main/java/com/dreammaster/gthandler/recipes/CircuitAssemblyLineRecipes.java#L30-L43) przewiduje 16 sztuk z jednego opakowania 16 ILC Chipów, tj. **1 chip na sztukę**, wobec 4 w zmienionym Circuit Assemblerze.
 - **Good Circuit:** [kod NHCore](https://github.com/GTNewHorizons/NewHorizonsCoreMod/blob/9f108160f88f7d6ba7e20d830eeee760d7198144/src/main/java/com/dreammaster/gthandler/recipes/CircuitAssemblyLineRecipes.java#L232-L242) rejestruje 16 sztuk z 32 Basic Electronic Circuits, tj. **2 na sztukę**, podczas gdy zmieniony Circuit Assembler wymaga 4.
 
-To obejście kosztu **po uzyskaniu odpowiedniej linii i imprintu**, nie dowód, że sam zmodyfikowany przepis ma złe składniki. Dokumentacja jednoznacznie ogranicza nerf Nano/Quantum do czterech przepisów Circuit Assemblera, a SoC pozostawia osobno; rozszerzenie zmian na Circuit Assembly Line jest decyzją balansową, jeśli celem jest trwałe podniesienie kosztu produktu także na późniejszym etapie.
+To celowo tańsza ścieżka **po uzyskaniu odpowiedniej linii i imprintu**; zmodyfikowane receptury Circuit Assemblera zachowują swoje wymagania. Dokumentacja ogranicza nerf Nano/Quantum do czterech przepisów Circuit Assemblera, a SoC pozostawia osobno. Użytkownik potwierdził po audycie, że receptur Circuit Assembly Line nie należy zmieniać.
 
 ### P2. Fizyczny Integrated Circuit przepada przy rozebraniu maszyny
 
@@ -110,7 +131,7 @@ Zinwentaryzowano 50 klas mixinów z badanego commita. „Bez nowego ustalenia”
 | `MixinMTESteamTurbine`, `MixinMTEDieselGenerator`, `MixinMTEGasTurbine`, `MixinMTEPlasmaGenerator`, `MixinMTESemiFluidGenerator` | Prześledzono wzór i sposób, w jaki klasy GT używają wydajności. Dla trzech zarejestrowanych turbin parowych dzielenie daje dokładnie 20/30/40%. Brak pełnego pomiaru każdej klasy generatora na świecie. |
 | `MixinMTELargeChemicalReactor` | Ustawia 3/4 OC na natywnym `ProcessingLogic`; nie wykonano osobnego pomiaru receptury i renderu tooltipa. |
 | `MixinConfigurationCircuitSupport` | Stwierdzono utratę przedmiotu i ograniczenie migracji wyżej. Test jednostkowy samego handlera nie obejmuje rozbiórki. |
-| `MixinProcessingShaping`, `MixinCraftingMaterialLoader`, `MixinProcessingWire`, `MixinCircuitAssemblerRecipes`, `MixinMetaGeneratedItem01`, `MixinAssemblyLineRecipes`, `MixinAe2Crafting` | Przejrzano cele i selektory rejestracji. Wbudowane testy integracyjne sprawdziły m.in. transformator ring i rodziny PPS; obejście obwodów opisano wyżej. Test helpera nie jest dowodem każdej rejestracji w każdym wariancie modów. |
+| `MixinProcessingShaping`, `MixinCraftingMaterialLoader`, `MixinProcessingWire`, `MixinCircuitAssemblerRecipes`, `MixinMetaGeneratedItem01`, `MixinAssemblyLineRecipes`, `MixinAe2Crafting` | Przejrzano cele i selektory rejestracji. Wbudowane testy integracyjne sprawdziły m.in. transformator ring i rodziny PPS; zamierzone tańsze receptury Circuit Assembly Line opisano wyżej. Test helpera nie jest dowodem każdej rejestracji w każdym wariancie modów. |
 | `MixinAssemblyLineDimension`, `MixinLegacyFusionCoils`, `MixinPlasmaForgeCoils` | Testy serwerowe sprawdziły wybrane struktury i warunki; bez nowego ustalenia. |
 | `MixinVoidMinerFluids`, `MixinLightningRod`, `MixinCoolantTower`, `MixinMassFabricatorAmplifier`, `MixinEvergladesMachineBan` | Istniejące testy serwerowe przeszły dla sprawdzanych przypadków. Dla Lightning Rod znaleziono niezbadany wcześniej brzeg Y=255. |
 | `MixinOzonationSafety`, `MixinOzonationExplosion` | Przejrzano kolejność sprawdzenia receptury, próg i eksplozję; testy granicy 1 000 000/1 000 001 mB przeszły. |
@@ -135,7 +156,7 @@ Przemysłowe kopie przeanalizowano szczególnie dla map Mixer/Centrifuge/Electro
 - Tożsamość i wybrane wyniki ze starego uruchomienia były też kontrolowane analitycznie w źródłach. Nie uruchamiano klienta, nie porównywano Waila/NEI i nie wykonywano osobnych testów każdego przepisu czy wszystkich dodatków spoza scalonego GT5/NHCore.
 - Pełne logi izolowanych odczytów są dostępne tymczasowo: `/tmp/gtnh-nerf-audit-SMJMiS/server/audit-server-integration.log` oraz `/tmp/gtnh-nerf-audit-SMJMiS/server/audit-server-final.log`. Wyniki kluczowych odczytów zapisano w raporcie powyżej.
 
-## Zalecana kolejność napraw
+## Pierwotnie zalecana kolejność napraw
 
 1. Objąć właściwe końcowe mapy `mixerNonCellRecipes`, `centrifugeNonCellRecipes` i `electrolyzerNonCellRecipes` tymi samymi zmianami, z kontrolą liczby i charakterystyk wszystkich wariantów po publikacji. Zabezpieczyć Alloy Blast Smelter przed starymi recepturami EBF.
 2. Uzgodnić zamierzony koszt na Circuit Assembly Line i odpowiednio zmienić lub jawnie zachować jej receptury; uwzględnić imprint i duże partie, zamiast bezrefleksyjnie mnożyć pojedyncze stacki ponad limit.

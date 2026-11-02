@@ -970,6 +970,9 @@ exact Circuit Assembler recipes remain unchanged.
 
 ### Elite circuits
 
+The separate Circuit Assembly Line recipe map is intentionally outside the
+Circuit Assembler cost changes and may retain cheaper circuit recipes.
+
 For each standard and ASMD recipe family, the currently active old solder
 recipe is removed, exact absence of the new recipe is asserted, and a new
 cleanroom recipe is added with 100 L Soul Infused Medium.

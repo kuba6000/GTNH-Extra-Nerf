@@ -212,6 +212,8 @@ settings.
 | Item/fluid multiset comparison | No registry bootstrap in unit tests | Full-pack server. |
 | Recipe port behavior | None at root | Full-pack server. |
 | Mixin targeting/content | Mixin annotation processor during compilation | Full-pack server. |
+| Industrial and Alloy Blast Smelter recipes | Exact recipe signatures and `AuditScope` cardinalities | `IndustrialRecipeIntegrationTests` and `AlloyBlastSmelterIntegrationTests` query the final initialized machine maps. |
+| Physical circuit drops | `PhysicalCircuitItemStackHandlerTest` covers insertion and extraction | `PhysicalCircuitDropIntegrationTests` checks real machine and input-bus destruction, NBT, explosion drops and HV ghost circuits. |
 | Lightning Rod generation | Startup audit checks all three native registrations and output ratings | `LightningRodIntegrationTests` drives real server weather, mast geometry and public post-ticks; stored EU, fence consumption and fixed-seed comparisons verify the behavior. |
 | Void Miner gas costs | Startup audit checks hooks, registrations and native gas ordering | `VoidMinerFluidIntegrationTests` drives formed miners and compares hatch payments, powered output, short/exact supply and batch scaling for every tier/gas pair. |
 | Spatial Assembly Lines | Startup audit verifies both target hooks, controllers and error localization | `SpatialAssemblyIntegrationTests` checks native structures, hidden errors, client serialization and actual processing in AE2-created worlds. |

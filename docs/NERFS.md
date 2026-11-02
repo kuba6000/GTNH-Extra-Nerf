@@ -955,6 +955,9 @@ Output chances become:
 
 ## Circuits and circuit boards
 
+The separate Circuit Assembly Line may retain cheaper circuit recipes than the
+changed Circuit Assembler recipes. This is intentional.
+
 ### Integrated Logic Circuit
 
 - ILC Chip input increases from 1 to 4.

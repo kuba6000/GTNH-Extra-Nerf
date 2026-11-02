@@ -137,7 +137,7 @@ All paths below start at
 | `../recipes/crafting/` | Typed targets/handles, direct factories and Minecraft registry adapter. |
 | `recipes/CraftingNerf.java` | Bronze Dust, Large Chemical Reactor, LV Circuit Assembler, Good Circuit, flint-and-steel and Tool Station crafting recipes. |
 | `recipes/AluminiumNerf.java` | Ilmenite chemical baths, Ruby Juice chain and Ilmenite Slag centrifuge. |
-| `recipes/BlastFurnaceNerf.java` | Primitive and electric Steel production plus Aluminium, TConstruct aluminium, ilmenite and titanium EBF recipes. |
+| `recipes/BlastFurnaceNerf.java` | Primitive and electric Steel, Aluminium, TConstruct aluminium, ilmenite and titanium EBF recipes, plus corresponding Alloy Blast Smelter routes. |
 | `recipes/ChemicalAndMiscNerf.java` | Chemical, silicon cutting, Lubricant, platinum, samarium and miscellaneous processing changes. |
 | `recipes/CoreModRecipeNerf.java` | NHCore/GT recipe changes for low-tier circuits, Cupronickel Coils, MV Energy Hatches, casings, indium, endgame and components. |
 | `recipes/IntergalacticRecipeNerf.java` | Audited UQV Sensor replacement in the Crafting Input Proxy's Space Assembler recipe. |
@@ -218,6 +218,8 @@ All paths below start at
 | `src/test/java/.../recipes/RecipeRegistryTest.java` | Registration order and committed audit counts. |
 | `src/test/java/.../recipes/RecipeMatchTest.java` | Fluent matching, exact ingredients, alternatives and defensive snapshots. |
 | `src/test/java/.../mixins/support/PhysicalCircuitItemStackHandlerTest.java` | Physical Integrated Circuit insertion, extraction and validation. |
+| `src/integrationTest/java/.../IndustrialRecipeIntegrationTests.java` | Final machine lookup and parity across the affected ordinary and industrial maps. |
+| `src/integrationTest/java/.../AlloyBlastSmelterIntegrationTests.java` | Steel and Aluminium EBF/Alloy Blast Smelter lookup and removed gas routes. |
 | `src/integrationTest/java/.../PhysicalCircuitDropIntegrationTests.java` | Physical circuit and ordinary inventory drops from real machines and input buses. |
 | `src/test/java/.../mixins/support/GeneratorEfficiencyTest.java` | Standard and EV-relative generator efficiency curves. |
 
