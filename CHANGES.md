@@ -4,6 +4,11 @@ This file is a concise summary of the active ruleset. The complete canonical
 catalog, including exact values, conditions and unchanged fields, is
 [`docs/NERFS.md`](docs/NERFS.md).
 
+## Startup
+
+- Narrowed the coremod transformer exclusion so Extra Nerf mixins can load
+  instead of being rejected with `PACKAGE_TRANSFORMER_EXCLUSION`.
+
 ## Certification exams
 
 - The Steam and LV exams are part of the mod and use language keys for every question,

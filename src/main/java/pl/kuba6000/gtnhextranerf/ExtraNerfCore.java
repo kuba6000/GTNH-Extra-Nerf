@@ -11,7 +11,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import pl.kuba6000.gtnhextranerf.mixins.Mixin;
 
 @IFMLLoadingPlugin.MCVersion("1.7.10")
-@IFMLLoadingPlugin.TransformerExclusions({ "pl.kuba6000.gtnhextranerf" })
+@IFMLLoadingPlugin.TransformerExclusions({ "pl.kuba6000.gtnhextranerf.ExtraNerfCore" })
 public class ExtraNerfCore implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override

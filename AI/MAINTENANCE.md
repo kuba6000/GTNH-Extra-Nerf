@@ -110,6 +110,12 @@ Do not copy generated submodule build outputs into the root repository.
 
 ## Diagnosing startup failures
 
+### `PACKAGE_TRANSFORMER_EXCLUSION` for Extra Nerf mixins
+
+Transformer exclusions match class-name prefixes. Keep the coremod exclusion
+scoped to its entry class; excluding the entire mod package also excludes its
+mixin classes and prevents them from loading.
+
 ### `expected exactly 1, observed 0`
 
 The mixin did not apply, its semantic branch no longer matched, or the
