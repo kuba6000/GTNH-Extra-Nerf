@@ -25,8 +25,8 @@ public abstract class MixinLightningRod implements ProgressionMachineNerf.Lightn
 
     /**
      * @author GTNH Extra Nerf
-     * @reason Replace GT 5.09.54.226's height-based strike chance and rain fallback, retaining native loss, mast
-     *         validation, cadence, lightning effects and fence consumption.
+     * @reason Replace GT 5.09.54.226's height-based strike chance and rain fallback, retaining native loss, cadence,
+     *         lightning effects and fence consumption while checking the full world height for mast/sky validation.
      */
     @Overwrite
     public void onPostTick(IGregTechTileEntity tile, long tick) {
@@ -41,7 +41,7 @@ public abstract class MixinLightningRod implements ProgressionMachineNerf.Lightn
         int x = tile.getXCoord(), y = tile.getYCoord(), z = tile.getZCoord();
         int length = 0;
         boolean ended = false;
-        for (int height = y + 1; height < world.getHeight() - 1; height++) {
+        for (int height = y + 1; height < world.getHeight(); height++) {
             Block block = tile.getBlock(x, height, z);
             if (!ended && block == Casings.IronFence.getBlock()) length++;
             else {

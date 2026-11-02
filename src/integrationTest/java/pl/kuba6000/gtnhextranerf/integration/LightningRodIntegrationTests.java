@@ -47,6 +47,10 @@ final class LightningRodIntegrationTests {
                     weather(world, true, true);
                     world.setBlock(rod.tile.xCoord, 161, rod.tile.zCoord, Blocks.stone);
                     rod.noGeneration(256, "Lightning Rod ignored the blocked sky above its mast");
+                    rod.mast(16);
+                    world.setBlock(rod.tile.xCoord, world.getHeight() - 1, rod.tile.zCoord, Blocks.stone);
+                    world.rand.setSeed(0x5A485552L);
+                    rod.noGeneration(256, "Lightning Rod ignored an obstruction at the top of the world");
                     rod.mast(32);
                     world.setBlockToAir(rod.tile.xCoord, 136, rod.tile.zCoord);
                     rod.noGeneration(256, "Lightning Rod accepted a gap in its mast");
@@ -68,6 +72,9 @@ final class LightningRodIntegrationTests {
                 }
                 try (Rod rod = new Rod(world, item, 64)) {
                     check(rod.sample(16) == high, "Controller altitude changed the strike chance");
+                }
+                try (Rod rod = new Rod(world, item, world.getHeight() - 17)) {
+                    check(rod.sample(16) > 0, "Lightning Rod ignored a mast segment at the top of the world");
                 }
             }
         } finally {
@@ -109,8 +116,7 @@ final class LightningRodIntegrationTests {
         }
 
         void mast(int length) {
-            for (int y = tile.yCoord + 1; y < world.getHeight() - 1; y++)
-                world.setBlockToAir(tile.xCoord, y, tile.zCoord);
+            for (int y = tile.yCoord + 1; y < world.getHeight(); y++) world.setBlockToAir(tile.xCoord, y, tile.zCoord);
             repair(length);
             tile.setStoredEU(0);
         }

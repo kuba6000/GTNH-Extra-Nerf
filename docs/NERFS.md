@@ -62,6 +62,8 @@ All three native Lightning Rods (HV, EV and IV output) have a 10,000,000 EU
 buffer and generate only during thunderstorms. Strike attempts remain every
 256 ticks. The mast must contain at least 16 consecutive GT Iron Fence blocks,
 with unobstructed air above it. Controller altitude provides no chance bonus.
+The check includes the world's highest valid block layer, both for mast fences
+and for obstructions above the mast.
 
 The chance per attempt is 12.5% at 16 fences, increases linearly to 25% at 32,
 and stays at 25% for longer masts. A successful strike fills the buffer and

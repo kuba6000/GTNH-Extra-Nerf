@@ -1226,6 +1226,7 @@ algorithm for the three native rods. It keeps server-only execution, native
 buffer loss, the 256-tick cadence, sky/contiguous-fence checks, lightning effects
 and one-fence consumption. Storms require at least 16 fences; a world-local
 random roll uses `min(length, 32) / 128`, independently of controller Y.
+Mast and sky validation include the top valid layer, `world.getHeight() - 1`.
 A strict constant injection reduces storage to 10,000,000 EU.
 `VERIFY_LIGHTNING_RODS` checks the shared hook, all three native registrations,
 storage and the existing voltage/amperage ratings. No recipe mutation or

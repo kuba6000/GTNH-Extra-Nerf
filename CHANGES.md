@@ -36,6 +36,10 @@ catalog, including exact values, conditions and unchanged fields, is
 - Machines and input buses below HV return the physical circuit in the reserved
   slot when broken, preserving its NBT and native explosion-drop handling.
 
+## Lightning Rod
+
+- Mast and clear-sky checks include the highest valid world layer.
+
 ## Main menu
 
 - Custom Main Menu displays an amber pixel badge with `EXTRA NERF` and the
