@@ -121,7 +121,16 @@ public enum Mixin implements IMixins {
         .addRequiredMod(GT5U)
         .addExcludedMod(GT6)
         .setPhase(LATE)),
-    SteamOverclock(new MixinBuilder().addCommonMixins("MixinSteamOverclockDescriber")
+    SteamOverclock(new MixinBuilder()
+        .addCommonMixins(
+            "MixinSteamOverclockDescriber",
+            "MixinSteamMachineTank",
+            "MixinSteamMachineDisplay",
+            "MixinSteamMachineGui")
+        .addRequiredMod(GT5U)
+        .addExcludedMod(GT6)
+        .setPhase(LATE)),
+    SteamMultiBlock(new MixinBuilder().addCommonMixins("MixinSteamMultiBlock", "MixinSteamMultiBlockWailaData")
         .addRequiredMod(GT5U)
         .addExcludedMod(GT6)
         .setPhase(LATE)),

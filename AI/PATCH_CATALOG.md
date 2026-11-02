@@ -277,20 +277,25 @@ available tiers, then adds 5 percentage points for every later tier.
   HV 40%, EV 45% and IV 50%.
 - Audit: mixin application only.
 
-### `MixinSteamOverclockDescriber`
+### Steam consumption and displays
 
-- Modifies the long multiplier in private `convertEUToSteam(long)`.
-- Behavior: one EU is displayed as 10 units of steam (`10 * eu`).
-- Audit: mixin application only.
+`SteamConsumption` owns the fivefold multiplier and the single-block
+conversion of 10 L per EU. `MixinMetaTileEntity` changes both vanilla 2:1
+conversion sites in the fluid-fill overload; both matches are required.
+`MixinSteamOverclockDescriber` uses the same ratio for NEI. The single-block
+WAILA multiplier, Bronze/Steel fluid tank information, and ModularUI 2 steam
+gauge use the same conversion through `MixinSteamMachineDisplay`,
+`MixinSteamMachineTank`, and `MixinSteamMachineGui` respectively.
 
-### `MixinMetaTileEntity`
-
-- Modifies exactly two literal `2` values in `MetaTileEntity.fill` to `5`.
-- Effective behavior: internal steam conversion uses a 5:1 ratio instead of
-  2:1 at both injection sites.
-- Injector requirement: exactly 2 successful matches (`require = 2, allow = 2`),
-  with the full method descriptor selecting the fluid-fill overload.
-- Audit: mixin application only.
+`MixinSteamMultiBlock` multiplies the native efficiency-adjusted running-tick
+steam drain and WAILA rate by five. The Steam Water Pump is excluded, including
+its separate 1,500 L per-cycle operation. `MixinSteamMultiBlockWailaData`
+reproduces the native integer drain calculation for WAILA data; the inherited
+floating-point calculation can otherwise round differently. The multiplier
+does not modify boilers. All new injection sites have strict expected match
+counts; audit is mixin application only. The integration fixture checks real single
+and multiblock drain, insufficient steam, displayed values, the water pump and
+Small Coal Boiler production.
 
 ### `MixinConfigurationCircuitSupport`
 

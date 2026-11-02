@@ -162,12 +162,17 @@ the following together:
 | `MixinLoaderGTBlockFluid` | GregTech | 2 constructor redirects | unlocalized name checks |
 | `MixinMTESteamTurbine` | GregTech | `@ModifyReturnValue` | shared `GeneratorEfficiency` curve represented as steam consumption |
 | `MixinMTEPlasmaGenerator` | GregTech | `@ModifyReturnValue` | shared `GeneratorEfficiency` curve starting at EV |
-| `MixinSteamOverclockDescriber` | GregTech | private static `@ModifyConstant` | long conversion multiplier |
 | `MixinSteamInputHatch` | GT++ | `@ModifyConstant` | 64,000 L Steam Hatch registration capacity |
+| `MixinSteamOverclockDescriber` | GregTech | private static `@ModifyConstant` | shared single-block NEI conversion multiplier |
+| `MixinSteamMachineTank` | GregTech | 2 `@ModifyConstant`s | Bronze/Steel fluid tank amount and capacity |
+| `MixinSteamMachineDisplay` | GregTech | 1 `@ModifyConstant` | single-block steam WAILA usage |
+| `MixinSteamMachineGui` | GregTech | 2 `@ModifyArg`s | Bronze/Steel ModularUI 2 steam gauge suppliers |
+| `MixinSteamMultiBlock` | GregTech/GT++ | `@WrapOperation` + `@ModifyConstant` | fivefold running steam drain and WAILA usage, excluding Steam Water Pump |
+| `MixinSteamMultiBlockWailaData` | GregTech | `@Inject` at WAILA data return | native integer steam cost for multiblocks, excluding Steam Water Pump |
 | `MixinMTEDieselGenerator` | GregTech | `@ModifyReturnValue` | shared `GeneratorEfficiency` curve starting at LV |
 | `MixinMTEGasTurbine` | GregTech | `@ModifyReturnValue` | shared `GeneratorEfficiency` curve starting at LV |
 | `MixinMTELargeChemicalReactor` | GregTech | `@ModifyReturnValue` + redirect | returned processing logic and tooltip call |
-| `MixinMetaTileEntity` | GregTech | `@ModifyConstant(require = 2, allow = 2)` | two literal `2` values in `fill` |
+| `MixinMetaTileEntity` | GregTech | `@ModifyConstant(require = 2, allow = 2)` | two literal `2` values in `fill`, replaced by the shared steam conversion |
 | `MixinConfigurationCircuitSupport` | GregTech | cancellable `@Inject(require = 1)` | `CommonWidgets.createCircuitSlot`; physical circuit for every tiered pre-HV machine with configuration-circuit support |
 | `MixinCraftingMaterialLoader` | BartWorks | `@WrapOperation` | exact ring pattern and output material association |
 | `MixinMTESemiFluidGenerator` | GT++ | `@ModifyReturnValue` | shared `GeneratorEfficiency` curve starting at LV |

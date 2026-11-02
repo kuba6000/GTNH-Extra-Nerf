@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import gregtech.api.metatileentity.MetaTileEntity;
+import pl.kuba6000.gtnhextranerf.mixins.support.SteamConsumption;
 import pl.kuba6000.gtnhextranerf.progression.EnergyHatchCertification;
 
 @Mixin(value = MetaTileEntity.class, remap = false)
@@ -30,6 +31,6 @@ public abstract class MixinMetaTileEntity implements EnergyHatchCertification.Bu
         require = 2,
         allow = 2)
     private int modifySteamRatio(int original) {
-        return 5;
+        return SteamConsumption.SINGLE_STEAM_PER_EU;
     }
 }

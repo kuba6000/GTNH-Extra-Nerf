@@ -428,9 +428,18 @@ reduces power failures on steam multiblocks with high per-tick demand.
 
 ### Steam conversion
 
-- Steam overclock calculations convert one EU to 5 units of steam.
-- Internal steam-powered machine fill conversion changes from a 2:1 to a 5:1
-  ratio at both relevant points in GregTech's base machine code.
+- Single-block steam machines use five times the vanilla amount: 10 L per EU
+  instead of 2 L. NEI, WAILA, fluid tank information and the ModularUI 2
+  steam gauge use the same conversion. The internal energy buffer keeps its
+  size; a full Bronze machine's 16,000 internal units now represent 160,000 L.
+  The legacy ModularUI 1 gauge still uses GregTech's original display ratio.
+- Steam processing multiblocks use five times their native steam consumption,
+  after GregTech's efficiency adjustment. Their WAILA usage follows the change.
+- Multiblock NEI pages use GregTech's generic recipe description and may not
+  reflect the formed machine's tier, parallelism and efficiency; WAILA reports
+  the running machine's usage.
+- The Steam Water Pump's 1,500 L cost per cycle and boiler production are not
+  changed. A heated Small Coal Boiler produces 120 L in 20 ticks when supplied.
 
 ### Benzene and Phenol
 

@@ -134,7 +134,8 @@ catalog, including exact values, conditions and unchanged fields, is
   30% at MV, 40% at HV and gain 5 percentage points per later tier.
 - Plasma Generator progression restarts at 20% on EV, then uses 30% on IV,
   40% on LuV and gains 5 percentage points per later tier.
-- Steam conversion changes to 5 units of steam per EU.
+- Steam machines consume five times their vanilla steam. Single-block machines
+  use 10 L per EU; Steam Water Pump and boiler production are unchanged.
 - Steam Input Hatch capacity increases from 64,000 L to 640,000 L to reduce
   power failures on steam multiblocks with high per-tick demand.
 - Benzene and Phenol fuel values are divided by four.

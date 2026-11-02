@@ -155,6 +155,7 @@ All paths below start at
 | `Mixin.java` | `MixinBuilder` registry and phase/mod selection. |
 | `TargetedMod.java` | Mod identity model used by `Mixin`; some declared entries are currently unused. |
 | `support/GeneratorEfficiency.java` | Shared tier-relative efficiency curve for generator mixins. |
+| `support/SteamConsumption.java` | Shared fivefold steam multiplier and single-block conversion. |
 | `support/PhysicalCircuitItemStackHandler.java` | One real Integrated Circuit mapped to a machine's reserved circuit slot. |
 | `support/ProcessingWireRecipeTransformer.java` | Semantic transformer shared by the Processing Wire receiver mixin. |
 
@@ -176,6 +177,11 @@ All paths below start at
 | `mixins/late/MixinMTEPlasmaGenerator.java` | `MTEPlasmaGenerator` | Efficiency. |
 | `mixins/late/MixinSteamOverclockDescriber.java` | `SteamOverclockDescriber` | EU-to-steam conversion. |
 | `mixins/late/MixinSteamInputHatch.java` | `GregtechCustomHatches` | Steam Input Hatch capacity. |
+| `mixins/late/MixinSteamMachineTank.java` | `MTEBasicMachineBronze` | Steam tank amount and capacity. |
+| `mixins/late/MixinSteamMachineDisplay.java` | `MTEBasicMachine` | Single-block steam usage in WAILA. |
+| `mixins/late/MixinSteamMachineGui.java` | `MTEBasicMachineBronzeGui` | ModularUI 2 steam gauge values. |
+| `mixins/late/MixinSteamMultiBlock.java` | `MTESteamMultiBlockBase` | Steam consumption and WAILA, excluding the Water Pump. |
+| `mixins/late/MixinSteamMultiBlockWailaData.java` | `MTEExtendedPowerMultiBlockBase` | Integer-accurate WAILA data for steam multiblocks. |
 | `mixins/late/MixinMTEDieselGenerator.java` | `MTEDieselGenerator` | Efficiency cap. |
 | `mixins/late/MixinMTEGasTurbine.java` | `MTEGasTurbine` | Efficiency cap. |
 | `mixins/late/MixinMTELargeChemicalReactor.java` | `MTELargeChemicalReactor` | 3/4 overclock and tooltip. |

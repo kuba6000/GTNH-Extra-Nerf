@@ -48,6 +48,16 @@ public final class MixinRecipeIntegrationTests {
     @Mod.EventHandler
     public void verifyP2P(FMLServerStartingEvent event) {
         try {
+            SteamConsumptionIntegrationTests.verifyDisplays(DimensionManager.getWorld(0));
+            GTNHExtraNerf.LOG.info("Extra Nerf Steam display integration tests PASSED");
+            SteamConsumptionIntegrationTests.verifyGrinder(DimensionManager.getWorld(0));
+            GTNHExtraNerf.LOG.info("Extra Nerf Steam Grinder consumption integration tests PASSED");
+            SteamConsumptionIntegrationTests.verifyBoiler(DimensionManager.getWorld(0));
+            GTNHExtraNerf.LOG.info("Extra Nerf Steam boiler production integration tests PASSED");
+            SteamConsumptionIntegrationTests.verifySingleMachine(DimensionManager.getWorld(0));
+            GTNHExtraNerf.LOG.info("Extra Nerf single Steam machine consumption integration tests PASSED");
+            SteamConsumptionIntegrationTests.verifyPump(DimensionManager.getWorld(0));
+            GTNHExtraNerf.LOG.info("Extra Nerf Steam Water Pump integration tests PASSED");
             HatchCertificationIntegrationTests.verify(DimensionManager.getWorld(0));
             GTNHExtraNerf.LOG.info("Extra Nerf hatch certification integration tests PASSED");
             CasingFinishingIntegrationTests.verifyHandChisel(DimensionManager.getWorld(0));
