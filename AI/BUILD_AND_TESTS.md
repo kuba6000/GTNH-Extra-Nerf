@@ -77,7 +77,7 @@ configuration after preparing the runtime.
 
 ## Root test suite
 
-The current suite has 41 passing Java tests and no disabled tests:
+The Java test suite covers:
 
 - `StartupErrorRequestTest`: dev-only preview gating, retained failure cause,
   and support version sourced from the configured constant;
@@ -98,7 +98,7 @@ The current suite has 41 passing Java tests and no disabled tests:
 - `GeneratorEfficiencyTest` and `PhysicalCircuitItemStackHandlerTest`:
   generator/inventory behavior.
 
-Three Python server-harness tests validate readiness, shutdown and failure
+Python server-harness tests validate readiness, shutdown and failure
 evidence. Run `python -m unittest discover -s .github/scripts -p "test_*.py"`.
 
 The recipe tests use public interfaces with in-memory stores. Matcher tests

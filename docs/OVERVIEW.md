@@ -14,6 +14,7 @@ The current project contains:
 
 - reduced efficiency for steam, gas, diesel, plasma and semi-fluid power;
 - a harsher steam conversion ratio;
+- a 640,000 L Steam Input Hatch buffer for steam multiblocks;
 - shorter nuclear fuel-rod lifetime;
 - lower Naquadah small-ore generation;
 - restricted early Steel production and reworked MV blast-furnace routes;

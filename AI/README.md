@@ -51,14 +51,10 @@ dependencies, lifecycle, patch cardinality, or file ownership changes.
 - Generated files, build outputs, and runtime directories are not source of
   truth.
 
-## Current scale
+## Implementation
 
-- 188 production Java files.
-- 41 Java unit test files and 27 opt-in integration test files.
-- 50 mixin classes (6 early and 44 late) registered through 40 `Mixin` enum
-  entries.
-- 11 load-complete recipe modules using an ordered modifier registry.
-- A pinned GTNHGradle fork with approximately 8,000 production Java lines.
+Mixins are registered through the `Mixin` enum. Load-complete recipe modules
+use an ordered modifier registry. The build uses a pinned GTNHGradle fork.
 
 No gameplay configuration switches currently exist. `Config` only opens and
 saves the Forge configuration file if Forge reports a change.

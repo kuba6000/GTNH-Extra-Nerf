@@ -94,8 +94,8 @@ fence structures and generated energy through the public post-tick API.
 
 ## Telemetry, team tracking and update check
 
-All paths start at `src/main/java/pl/kuba6000/gtnhextranerf/`. The three features are independent of each other;
-the mod only sends reports and reads one version file. See `docs/TELEMETRY.md`, `docs/TEAM_TRACKING.md` and
+All paths start at `src/main/java/pl/kuba6000/gtnhextranerf/`. These features are independent.
+The mod only sends reports and reads one version file. See `docs/TELEMETRY.md`, `docs/TEAM_TRACKING.md` and
 `docs/UPDATE_CHECK.md`.
 
 | File | Responsibility |
@@ -152,9 +152,9 @@ All paths below start at
 | --- | --- |
 | `../ExtraNerfCore.java` | FML core plugin and early mixin selector. |
 | `../ExtraNerfLateMixinLoader.java` | GTNH late-mixin selector. |
-| `Mixin.java` | `MixinBuilder` registry of all 40 mixin entries (50 classes) and their phase/mod selection. |
+| `Mixin.java` | `MixinBuilder` registry and phase/mod selection. |
 | `TargetedMod.java` | Mod identity model used by `Mixin`; some declared entries are currently unused. |
-| `support/GeneratorEfficiency.java` | Shared tier-relative efficiency curve for all five generator mixins. |
+| `support/GeneratorEfficiency.java` | Shared tier-relative efficiency curve for generator mixins. |
 | `support/PhysicalCircuitItemStackHandler.java` | One real Integrated Circuit mapped to a machine's reserved circuit slot. |
 | `support/ProcessingWireRecipeTransformer.java` | Semantic transformer shared by the Processing Wire receiver mixin. |
 
@@ -175,6 +175,7 @@ All paths below start at
 | `mixins/late/MixinMTESteamTurbine.java` | `MTESteamTurbine` | Efficiency and description. |
 | `mixins/late/MixinMTEPlasmaGenerator.java` | `MTEPlasmaGenerator` | Efficiency. |
 | `mixins/late/MixinSteamOverclockDescriber.java` | `SteamOverclockDescriber` | EU-to-steam conversion. |
+| `mixins/late/MixinSteamInputHatch.java` | `GregtechCustomHatches` | Steam Input Hatch capacity. |
 | `mixins/late/MixinMTEDieselGenerator.java` | `MTEDieselGenerator` | Efficiency cap. |
 | `mixins/late/MixinMTEGasTurbine.java` | `MTEGasTurbine` | Efficiency cap. |
 | `mixins/late/MixinMTELargeChemicalReactor.java` | `MTELargeChemicalReactor` | 3/4 overclock and tooltip. |

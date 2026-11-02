@@ -46,7 +46,7 @@ flowchart LR
     Slime --> CraftPatch
     Early["ExtraNerfCore"] --> Registry["Mixin enum"]
     Late["ExtraNerfLateMixinLoader"] --> Registry
-    Mixins["50 mixin classes"] --> Scopes["AuditScope"]
+    Mixins["Mixin classes"] --> Scopes["AuditScope"]
     Scopes --> Audit
     Loader --> RecipeRegistry["RecipeRegistry"]
     RecipeRegistry --> Transaction["RecipeTransaction"]
@@ -101,15 +101,15 @@ The CI harness searches logs for the exact prefix
 | Owner | Shared helper | Upstream maps/systems | Failure boundary |
 | --- | --- | --- | --- |
 | `CraftingNerf` | `CraftingRecipes` | Minecraft `CraftingManager`, Dreamcraft universal recipes, `GTShapedRecipe` | One typed scope per logical crafting nerf |
-| `AluminiumNerf` | `MachineRecipes` | chemical bath, mixer, centrifuge maps | Three typed scopes |
-| `BlastFurnaceNerf` | `MachineRecipes` | primitive blast furnace and EBF maps, Railcraft Coke, BartWorks gases, optional TConstruct item | Six typed scopes |
-| `ChemicalAndMiscNerf` | `MachineRecipes` and `CraftingRecipes` | chemical reactor, LCR, cutter, distillery, centrifuge, electrolyzer, chemical bath, blast furnace | Twelve typed scopes |
-| `CoreModRecipeNerf` | `MachineRecipes` | assembler, circuit assembler, chemical maps, mixer, centrifuge, vacuum furnace | Eighteen typed scopes |
-| `Ae2RecipeNerf` | `MachineRecipes`, `CraftingRecipes`, `Ae2RecipeIngredients` | AE2-owned outputs in GT maps; Controller and Blank Pattern crafting | Three load-complete scopes; shared crafting material rule audited during registration |
+| `AluminiumNerf` | `MachineRecipes` | chemical bath, mixer, centrifuge maps | Typed scopes |
+| `BlastFurnaceNerf` | `MachineRecipes` | primitive blast furnace and EBF maps, Railcraft Coke, BartWorks gases, optional TConstruct item | Typed scopes |
+| `ChemicalAndMiscNerf` | `MachineRecipes` and `CraftingRecipes` | chemical reactor, LCR, cutter, distillery, centrifuge, electrolyzer, chemical bath, blast furnace | Typed scopes |
+| `CoreModRecipeNerf` | `MachineRecipes` | assembler, circuit assembler, chemical maps, mixer, centrifuge, vacuum furnace | Typed scopes |
+| `Ae2RecipeNerf` | `MachineRecipes`, `CraftingRecipes`, `Ae2RecipeIngredients` | AE2-owned outputs in GT maps; Controller and Blank Pattern crafting | Load-complete scopes; shared crafting material rule audited during registration |
 | `Ae2AssemblyLineRecipes` | Native GT Assembly Line builder | Controller production, 64k cell research, Scanner and NEI entries | One audited addition after recipe modifications |
-| `SlimeRecipeNerf` | `MachineRecipes` and `CraftingRecipes` | extractor, centrifuge, multiblock centrifuge, assembler and Minecraft crafting | Seven typed scopes with TConstruct/GT++/EMT/NHCore activation contracts |
+| `SlimeRecipeNerf` | `MachineRecipes` and `CraftingRecipes` | extractor, centrifuge, multiblock centrifuge, assembler and Minecraft crafting | Typed scopes with TConstruct/GT++/EMT/NHCore activation contracts |
 
-`RecipeLoader` registers all seven `RecipeModule` implementations in a
+`RecipeLoader` registers `RecipeModule` implementations in a
 `RecipeRegistry`. Modules register `RecipeModifier` callbacks, and the registry
 selects active `AuditScope`s and opens one transaction per callback. It owns
 audit recording and development failure handling.
@@ -163,6 +163,7 @@ the following together:
 | `MixinMTESteamTurbine` | GregTech | `@ModifyReturnValue` | shared `GeneratorEfficiency` curve represented as steam consumption |
 | `MixinMTEPlasmaGenerator` | GregTech | `@ModifyReturnValue` | shared `GeneratorEfficiency` curve starting at EV |
 | `MixinSteamOverclockDescriber` | GregTech | private static `@ModifyConstant` | long conversion multiplier |
+| `MixinSteamInputHatch` | GT++ | `@ModifyConstant` | 64,000 L Steam Hatch registration capacity |
 | `MixinMTEDieselGenerator` | GregTech | `@ModifyReturnValue` | shared `GeneratorEfficiency` curve starting at LV |
 | `MixinMTEGasTurbine` | GregTech | `@ModifyReturnValue` | shared `GeneratorEfficiency` curve starting at LV |
 | `MixinMTELargeChemicalReactor` | GregTech | `@ModifyReturnValue` + redirect | returned processing logic and tooltip call |

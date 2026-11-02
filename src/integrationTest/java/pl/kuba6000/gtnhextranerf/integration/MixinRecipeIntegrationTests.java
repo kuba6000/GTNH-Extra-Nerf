@@ -14,6 +14,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.MetaTileEntityIDs;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
@@ -24,6 +25,7 @@ import gregtech.api.util.GTRecipeBuilder;
 import gregtech.api.util.GTUtility;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.core.material.MaterialsElements;
+import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.base.MTEHatchCustomFluidBase;
 import pl.kuba6000.gtnhextranerf.GTNHExtraNerf;
 import pl.kuba6000.gtnhextranerf.audit.AuditDefinition;
 import pl.kuba6000.gtnhextranerf.audit.AuditExpectation;
@@ -103,6 +105,11 @@ public final class MixinRecipeIntegrationTests {
     }
 
     private void verifyRecipes() {
+        MTEHatchCustomFluidBase steamHatch = (MTEHatchCustomFluidBase) GregTechAPI.METATILEENTITIES[MetaTileEntityIDs.Hatch_Input_Steam.ID];
+        check(steamHatch.getCapacity() == 640000, "Steam Input Hatch capacity must be 640000 L");
+        check(
+            ((MTEHatchCustomFluidBase) steamHatch.newMetaEntity(null)).getCapacity() == 640000,
+            "new Steam Input Hatches must retain the registered capacity");
         CasingFinishingIntegrationTests.verify();
         MaterialIntegrationTests.verify();
         GTNHExtraNerf.LOG.info("Extra Nerf material integration tests PASSED");

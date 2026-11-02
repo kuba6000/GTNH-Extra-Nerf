@@ -10,7 +10,7 @@ the Proxy recipe is edited. The Forge integration fixture uses the same timing
 so it inspects the final edited registries.
 
 The recipe layer separates balance rules, execution and registry access. All
-six load-complete modules implement `RecipeModule` and register their changes
+load-complete modules implement `RecipeModule` and register their changes
 with `RecipeRegistry`. A `RecipeModifier` receives a `RecipeContext` and plans
 edits through its machine or crafting API. Registration itself does not resolve
 ingredients or change recipes.

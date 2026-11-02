@@ -7,9 +7,9 @@ GTNH Extra Nerf is packaged as both a normal Forge mod and an FML coremod.
 1. The coremod loader selects three early crafting accessors and two early
    gameplay mixins for ore and nuclear-item construction, plus a client-only
    hook for the Forge startup error screen.
-2. GTNH Mixins selects sixteen late mixins for generators, machines and recipe
+2. GTNH Mixins selects late mixins for generators, machines and recipe
    registration.
-3. At Forge `loadComplete`, six modules register ordered recipe modifiers. Each
+3. At Forge `loadComplete`, modules register ordered recipe modifiers. Each
    active modifier stages its crafting/machine changes in one transaction, then
    commits through registry adapters and records its audit counts.
 4. A central audit verifies every expected mixin and semantic patch.

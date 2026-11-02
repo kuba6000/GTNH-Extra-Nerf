@@ -235,7 +235,11 @@ The same mixin redirects every `ItemRadioactiveCellIC` construction:
 
 ## Late machine and power mixins
 
-All five generator mixins use `GeneratorEfficiency.forTier(machineTier,
+`MixinSteamInputHatch` changes the Steam Input Hatch capacity from 64,000 L to
+640,000 L in `GregtechCustomHatches.run1`. The larger buffer reduces power
+failures on steam multiblocks with high per-tick demand.
+
+The generator mixins use `GeneratorEfficiency.forTier(machineTier,
 firstTier)`. The shared curve yields 20%, 30% and 40% for the first three
 available tiers, then adds 5 percentage points for every later tier.
 

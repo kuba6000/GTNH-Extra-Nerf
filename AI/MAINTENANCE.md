@@ -84,7 +84,7 @@ Treat a dependency update as a port, not a routine version bump.
 1. Update one upstream dependency at a time.
 2. Compile and inspect all mixin annotation-processor diagnostics.
 3. Compare each target method used by redirects, modifies and overwrites.
-4. Compare every exact recipe signature in the six recipe modules.
+4. Compare every exact recipe signature in the recipe modules.
 5. Update expected cardinalities only after explaining why the upstream count
    changed.
 6. Run `test`, `check`, and a full-pack server.
@@ -142,7 +142,6 @@ For every gameplay change:
 - update exact values and conditions in `AI/PATCH_CATALOG.md`;
 - update the player-facing entry in `docs/NERFS.md`;
 - update overview documents if a feature category is added/removed;
-- update `README.md` totals when mixin/module counts change;
 - update `CHANGES.md` summary;
 - remove documentation for behavior deleted from source;
 - distinguish nerfs, buffs, removals and requirement changes accurately.

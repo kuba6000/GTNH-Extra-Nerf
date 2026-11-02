@@ -392,6 +392,11 @@ See [`COMPONENTS.md`](COMPONENTS.md) for the component registry and appearance.
 
 ## Power generation and steam
 
+### Steam Input Hatch
+
+The Steam Input Hatch holds 640,000 L instead of 64,000 L. The larger buffer
+reduces power failures on steam multiblocks with high per-tick demand.
+
 ### Steam Turbine
 
 - Efficiency is 20% at LV, 30% at MV and 40% at HV. Each tier above HV

@@ -12,6 +12,11 @@ import com.gtnewhorizon.gtnhmixins.builders.MixinBuilder;
 
 public enum Mixin implements IMixins {
 
+    SteamInputHatch(new MixinBuilder().addCommonMixins("MixinSteamInputHatch")
+        .addRequiredMod(GT5U)
+        .addExcludedMod(GT6)
+        .setPhase(LATE)),
+
     AssemblyLineDimension(new MixinBuilder().addCommonMixins("MixinAssemblyLineDimension")
         .addRequiredMod(GT5U)
         .addRequiredMod(TargetedMod.APPLIED_ENERGISTICS_2)

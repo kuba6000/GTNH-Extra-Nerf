@@ -5,6 +5,8 @@ Horizons on Minecraft 1.7.10. The mod is built for the pinned full GTNH environm
 
 It just nerfs stuff.
 
+Steam Input Hatches hold 640,000 L to reduce power failures on high-demand recipes.
+
 Supported pack release: **GT New Horizons 2.9.0** (see
 [compatibility](docs/COMPATIBILITY.md)). Release JARs are published on the
 [GitHub releases page](https://github.com/kuba6000/GTNH-Extra-Nerf/releases).

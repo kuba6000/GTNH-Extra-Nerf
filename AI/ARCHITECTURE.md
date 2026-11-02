@@ -36,15 +36,15 @@ audit gaps so reduced local runtimes can remain usable.
 flowchart TD
     A["Forge coremod discovery"] --> B["ExtraNerfCore"]
     B --> C["MixinBuilder early selection"]
-    C --> D["6 early mixins"]
+    C --> D["Early mixins"]
     E["GTNH late-mixin discovery"] --> F["ExtraNerfLateMixinLoader"]
     F --> G["MixinBuilder late selection"]
-    G --> H["44 late mixins"]
+    G --> H["Late mixins"]
     D --> I["Semantic AuditScope counters"]
     H --> I
     K["Forge FMLLoadCompleteEvent"] --> L["CommonProxy.loadComplete"]
     L --> M["RecipeLoader.run"]
-    M --> N["11 recipe modules"]
+    M --> N["Recipe modules"]
     N --> O["Exact recipe mutations inside AuditScope"]
     I --> P["AuditSession.finish"]
     O --> P
@@ -57,7 +57,7 @@ flowchart TD
 ### Forge mod lifecycle
 
 `GTNHExtraNerf` owns the Forge event handlers and delegates all of them to a
-sided proxy. Only two handlers currently do work:
+sided proxy. Lifecycle handlers include:
 
 - `preInit` calls `Config.synchronizeConfiguration`.
 - `loadComplete` runs recipe patches, finalizes `AuditSession`, and releases
@@ -70,7 +70,7 @@ are currently empty.
 
 `ExtraNerfCore` is both an FML core plugin and an `IEarlyMixinLoader`. The
 root JAR manifest points FML at this class. It returns
-`mixins.gtnhextranerf.early.json` and selects the six entries that provide
+`mixins.gtnhextranerf.early.json` and selects entries that provide
 access required before the normal mod lifecycle:
 
 - descriptor-safe access to the Minecraft crafting recipe list, `IRecipe`
@@ -107,7 +107,7 @@ constructing a value or registering a recipe. Techniques include:
 
 No mixin currently overwrites a complete upstream method.
 
-The five generator mixins delegate their tier-relative percentage policy to
+The generator mixins delegate their tier-relative percentage policy to
 `GeneratorEfficiency`. Steam Turbine converts the shared percentage back into
 the inverse consumption value expected by its upstream `getEfficiency()`
 contract.
@@ -118,16 +118,8 @@ targets still fail through Mixin's own required-injection checks.
 
 ### Load-complete recipe mutation
 
-`RecipeLoader` runs six modules in this order:
-
-1. `CraftingNerf`;
-2. `AluminiumNerf`;
-3. `BlastFurnaceNerf`;
-4. `ChemicalAndMiscNerf`;
-5. `CoreModRecipeNerf`;
-6. `SlimeRecipeNerf`.
-
-The six modules implement `RecipeModule` and register ordered `RecipeModifier`
+`RecipeLoader` registers the recipe modules in execution order. The modules
+implement `RecipeModule` and register ordered `RecipeModifier`
 callbacks with `RecipeRegistry`. Each active `AuditScope` owns one modifier.
 Activation, audit capture and development failure handling are centralized in
 the registry. A `RecipeContext` provides machine/crafting adapters backed by one
@@ -220,7 +212,7 @@ tasks. The root project adds only:
 - CI-specific server configuration.
 
 The distributable JAR is a combined FML mod/coremod with the early loader,
-Mixin tweaker, three mixin JSON files, refmap, mod metadata, and reobfuscated
+Mixin tweaker, mixin JSON files, refmap, mod metadata, and reobfuscated
 production classes.
 
 Client fatal startup errors are deferred by `ClientProxy` and raised after

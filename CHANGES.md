@@ -130,6 +130,8 @@ catalog, including exact values, conditions and unchanged fields, is
 - Plasma Generator progression restarts at 20% on EV, then uses 30% on IV,
   40% on LuV and gains 5 percentage points per later tier.
 - Steam conversion changes to 5 units of steam per EU.
+- Steam Input Hatch capacity increases from 64,000 L to 640,000 L to reduce
+  power failures on steam multiblocks with high per-tick demand.
 - Benzene and Phenol fuel values are divided by four.
 - Large Chemical Reactor overclocking changes to 3/4.
 - Machines below HV use a physical Integrated Circuit slot; ghost selection
