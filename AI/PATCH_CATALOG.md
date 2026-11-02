@@ -526,7 +526,7 @@ The complete Ruby Juice scope requires 18 removals.
 
 - Preserves the existing Iron, Niobium, Tantalum, Manganese and Magnesium
   outputs and chances.
-- Adds 1 Gallium dust with 10% chance.
+- Adds no Gallium output.
 - Duration changes from 2 seconds to 10 seconds.
 - EU/t remains MV recipe voltage.
 - Both the ordinary and industrial centrifuge maps are changed, with two
@@ -753,9 +753,9 @@ two modifications. A missing, duplicate or changed source recipe fails validatio
 
 ### Sphalerite electrolyzer
 
-`misc.sphalerite-electrolyzer` changes the Gallium dust chance from 9.17% to
-10% in both ordinary and industrial electrolyzer maps. This specific change is
-a small buff, despite living in a nerf mod.
+No Extra Nerf patch modifies the Sphalerite electrolysis recipe. On the pinned
+GT baseline, both ordinary and industrial maps retain the native 9.17% Gallium
+chance.
 
 ### Quantum Star bath
 

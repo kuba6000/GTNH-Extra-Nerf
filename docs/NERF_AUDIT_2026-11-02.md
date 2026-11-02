@@ -7,7 +7,8 @@ nie są opisem bieżących wyników po poprawkach. Decyzje i zmiany z 3 listopad
 
 | Ustalenie | Stan |
 | --- | --- |
-| Ruby Juice, Samarium, Endstone, Raw Neutronium, Indium Comb oraz uzyski Ilmenite Slag i Sphalerite w maszynach przemysłowych | Poprawione w `1419ceb`; obie mapy są sprawdzane przez testy receptur. |
+| Ruby Juice, Samarium, Endstone, Raw Neutronium oraz Indium Comb w maszynach przemysłowych | Poprawione w `1419ceb`; obie mapy są sprawdzane przez testy receptur. |
+| Ilmenite Slag i Sphalerite w maszynach przemysłowych | Czas Ilmenite Slag pozostaje wydłużony w obu wirówkach. Późniejszą decyzją użytkownika usunięto oba buffy Gallium: żużel go nie dodaje, a Sphalerite zachowuje natywną szansę GT. |
 | Stare receptury stali i aluminium w Alloy Blast Smelterze | Poprawione w `0c17277`, także dla aluminium z TConstruct. |
 | Utrata fizycznego Integrated Circuit przy niszczeniu maszyny | Poprawiona w `0fb72d3`, również dla natywnej ścieżki dropu przy wybuchu. |
 | Najwyższa warstwa świata dla Lightning Rod | Poprawiona w `5656f6a`. |

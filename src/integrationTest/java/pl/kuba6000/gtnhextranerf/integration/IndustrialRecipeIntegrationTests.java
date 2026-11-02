@@ -1,5 +1,7 @@
 package pl.kuba6000.gtnhextranerf.integration;
 
+import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+
 import java.util.Arrays;
 
 import net.minecraft.item.ItemStack;
@@ -24,7 +26,42 @@ final class IndustrialRecipeIntegrationTests {
 
     static void verify() {
         verifyRubyJuiceRemoved();
+        verifyNativeGalliumYields();
         verifyIndustrialRecipesMatchTheirNerfedCounterparts();
+    }
+
+    private static void verifyNativeGalliumYields() {
+        ItemStack gallium = Materials.Gallium.getDust(1);
+        for (RecipeMap<?> map : new RecipeMap<?>[] { RecipeMaps.centrifugeRecipes,
+            RecipeMaps.centrifugeNonCellRecipes }) {
+            GTRecipe recipe = map.findRecipeQuery()
+                .items(Materials.IlmeniteSlag.getDust(1))
+                .find();
+            check(recipe != null, "Ilmenite Slag recipe is missing from " + map.unlocalizedName);
+            check(
+                Arrays.stream(recipe.mOutputs)
+                    .noneMatch(gallium::isItemEqual),
+                "Ilmenite Slag still produces added Gallium in " + map.unlocalizedName);
+            check(recipe.mDuration == 10 * SECONDS, "Ilmenite Slag processing time changed in " + map.unlocalizedName);
+        }
+        for (RecipeMap<?> map : new RecipeMap<?>[] { RecipeMaps.electrolyzerRecipes,
+            RecipeMaps.electrolyzerNonCellRecipes }) {
+            GTRecipe recipe = map.findRecipeQuery()
+                .items(Materials.Sphalerite.getDust(2))
+                .find();
+            check(recipe != null, "Sphalerite recipe is missing from " + map.unlocalizedName);
+            int galliumSlot = -1, galliumOutputs = 0;
+            for (int i = 0; i < recipe.mOutputs.length; i++) {
+                if (gallium.isItemEqual(recipe.mOutputs[i])) {
+                    galliumSlot = i;
+                    galliumOutputs++;
+                }
+            }
+            check(
+                galliumOutputs == 1 && recipe.mOutputs[galliumSlot].stackSize == 1
+                    && recipe.getOutputChance(galliumSlot) == 917,
+                "Sphalerite does not use the original Gallium chance in " + map.unlocalizedName);
+        }
     }
 
     private static void verifyIndustrialRecipesMatchTheirNerfedCounterparts() {

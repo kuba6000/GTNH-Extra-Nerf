@@ -122,7 +122,6 @@ public final class AluminiumNerf implements RecipeModule {
                         .eut(TierEU.RECIPE_MV)
                         .build(),
                     RecipeChange.builder()
-                        .appendItemOutput(Materials.Gallium.getDust(1), 1000)
                         .duration(10 * SECONDS)
                         .build());
         }

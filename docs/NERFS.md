@@ -750,10 +750,10 @@ The recipe remains HV at 1,700 K.
 
 ### Ilmenite Slag centrifuge
 
-- Adds one Gallium dust with a 10% chance.
 - Duration increases from 2 to 10 seconds.
 - Existing Iron, Niobium, Tantalum, Manganese and Magnesium outputs keep their
   original chances.
+- No Gallium output is added.
 - The same changes apply to the Industrial Centrifuge.
 
 ### Removed Ruby Juice chain
@@ -874,10 +874,9 @@ centrifuge and the industrial centrifuge recipe map. The base duration remains
 
 ### Sphalerite electrolyzer
 
-- Gallium dust chance increases slightly from 9.17% to 10%.
-
-This is an intentional small buff inside the wider nerf package, including
-the Industrial Electrolyzer.
+Extra Nerf leaves the Sphalerite recipe unchanged. On the pinned GT version,
+the ordinary and industrial electrolyzer recipes retain the native 9.17%
+Gallium chance.
 
 ### Tellurium from crushed Lead
 

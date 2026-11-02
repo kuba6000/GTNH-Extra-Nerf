@@ -69,9 +69,6 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
         registry.register(
             AuditScope.MODIFY_AMERICIUM_PLASMA_FUSION_IGNITION,
             ChemicalAndMiscNerf::modifyAmericiumPlasmaFusion);
-        registry.register(
-            AuditScope.MODIFY_SPHALERITE_ELECTROLYZER_RECIPE,
-            ChemicalAndMiscNerf::modifySphaleriteElectrolyzer);
         registry.register(AuditScope.MODIFY_QUANTUM_STAR_RECIPE, ChemicalAndMiscNerf::modifyNetherStarRecipe);
         registry.register(AuditScope.MODIFY_TELLURIUM_BLAST_FURNACE_CHANCE, ChemicalAndMiscNerf::modifyTelluriumChance);
         registry.register(AuditScope.MODIFY_PLATINUM_SLUDGE_RECIPES, ChemicalAndMiscNerf::modifyPlatinumSludge);
@@ -450,28 +447,6 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
             .modifyOne(original, change);
         recipes.machine(centrifugeNonCellRecipes)
             .modifyOne(original, change);
-    }
-
-    private static void modifySphaleriteElectrolyzer(RecipeContext recipes) {
-        for (RecipeMap<?> map : new RecipeMap<?>[] { electrolyzerRecipes, electrolyzerNonCellRecipes }) {
-            recipes.machine(map)
-                .modifyOne(
-                    RecipeMatch.builder()
-                        .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sphalerite, 2))
-                        .itemOutputs(
-                            GTOreDictUnificator.get(OrePrefixes.dust, Materials.Zinc, 1),
-                            GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sulfur, 1),
-                            GTOreDictUnificator.get(OrePrefixes.dust, Materials.Gallium, 1))
-                        .fluidInputs()
-                        .fluidOutputs()
-                        .duration(10 * SECONDS)
-                        .eut(TierEU.RECIPE_LV)
-                        .outputChances(10000, 10000, 917)
-                        .build(),
-                    RecipeChange.builder()
-                        .outputChance(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Gallium, 1), 1000)
-                        .build());
-        }
     }
 
     private static void modifyNetherStarRecipe(RecipeContext recipes) {

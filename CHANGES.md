@@ -10,8 +10,7 @@ catalog, including exact values, conditions and unchanged fields, is
   match the corresponding EBF changes.
 - Applied the Ruby Juice removals and the Endstone, Samarium, Raw Neutronium
   and Indium Comb changes to the corresponding industrial machine maps.
-- Applied the Ilmenite Slag and Sphalerite Gallium changes to their industrial
-  machines as well.
+- Applied the longer Ilmenite Slag centrifuging time to its industrial recipe.
 
 ## Startup
 
@@ -225,7 +224,7 @@ catalog, including exact values, conditions and unchanged fields, is
   seven alternative gas routes, but keeps its no-gas route.
 - Ilmenite chemical baths and the Ruby Juice processing chain are removed.
 - Ilmenite blast-furnace batching doubles and adds Ilmenite Slag.
-- Ilmenite Slag centrifuging adds probabilistic Gallium and takes longer.
+- Ilmenite Slag centrifuging takes longer without adding Gallium.
 - Titanium processing returns less Magnesium Chloride.
 
 ## Chemistry and ore processing
@@ -237,7 +236,6 @@ catalog, including exact values, conditions and unchanged fields, is
 - LV Lubricant distillation consumes twice as much Light, Medium or Heavy Oil
   for the same output.
 - Endstone centrifuging returns less Tungstate and Helium.
-- Sphalerite electrolysis has a small Gallium chance increase to 10%.
 - Quantum Stars require four times as much Radon.
 - Tellurium nugget chance becomes 0.1%.
 - Platinum sludge routes return less Chlorine/Calcium Chloride.
