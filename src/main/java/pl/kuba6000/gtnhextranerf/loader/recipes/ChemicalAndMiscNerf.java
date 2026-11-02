@@ -7,6 +7,7 @@ import static gregtech.api.recipe.RecipeMaps.chemicalBathRecipes;
 import static gregtech.api.recipe.RecipeMaps.chemicalReactorRecipes;
 import static gregtech.api.recipe.RecipeMaps.cutterRecipes;
 import static gregtech.api.recipe.RecipeMaps.distilleryRecipes;
+import static gregtech.api.recipe.RecipeMaps.electrolyzerNonCellRecipes;
 import static gregtech.api.recipe.RecipeMaps.electrolyzerRecipes;
 import static gregtech.api.recipe.RecipeMaps.fusionRecipes;
 import static gregtech.api.recipe.RecipeMaps.mixerNonCellRecipes;
@@ -322,24 +323,26 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
     }
 
     private static void modifyEndstoneCentrifuge(RecipeContext recipes) {
-        recipes.machine(centrifugeRecipes)
-            .modifyOne(
-                RecipeMatch.builder()
-                    .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Endstone, 36))
-                    .itemOutputs(
-                        GTOreDictUnificator.get(OrePrefixes.dust, Materials.Tungstate, 3),
-                        WerkstoffLoader.PTMetallicPowder.get(OrePrefixes.dust, 2),
-                        new ItemStack(Blocks.sand, 36))
-                    .fluidInputs()
-                    .fluidOutputs(Materials.Helium.getGas(4_320))
-                    .duration(9 * MINUTES + 36 * SECONDS)
-                    .eut(20)
-                    .outputChances(3750, 2500, 9000)
-                    .build(),
-                RecipeChange.builder()
-                    .outputChance(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Tungstate, 3), 1000)
-                    .fluidOutputAmount(Materials.Helium.getGas(4_320), 1_500)
-                    .build());
+        for (RecipeMap<?> map : new RecipeMap<?>[] { centrifugeRecipes, centrifugeNonCellRecipes }) {
+            recipes.machine(map)
+                .modifyOne(
+                    RecipeMatch.builder()
+                        .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Endstone, 36))
+                        .itemOutputs(
+                            GTOreDictUnificator.get(OrePrefixes.dust, Materials.Tungstate, 3),
+                            WerkstoffLoader.PTMetallicPowder.get(OrePrefixes.dust, 2),
+                            new ItemStack(Blocks.sand, 36))
+                        .fluidInputs()
+                        .fluidOutputs(Materials.Helium.getGas(4_320))
+                        .duration(9 * MINUTES + 36 * SECONDS)
+                        .eut(20)
+                        .outputChances(3750, 2500, 9000)
+                        .build(),
+                    RecipeChange.builder()
+                        .outputChance(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Tungstate, 3), 1000)
+                        .fluidOutputAmount(Materials.Helium.getGas(4_320), 1_500)
+                        .build());
+        }
     }
 
     private static void modifyAmericiumPlasmaFusion(RecipeContext recipes) {
@@ -450,23 +453,25 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
     }
 
     private static void modifySphaleriteElectrolyzer(RecipeContext recipes) {
-        recipes.machine(electrolyzerRecipes)
-            .modifyOne(
-                RecipeMatch.builder()
-                    .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sphalerite, 2))
-                    .itemOutputs(
-                        GTOreDictUnificator.get(OrePrefixes.dust, Materials.Zinc, 1),
-                        GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sulfur, 1),
-                        GTOreDictUnificator.get(OrePrefixes.dust, Materials.Gallium, 1))
-                    .fluidInputs()
-                    .fluidOutputs()
-                    .duration(10 * SECONDS)
-                    .eut(TierEU.RECIPE_LV)
-                    .outputChances(10000, 10000, 917)
-                    .build(),
-                RecipeChange.builder()
-                    .outputChance(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Gallium, 1), 1000)
-                    .build());
+        for (RecipeMap<?> map : new RecipeMap<?>[] { electrolyzerRecipes, electrolyzerNonCellRecipes }) {
+            recipes.machine(map)
+                .modifyOne(
+                    RecipeMatch.builder()
+                        .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sphalerite, 2))
+                        .itemOutputs(
+                            GTOreDictUnificator.get(OrePrefixes.dust, Materials.Zinc, 1),
+                            GTOreDictUnificator.get(OrePrefixes.dust, Materials.Sulfur, 1),
+                            GTOreDictUnificator.get(OrePrefixes.dust, Materials.Gallium, 1))
+                        .fluidInputs()
+                        .fluidOutputs()
+                        .duration(10 * SECONDS)
+                        .eut(TierEU.RECIPE_LV)
+                        .outputChances(10000, 10000, 917)
+                        .build(),
+                    RecipeChange.builder()
+                        .outputChance(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Gallium, 1), 1000)
+                        .build());
+        }
     }
 
     private static void modifyNetherStarRecipe(RecipeContext recipes) {
@@ -538,62 +543,66 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
     }
 
     private static void modifySamariumRecipes(RecipeContext recipes) {
-        recipes.machine(centrifugeRecipes)
-            .modifyOne(
-                RecipeMatch.builder()
-                    .itemInputs(WerkstoffMaterialPool.DephosphatedSamariumConcentrate.get(OrePrefixes.dust, 6))
-                    .itemOutputs(Materials.Samarium.getDust(1), WerkstoffLoader.Thorianit.get(OrePrefixes.dust, 2))
-                    .fluidInputs()
-                    .fluidOutputs()
-                    .duration(10 * SECONDS)
-                    .eut(TierEU.RECIPE_EV)
-                    .outputChances(9000, 8000)
-                    .build(),
-                RecipeChange.builder()
-                    .outputChance(Materials.Samarium.getDust(1), 500)
-                    .build());
+        for (RecipeMap<?> map : new RecipeMap<?>[] { centrifugeRecipes, centrifugeNonCellRecipes }) {
+            recipes.machine(map)
+                .modifyOne(
+                    RecipeMatch.builder()
+                        .itemInputs(WerkstoffMaterialPool.DephosphatedSamariumConcentrate.get(OrePrefixes.dust, 6))
+                        .itemOutputs(Materials.Samarium.getDust(1), WerkstoffLoader.Thorianit.get(OrePrefixes.dust, 2))
+                        .fluidInputs()
+                        .fluidOutputs()
+                        .duration(10 * SECONDS)
+                        .eut(TierEU.RECIPE_EV)
+                        .outputChances(9000, 8000)
+                        .build(),
+                    RecipeChange.builder()
+                        .outputChance(Materials.Samarium.getDust(1), 500)
+                        .build());
+        }
 
-        recipes.machine(electrolyzerRecipes)
-            .modifyOne(
-                RecipeMatch.builder()
-                    .itemInputs(
-                        WerkstoffMaterialPool.SamariumChlorideSodiumChlorideBlend.get(OrePrefixes.dust, 6),
-                        GTUtility.getIntegratedCircuit(1))
-                    .itemOutputs(
-                        Materials.Samarium.getDust(1),
-                        Materials.Sodium.getDust(1),
-                        WerkstoffMaterialPool.RarestEarthResidue.get(OrePrefixes.dustTiny, 2))
-                    .fluidInputs()
-                    .fluidOutputs(Materials.Chlorine.getGas(4_000))
-                    .duration(1 * SECONDS)
-                    .eut(TierEU.RECIPE_IV)
-                    .build(),
-                RecipeChange.builder()
-                    .outputChance(Materials.Samarium.getDust(1), 1000)
-                    .outputChance(Materials.Sodium.getDust(1), 10000)
-                    .outputChance(WerkstoffMaterialPool.RarestEarthResidue.get(OrePrefixes.dustTiny, 2), 10000)
-                    .build());
+        for (RecipeMap<?> map : new RecipeMap<?>[] { electrolyzerRecipes, electrolyzerNonCellRecipes }) {
+            recipes.machine(map)
+                .modifyOne(
+                    RecipeMatch.builder()
+                        .itemInputs(
+                            WerkstoffMaterialPool.SamariumChlorideSodiumChlorideBlend.get(OrePrefixes.dust, 6),
+                            GTUtility.getIntegratedCircuit(1))
+                        .itemOutputs(
+                            Materials.Samarium.getDust(1),
+                            Materials.Sodium.getDust(1),
+                            WerkstoffMaterialPool.RarestEarthResidue.get(OrePrefixes.dustTiny, 2))
+                        .fluidInputs()
+                        .fluidOutputs(Materials.Chlorine.getGas(4_000))
+                        .duration(1 * SECONDS)
+                        .eut(TierEU.RECIPE_IV)
+                        .build(),
+                    RecipeChange.builder()
+                        .outputChance(Materials.Samarium.getDust(1), 1000)
+                        .outputChance(Materials.Sodium.getDust(1), 10000)
+                        .outputChance(WerkstoffMaterialPool.RarestEarthResidue.get(OrePrefixes.dustTiny, 2), 10000)
+                        .build());
 
-        recipes.machine(electrolyzerRecipes)
-            .modifyOne(
-                RecipeMatch.builder()
-                    .itemInputs(
-                        WerkstoffMaterialPool.SamariumChlorideSodiumChlorideBlend.get(OrePrefixes.dust, 54),
-                        GTUtility.getIntegratedCircuit(9))
-                    .itemOutputs(
-                        Materials.Samarium.getDust(9),
-                        Materials.Sodium.getDust(9),
-                        WerkstoffMaterialPool.RarestEarthResidue.get(OrePrefixes.dust, 2))
-                    .fluidInputs()
-                    .fluidOutputs(Materials.Chlorine.getGas(36_000))
-                    .duration(2 * SECONDS)
-                    .eut(TierEU.RECIPE_LuV)
-                    .build(),
-                RecipeChange.builder()
-                    .outputChance(Materials.Samarium.getDust(9), 1000)
-                    .outputChance(Materials.Sodium.getDust(9), 10000)
-                    .outputChance(WerkstoffMaterialPool.RarestEarthResidue.get(OrePrefixes.dust, 2), 10000)
-                    .build());
+            recipes.machine(map)
+                .modifyOne(
+                    RecipeMatch.builder()
+                        .itemInputs(
+                            WerkstoffMaterialPool.SamariumChlorideSodiumChlorideBlend.get(OrePrefixes.dust, 54),
+                            GTUtility.getIntegratedCircuit(9))
+                        .itemOutputs(
+                            Materials.Samarium.getDust(9),
+                            Materials.Sodium.getDust(9),
+                            WerkstoffMaterialPool.RarestEarthResidue.get(OrePrefixes.dust, 2))
+                        .fluidInputs()
+                        .fluidOutputs(Materials.Chlorine.getGas(36_000))
+                        .duration(2 * SECONDS)
+                        .eut(TierEU.RECIPE_LuV)
+                        .build(),
+                    RecipeChange.builder()
+                        .outputChance(Materials.Samarium.getDust(9), 1000)
+                        .outputChance(Materials.Sodium.getDust(9), 10000)
+                        .outputChance(WerkstoffMaterialPool.RarestEarthResidue.get(OrePrefixes.dust, 2), 10000)
+                        .build());
+        }
     }
 
     private static void modifyExtremeHeatExchanger(RecipeContext recipes) {

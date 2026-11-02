@@ -113,8 +113,8 @@ public enum AuditScope implements AuditDefinition {
     MODIFY_LV_CIRCUIT_ASSEMBLER_HAND_CRAFTING(modified(1)),
     REMOVE_GOOD_CIRCUIT_HAND_CRAFTING(Mods.NewHorizonsCoreMod::isModLoaded, removed(1)),
     REMOVE_ILMENITE_CHEMICAL_BATH_RECIPES(removed(2)),
-    REMOVE_RUBY_JUICE_RECIPES(removed(9)),
-    MODIFY_ILMENITE_SLAG_CENTRIFUGE_RECIPE(modified(1)),
+    REMOVE_RUBY_JUICE_RECIPES(removed(18)),
+    MODIFY_ILMENITE_SLAG_CENTRIFUGE_RECIPE(modified(2)),
     RESTRICT_PRIMITIVE_BLAST_FURNACE_STEEL_FUELS(removed(39)),
     MODIFY_STEEL_BLAST_FURNACE_RECIPES(AuditExpectation.exact()
         .modified(1)
@@ -140,15 +140,15 @@ public enum AuditScope implements AuditDefinition {
     MODIFY_SILICON_LINE_RECIPES(modified(7)),
     REMOVE_SILICON_WAFER_WATER_CUTTER_RECIPES(removed(2)),
     MODIFY_LV_OIL_DISTILLERY_RECIPES(modified(3)),
-    MODIFY_ENDSTONE_CENTRIFUGE_RECIPE(modified(1)),
+    MODIFY_ENDSTONE_CENTRIFUGE_RECIPE(modified(2)),
     MODIFY_STABALLOY_CENTRIFUGE_RECIPES(Mods.GTPlusPlus::isModLoaded, modified(2)),
     MODIFY_EUROPIUM_AMERICIUM_FUSION_RECIPES(modified(4)),
     MODIFY_AMERICIUM_PLASMA_FUSION_IGNITION(modified(1)),
-    MODIFY_SPHALERITE_ELECTROLYZER_RECIPE(modified(1)),
+    MODIFY_SPHALERITE_ELECTROLYZER_RECIPE(modified(2)),
     MODIFY_QUANTUM_STAR_RECIPE(modified(1)),
     MODIFY_TELLURIUM_BLAST_FURNACE_CHANCE(modified(1)),
     MODIFY_PLATINUM_SLUDGE_RECIPES(modified(3)),
-    MODIFY_SAMARIUM_RECIPES(modified(3)),
+    MODIFY_SAMARIUM_RECIPES(modified(6)),
     MODIFY_EXTREME_HEAT_EXCHANGER_HAND_CRAFTING(AuditExpectation.exact()
         .added(1)
         .removed(1)
@@ -182,9 +182,9 @@ public enum AuditScope implements AuditDefinition {
     MODIFY_CUPRONICKEL_COIL_INPUTS(modified(2)),
     MODIFY_MV_ENERGY_HATCH_INPUTS(modified(1)),
     REMOVE_MV_ENERGY_HATCH_HAND_CRAFTING(removed(1)),
-    MODIFY_RAW_NEUTRONIUM_RECIPE(modified(1)),
+    MODIFY_RAW_NEUTRONIUM_RECIPE(modified(2)),
     MODIFY_INDIUM_COMB_RECIPES(Mods.Forestry::isModLoaded, modified(5)),
-    MODIFY_PRASEODYMIUM_CENTRIFUGE_RECIPE(Mods.Forestry::isModLoaded, modified(1)),
+    MODIFY_PRASEODYMIUM_CENTRIFUGE_RECIPE(Mods.Forestry::isModLoaded, modified(2)),
     MODIFY_VACUUM_FURNACE_INDIUM_RECIPES(Mods.Forestry::isModLoaded, modified(2)),
     REMOVE_SLIME_EXTRACTOR_RECIPES(() -> AuditExpectation.exact()
         .removed(Mods.TinkerConstruct.isModLoaded() ? 5 : 1)

@@ -1,7 +1,9 @@
 package pl.kuba6000.gtnhextranerf.loader.recipes;
 
+import static gregtech.api.recipe.RecipeMaps.centrifugeNonCellRecipes;
 import static gregtech.api.recipe.RecipeMaps.centrifugeRecipes;
 import static gregtech.api.recipe.RecipeMaps.chemicalBathRecipes;
+import static gregtech.api.recipe.RecipeMaps.mixerNonCellRecipes;
 import static gregtech.api.recipe.RecipeMaps.mixerRecipes;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 import static gregtech.api.util.GTRecipeBuilder.TICKS;
@@ -12,6 +14,7 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
+import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
 import pl.kuba6000.gtnhextranerf.audit.AuditScope;
@@ -60,65 +63,68 @@ public final class AluminiumNerf implements RecipeModule {
             removeRubyMixerRecipe(recipes, prefix, 9, OrePrefixes.dust, 1, 9_000, 9, 3 * SECONDS, TierEU.RECIPE_HV);
         }
 
-        recipes.machine(centrifugeRecipes)
-            .removeExactly(
-                RecipeMatch.builder()
-                    .itemInputs(GTUtility.getIntegratedCircuit(1))
-                    .itemOutputs(
-                        Materials.Aluminiumhydroxide.getDust(2),
-                        Materials.Chrome.getDust(1),
-                        Materials.Iron.getDust(1),
-                        Materials.Vanadium.getDust(1),
-                        Materials.Magnesium.getDust(1))
-                    .fluidInputs(Materials.RubyJuice.getFluid(1_000))
-                    .fluidOutputs(Materials.HydrochloricAcid.getFluid(1_000))
-                    .outputChances(10000, 5000, 300, 200, 200)
-                    .duration(2 * SECONDS + 5 * TICKS)
-                    .eut(100)
-                    .build(),
-                1);
+        RecipeMatch centrifuge = RecipeMatch.builder()
+            .itemInputs(GTUtility.getIntegratedCircuit(1))
+            .itemOutputs(
+                Materials.Aluminiumhydroxide.getDust(2),
+                Materials.Chrome.getDust(1),
+                Materials.Iron.getDust(1),
+                Materials.Vanadium.getDust(1),
+                Materials.Magnesium.getDust(1))
+            .fluidInputs(Materials.RubyJuice.getFluid(1_000))
+            .fluidOutputs(Materials.HydrochloricAcid.getFluid(1_000))
+            .outputChances(10000, 5000, 300, 200, 200)
+            .duration(2 * SECONDS + 5 * TICKS)
+            .eut(100)
+            .build();
+        for (RecipeMap<?> map : new RecipeMap<?>[] { centrifugeRecipes, centrifugeNonCellRecipes }) {
+            recipes.machine(map)
+                .removeExactly(centrifuge, 1);
+        }
     }
 
     private static void removeRubyMixerRecipe(RecipeContext recipes, OrePrefixes rubyPrefix, int rubyAmount,
         OrePrefixes sodiumHydroxidePrefix, int sodiumHydroxideAmount, int fluidAmount, int circuit, int duration,
         long eut) {
-        recipes.machine(mixerRecipes)
-            .removeExactly(
-                RecipeMatch.builder()
-                    .itemInputs(
-                        GTOreDictUnificator.get(rubyPrefix, Materials.Ruby, rubyAmount),
-                        GTOreDictUnificator
-                            .get(sodiumHydroxidePrefix, Materials.SodiumHydroxide, sodiumHydroxideAmount),
-                        GTUtility.getIntegratedCircuit(circuit))
-                    .itemOutputs()
-                    .fluidInputs(Materials.HydrochloricAcid.getFluid(fluidAmount))
-                    .fluidOutputs(Materials.RubyJuice.getFluid(fluidAmount))
-                    .duration(duration)
-                    .eut(eut)
-                    .build(),
-                1);
+        RecipeMatch mixer = RecipeMatch.builder()
+            .itemInputs(
+                GTOreDictUnificator.get(rubyPrefix, Materials.Ruby, rubyAmount),
+                GTOreDictUnificator.get(sodiumHydroxidePrefix, Materials.SodiumHydroxide, sodiumHydroxideAmount),
+                GTUtility.getIntegratedCircuit(circuit))
+            .itemOutputs()
+            .fluidInputs(Materials.HydrochloricAcid.getFluid(fluidAmount))
+            .fluidOutputs(Materials.RubyJuice.getFluid(fluidAmount))
+            .duration(duration)
+            .eut(eut)
+            .build();
+        for (RecipeMap<?> map : new RecipeMap<?>[] { mixerRecipes, mixerNonCellRecipes }) {
+            recipes.machine(map)
+                .removeExactly(mixer, 1);
+        }
     }
 
     private static void modifyIlmeniteSlagCentrifuge(RecipeContext recipes) {
-        recipes.machine(centrifugeRecipes)
-            .modifyOne(
-                RecipeMatch.builder()
-                    .itemInputs(Materials.IlmeniteSlag.getDust(1))
-                    .itemOutputs(
-                        Materials.Iron.getDust(1),
-                        Materials.Niobium.getDust(1),
-                        Materials.Tantalum.getDust(1),
-                        Materials.Manganese.getDust(1),
-                        Materials.Magnesium.getDust(1))
-                    .fluidInputs()
-                    .fluidOutputs()
-                    .outputChances(8000, 500, 2000, 5000, 6000)
-                    .duration(2 * SECONDS)
-                    .eut(TierEU.RECIPE_MV)
-                    .build(),
-                RecipeChange.builder()
-                    .appendItemOutput(Materials.Gallium.getDust(1), 1000)
-                    .duration(10 * SECONDS)
-                    .build());
+        for (RecipeMap<?> map : new RecipeMap<?>[] { centrifugeRecipes, centrifugeNonCellRecipes }) {
+            recipes.machine(map)
+                .modifyOne(
+                    RecipeMatch.builder()
+                        .itemInputs(Materials.IlmeniteSlag.getDust(1))
+                        .itemOutputs(
+                            Materials.Iron.getDust(1),
+                            Materials.Niobium.getDust(1),
+                            Materials.Tantalum.getDust(1),
+                            Materials.Manganese.getDust(1),
+                            Materials.Magnesium.getDust(1))
+                        .fluidInputs()
+                        .fluidOutputs()
+                        .outputChances(8000, 500, 2000, 5000, 6000)
+                        .duration(2 * SECONDS)
+                        .eut(TierEU.RECIPE_MV)
+                        .build(),
+                    RecipeChange.builder()
+                        .appendItemOutput(Materials.Gallium.getDust(1), 1000)
+                        .duration(10 * SECONDS)
+                        .build());
+        }
     }
 }

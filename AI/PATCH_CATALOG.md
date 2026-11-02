@@ -505,13 +505,15 @@ For each Ruby prefix `crushed`, `crushedPurified`, `dustImpure`, and
 - 9 Ruby material + 1 Sodium Hydroxide dust + circuit 9 + 9,000 L
   Hydrochloric Acid -> 9,000 L Ruby Juice.
 
-This removes eight mixer recipes in total.
+This removes eight mixer recipes from each of the ordinary and industrial
+mixer maps.
 
 ### `aluminium.ruby-juice.centrifuge`
 
 Removes the exact Ruby Juice centrifuge recipe that consumes 1,000 L Ruby
 Juice and returns Aluminium Hydroxide, Chrome, Iron, Vanadium, Magnesium and
-1,000 L Hydrochloric Acid.
+1,000 L Hydrochloric Acid, from both the ordinary and industrial centrifuge maps.
+The complete Ruby Juice scope requires 18 removals.
 
 ### `aluminium.ilmenite-slag.centrifuge`
 
@@ -520,6 +522,8 @@ Juice and returns Aluminium Hydroxide, Chrome, Iron, Vanadium, Magnesium and
 - Adds 1 Gallium dust with 10% chance.
 - Duration changes from 2 seconds to 10 seconds.
 - EU/t remains MV recipe voltage.
+- Both the ordinary and industrial centrifuge maps are changed, with two
+  modifications required by the audit scope.
 
 ## Blast furnace load-complete module
 
@@ -685,6 +689,8 @@ Silicon SG output and all other explicitly matched values remain unchanged.
 - Sand chance stays 90%;
 - inputs, 576-second duration and 20 EU/t remain unchanged.
 
+Both ordinary and industrial centrifuge maps require the same change.
+
 ### Europium and Americium fusion
 
 `ChemicalAndMiscNerf.modifyFusionRecipes` edits four exact signatures in
@@ -731,7 +737,8 @@ two modifications. A missing, duplicate or changed source recipe fails validatio
 ### Sphalerite electrolyzer
 
 `misc.sphalerite-electrolyzer` changes the Gallium dust chance from 9.17% to
-10%. This specific change is a small buff, despite living in a nerf mod.
+10% in both ordinary and industrial electrolyzer maps. This specific change is
+a small buff, despite living in a nerf mod.
 
 ### Quantum Star bath
 
@@ -763,6 +770,9 @@ Chloride dust output from 3 to 2. Platinum output remains 2 dust.
 | `misc.samarium.concentrate` | Samarium dust chance changes from 90% to 5%; Thorianite remains 80%. |
 | `misc.samarium.small-blend` | Output chances become Samarium 10%, Sodium 100%, rare-earth residue 100%. |
 | `misc.samarium.large-blend` | Output chances become Samarium 10%, Sodium 100%, rare-earth residue 100%. |
+
+All three recipes are changed in both their ordinary and industrial maps; the
+scope requires six modifications.
 
 ### Extreme Heat Exchanger
 
@@ -1048,11 +1058,14 @@ not repeated predicate searches of each map.
 
 `core.raw-neutronium` changes Helium plasma from 144 L to 1,440 L. One
 Neutronium dust, circuit 1, Raw Neutronium output, 11.25-second duration and ZPM
-voltage remain.
+voltage remain. Both ordinary and industrial mixer maps are changed.
 
 ### Forestry-dependent Indium recipes
 
 These patches run only when Forestry reports loaded.
+
+The Praseodymium centrifuge change applies to both ordinary and industrial
+centrifuge maps.
 
 | Patch | Change |
 | --- | --- |

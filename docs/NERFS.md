@@ -740,6 +740,7 @@ The recipe remains HV at 1,700 K.
 - Duration increases from 2 to 10 seconds.
 - Existing Iron, Niobium, Tantalum, Manganese and Magnesium outputs keep their
   original chances.
+- The same changes apply to the Industrial Centrifuge.
 
 ### Removed Ruby Juice chain
 
@@ -754,7 +755,8 @@ For every form, both the one-unit/1,000 L and nine-unit/9,000 L recipe are
 removed.
 
 The Ruby Juice centrifuge recipe that returned Aluminium Hydroxide, Chrome,
-Iron, Vanadium, Magnesium and Hydrochloric Acid is also removed.
+Iron, Vanadium, Magnesium and Hydrochloric Acid is also removed. Both the
+ordinary and industrial mixer and centrifuge recipe maps are covered.
 
 ## Titanium
 
@@ -847,6 +849,7 @@ There is no active small-batch circuit-9 Plutonium patch.
 - Helium output is reduced from 4,320 L to 1,500 L.
 - Platinum Metallic Powder remains at 25%.
 - Sand remains at 90%.
+- The Industrial Centrifuge uses the same recipe changes.
 
 ### Staballoy centrifuging
 
@@ -859,7 +862,8 @@ centrifuge and the industrial centrifuge recipe map. The base duration remains
 
 - Gallium dust chance increases slightly from 9.17% to 10%.
 
-This is an intentional small buff inside the wider nerf package.
+This is an intentional small buff inside the wider nerf package, including
+the Industrial Electrolyzer.
 
 ### Tellurium from crushed Lead
 
@@ -910,6 +914,9 @@ In both chemical-reactor maps:
 - Platinum output remains 2 dust.
 
 ## Samarium processing
+
+The listed concentrate and blend changes apply to both ordinary and industrial
+centrifuges or electrolyzers, respectively.
 
 ### Dephosphated Samarium Concentrate
 
@@ -1087,6 +1094,7 @@ crafting retains the wrench in the center of the plate ring.
 
 - Helium plasma input increases from 144 L to 1,440 L.
 - Neutronium dust, circuit, output, duration and voltage remain unchanged.
+- The Industrial Mixer also requires the increased amount of plasma.
 
 ### TPV Alloy
 
@@ -1143,6 +1151,7 @@ These changes run only when Forestry is loaded.
 
 - The final Indium output decreases from 12 dust to 8.
 - Other outputs and their chances remain unchanged.
+- The same reduction applies in the Industrial Centrifuge.
 
 ### GT++ Sphalerite vacuum furnace
 

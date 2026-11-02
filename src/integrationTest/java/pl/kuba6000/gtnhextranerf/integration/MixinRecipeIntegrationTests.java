@@ -131,6 +131,7 @@ public final class MixinRecipeIntegrationTests {
         verifyDielectricCables(OrePrefixes.dustSmall, 1, 36);
         verifyUnrelatedRecipes();
         LvRecipeIntegrationTests.verify();
+        IndustrialRecipeIntegrationTests.verify();
         Ae2RecipeIntegrationTests.verify();
         WirelessPowerIntegrationTests.verify();
         verifyStaballoyCentrifuges();

@@ -4,6 +4,13 @@ This file is a concise summary of the active ruleset. The complete canonical
 catalog, including exact values, conditions and unchanged fields, is
 [`docs/NERFS.md`](docs/NERFS.md).
 
+## Industrial recipe consistency
+
+- Applied the Ruby Juice removals and the Endstone, Samarium, Raw Neutronium
+  and Indium Comb changes to the corresponding industrial machine maps.
+- Applied the Ilmenite Slag and Sphalerite Gallium changes to their industrial
+  machines as well.
+
 ## Startup
 
 - Narrowed the coremod transformer exclusion to remove

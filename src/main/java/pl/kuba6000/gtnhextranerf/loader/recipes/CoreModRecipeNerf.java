@@ -3,9 +3,11 @@ package pl.kuba6000.gtnhextranerf.loader.recipes;
 import static com.dreammaster.scripts.IngredientFactory.getModItem;
 import static gregtech.api.enums.Mods.Forestry;
 import static gregtech.api.recipe.RecipeMaps.assemblerRecipes;
+import static gregtech.api.recipe.RecipeMaps.centrifugeNonCellRecipes;
 import static gregtech.api.recipe.RecipeMaps.centrifugeRecipes;
 import static gregtech.api.recipe.RecipeMaps.chemicalReactorRecipes;
 import static gregtech.api.recipe.RecipeMaps.circuitAssemblerRecipes;
+import static gregtech.api.recipe.RecipeMaps.mixerNonCellRecipes;
 import static gregtech.api.recipe.RecipeMaps.mixerRecipes;
 import static gregtech.api.recipe.RecipeMaps.multiblockChemicalReactorRecipes;
 import static gregtech.api.recipe.RecipeMaps.vacuumFurnaceRecipes;
@@ -336,21 +338,23 @@ public final class CoreModRecipeNerf implements RecipeModule {
     }
 
     private static void modifyRawNeutronium(RecipeContext recipes) {
-        recipes.machine(mixerRecipes)
-            .modifyOne(
-                RecipeMatch.builder()
-                    .itemInputs(
-                        GTOreDictUnificator.get(OrePrefixes.dust, Materials.Neutronium, 1),
-                        GTUtility.getIntegratedCircuit(1))
-                    .itemOutputs(NHItemList.RawNeutronium.get())
-                    .fluidInputs(Materials.Helium.getPlasma(144))
-                    .fluidOutputs()
-                    .duration(11 * SECONDS + 5 * TICKS)
-                    .eut(TierEU.RECIPE_ZPM)
-                    .build(),
-                RecipeChange.builder()
-                    .fluidInputAmount(Materials.Helium.getPlasma(144), 1_440)
-                    .build());
+        for (RecipeMap<?> map : new RecipeMap<?>[] { mixerRecipes, mixerNonCellRecipes }) {
+            recipes.machine(map)
+                .modifyOne(
+                    RecipeMatch.builder()
+                        .itemInputs(
+                            GTOreDictUnificator.get(OrePrefixes.dust, Materials.Neutronium, 1),
+                            GTUtility.getIntegratedCircuit(1))
+                        .itemOutputs(NHItemList.RawNeutronium.get())
+                        .fluidInputs(Materials.Helium.getPlasma(144))
+                        .fluidOutputs()
+                        .duration(11 * SECONDS + 5 * TICKS)
+                        .eut(TierEU.RECIPE_ZPM)
+                        .build(),
+                    RecipeChange.builder()
+                        .fluidInputAmount(Materials.Helium.getPlasma(144), 1_440)
+                        .build());
+        }
     }
 
     private static void modifyIndiumCombRecipes(RecipeContext recipes) {
@@ -436,26 +440,28 @@ public final class CoreModRecipeNerf implements RecipeModule {
         if (!Forestry.isModLoaded()) {
             return;
         }
-        recipes.machine(centrifugeRecipes)
-            .modifyOne(
-                RecipeMatch.builder()
-                    .itemInputs(GTBees.combs.getStackForType(CombType.INDIUM, 8), GTUtility.getIntegratedCircuit(2))
-                    .itemOutputs(
-                        WerkstoffLoader.Thorium232.get(OrePrefixes.dust, 64),
-                        WerkstoffLoader.Thorium232.get(OrePrefixes.dust, 16),
-                        GTOreDictUnificator.get(OrePrefixes.dust, Materials.Praseodymium, 64),
-                        GTOreDictUnificator.get(OrePrefixes.dust, Materials.Praseodymium, 32),
-                        GTOreDictUnificator.get(OrePrefixes.dust, Materials.Boron, 2),
-                        GTOreDictUnificator.get(OrePrefixes.dust, Materials.Indium, 12))
-                    .fluidInputs(GGMaterial.thoriumBasedLiquidFuelDepleted.getFluidOrGas(1_000))
-                    .fluidOutputs()
-                    .duration(1 * MINUTES + 15 * SECONDS)
-                    .eut(TierEU.RECIPE_EV / 2)
-                    .outputChances(10000, 8000, 10000, 8000, 3000, 5000)
-                    .build(),
-                RecipeChange.builder()
-                    .itemOutputAmount(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Indium, 12), 8)
-                    .build());
+        for (RecipeMap<?> map : new RecipeMap<?>[] { centrifugeRecipes, centrifugeNonCellRecipes }) {
+            recipes.machine(map)
+                .modifyOne(
+                    RecipeMatch.builder()
+                        .itemInputs(GTBees.combs.getStackForType(CombType.INDIUM, 8), GTUtility.getIntegratedCircuit(2))
+                        .itemOutputs(
+                            WerkstoffLoader.Thorium232.get(OrePrefixes.dust, 64),
+                            WerkstoffLoader.Thorium232.get(OrePrefixes.dust, 16),
+                            GTOreDictUnificator.get(OrePrefixes.dust, Materials.Praseodymium, 64),
+                            GTOreDictUnificator.get(OrePrefixes.dust, Materials.Praseodymium, 32),
+                            GTOreDictUnificator.get(OrePrefixes.dust, Materials.Boron, 2),
+                            GTOreDictUnificator.get(OrePrefixes.dust, Materials.Indium, 12))
+                        .fluidInputs(GGMaterial.thoriumBasedLiquidFuelDepleted.getFluidOrGas(1_000))
+                        .fluidOutputs()
+                        .duration(1 * MINUTES + 15 * SECONDS)
+                        .eut(TierEU.RECIPE_EV / 2)
+                        .outputChances(10000, 8000, 10000, 8000, 3000, 5000)
+                        .build(),
+                    RecipeChange.builder()
+                        .itemOutputAmount(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Indium, 12), 8)
+                        .build());
+        }
     }
 
     private static void modifyVacuumFurnaceIndium(RecipeContext recipes) {
