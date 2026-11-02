@@ -6,6 +6,8 @@ catalog, including exact values, conditions and unchanged fields, is
 
 ## Industrial recipe consistency
 
+- Updated the Alloy Blast Smelter's generated Steel and Aluminium recipes to
+  match the corresponding EBF changes.
 - Applied the Ruby Juice removals and the Endstone, Samarium, Raw Neutronium
   and Indium Comb changes to the corresponding industrial machine maps.
 - Applied the Ilmenite Slag and Sphalerite Gallium changes to their industrial

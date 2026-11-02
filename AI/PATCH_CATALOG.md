@@ -540,8 +540,8 @@ Steel recipes. Non-Steel Primitive Blast Furnace recipes are not candidates.
 
 ### Electric Blast Furnace Steel routes
 
-`MODIFY_STEEL_BLAST_FURNACE_RECIPES` requires exactly one removed, one
-modified and one added recipe.
+`MODIFY_STEEL_BLAST_FURNACE_RECIPES` requires exactly two removed, two
+modified and one added recipe across the EBF and Alloy Blast Smelter maps.
 
 Removed route:
 
@@ -575,6 +575,11 @@ After applying the changes, the module asserts that the bulk EV route still
 exists unchanged: 50 Iron dust, 1 Any Carbon dust and circuit 2 produce 50
 Steel ingots and 1 Ash dust in 150 seconds at EV recipe voltage and 2,000 K.
 
+In the Alloy Blast Smelter, the old Iron plus Coal route is removed and the
+Cast Iron route consumes 3 dust and 6,000 L Oxygen for 432 L molten Steel in
+36 seconds at MV. Its generated molten-metal route does not return EBF
+byproducts.
+
 ### Aluminium
 
 | Patch | Current behavior |
@@ -597,6 +602,11 @@ Applied only if class `tconstruct.TConstruct` exists.
 | `blast-furnace.tconstruct-aluminium.nitrogen` | TConstruct aluminium + circuit 11 + 1,000 L Nitrogen duration changes from 60 to 90 seconds at MV and 1,300 K. |
 | `blast-furnace.tconstruct-aluminium.no-gas` | No-gas route remains; duration changes from 75 to 120 seconds and heat from 1,300 to 1,600 K. |
 | `blast-furnace.tconstruct-aluminium.obsolete-gases` | Removes the same seven noble-gas variants. |
+
+Both aluminium inputs also update their generated Alloy Blast Smelter recipes:
+the seven obsolete gas variants are removed; Nitrogen takes 72 seconds, while
+the no-gas route takes 112 seconds for Aluminium dust or 96 seconds for
+TConstruct aluminium. Those durations preserve GT++'s 80% EBF conversion.
 
 ### `blast-furnace.ilmenite`
 

@@ -117,17 +117,17 @@ public enum AuditScope implements AuditDefinition {
     MODIFY_ILMENITE_SLAG_CENTRIFUGE_RECIPE(modified(2)),
     RESTRICT_PRIMITIVE_BLAST_FURNACE_STEEL_FUELS(removed(39)),
     MODIFY_STEEL_BLAST_FURNACE_RECIPES(AuditExpectation.exact()
-        .modified(1)
+        .modified(2)
         .added(1)
-        .removed(1)
+        .removed(2)
         .build()),
     MODIFY_ALUMINIUM_BLAST_FURNACE_RECIPES(AuditExpectation.exact()
-        .modified(3)
-        .removed(8)
+        .modified(5)
+        .removed(15)
         .build()),
     MODIFY_TINKERS_ALUMINIUM_BLAST_FURNACE_RECIPES(Mods.TinkerConstruct::isModLoaded, AuditExpectation.exact()
-        .modified(2)
-        .removed(7)
+        .modified(4)
+        .removed(14)
         .build()),
     MODIFY_ILMENITE_BLAST_FURNACE_RECIPE(modified(1)),
     MODIFY_TITANIUM_BLAST_FURNACE_RECIPE(modified(1)),

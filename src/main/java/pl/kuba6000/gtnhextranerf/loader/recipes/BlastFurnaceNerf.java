@@ -1,6 +1,7 @@
 package pl.kuba6000.gtnhextranerf.loader.recipes;
 
 import static com.dreammaster.scripts.IngredientFactory.getModItem;
+import static gregtech.api.recipe.RecipeMaps.alloyBlastSmelterRecipes;
 import static gregtech.api.recipe.RecipeMaps.blastFurnaceRecipes;
 import static gregtech.api.recipe.RecipeMaps.primitiveBlastRecipes;
 import static gregtech.api.util.GTRecipeBuilder.MINUTES;
@@ -124,6 +125,37 @@ public final class BlastFurnaceNerf implements RecipeModule {
                     .duration(45 * SECONDS)
                     .build());
 
+        recipes.machine(alloyBlastSmelterRecipes)
+            .removeExactly(
+                RecipeMatch.builder()
+                    .itemInputs(
+                        Materials.Iron.getDust(1),
+                        Materials.Coal.getDust(1),
+                        GTUtility.getIntegratedCircuit(11))
+                    .itemOutputs()
+                    .fluidInputs(Materials.Oxygen.getGas(1_000))
+                    .fluidOutputs(Materials.Steel.getMolten(144))
+                    .duration(20 * SECONDS)
+                    .eut(TierEU.RECIPE_MV)
+                    .build(),
+                1);
+        recipes.machine(alloyBlastSmelterRecipes)
+            .modifyOne(
+                RecipeMatch.builder()
+                    .itemInputs(Materials.CastIron.getDust(1), GTUtility.getIntegratedCircuit(11))
+                    .itemOutputs()
+                    .fluidInputs(Materials.Oxygen.getGas(1_000))
+                    .fluidOutputs(Materials.Steel.getMolten(144))
+                    .duration(4 * SECONDS)
+                    .eut(TierEU.RECIPE_MV)
+                    .build(),
+                RecipeChange.builder()
+                    .itemInputAmount(Materials.CastIron.getDust(1), 3)
+                    .fluidInputAmount(Materials.Oxygen.getGas(1_000), 6_000)
+                    .fluidOutputAmount(Materials.Steel.getMolten(144), 432)
+                    .duration(36 * SECONDS)
+                    .build());
+
         RecipeMatch ironToCastIron = RecipeMatch.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Iron, 3), GTUtility.getIntegratedCircuit(1))
             .oreDictInput(OrePrefixes.dust.name() + Materials.AnyCarbon.mName, 2)
@@ -226,6 +258,7 @@ public final class BlastFurnaceNerf implements RecipeModule {
             2054,
             2054);
         removeObsoleteGasVariants(recipes, aluminiumDust, aluminiumIngot, TierEU.RECIPE_HV, 2054);
+        modifyAlloyBlastSmelterAluminium(recipes, aluminiumDust, TierEU.RECIPE_HV, 140 * SECONDS);
     }
 
     private static void modifyIlmeniteEBF(RecipeContext recipes) {
@@ -302,6 +335,91 @@ public final class BlastFurnaceNerf implements RecipeModule {
             1300,
             1600);
         removeObsoleteGasVariants(recipes, tinkersAluminium, aluminiumIngot, TierEU.RECIPE_MV, 1300);
+        modifyAlloyBlastSmelterAluminium(recipes, tinkersAluminium, TierEU.RECIPE_MV, 120 * SECONDS);
+    }
+
+    private static void modifyAlloyBlastSmelterAluminium(RecipeContext recipes, ItemStack input, long eut,
+        int noGasDuration) {
+        recipes.machine(alloyBlastSmelterRecipes)
+            .modifyOne(
+                alloySmelterAluminium(input, GTUtility.getIntegratedCircuit(1), null, 75 * SECONDS, eut),
+                RecipeChange.builder()
+                    .duration(smelterDuration(noGasDuration))
+                    .build());
+        recipes.machine(alloyBlastSmelterRecipes)
+            .modifyOne(
+                alloySmelterAluminium(
+                    input,
+                    GTUtility.getIntegratedCircuit(11),
+                    Materials.Nitrogen.getGas(1_000),
+                    60 * SECONDS,
+                    eut),
+                RecipeChange.builder()
+                    .duration(smelterDuration(90 * SECONDS))
+                    .build());
+        RecipeMatch obsolete = RecipeMatch.anyOf(
+            alloySmelterAluminium(
+                input,
+                GTUtility.getIntegratedCircuit(11),
+                Materials.Helium.getGas(1_000),
+                54 * SECONDS,
+                eut),
+            alloySmelterAluminium(
+                input,
+                GTUtility.getIntegratedCircuit(11),
+                Materials.Argon.getGas(850),
+                48 * SECONDS,
+                eut),
+            alloySmelterAluminium(
+                input,
+                GTUtility.getIntegratedCircuit(11),
+                Materials.Radon.getGas(700),
+                42 * SECONDS,
+                eut),
+            alloySmelterAluminium(
+                input,
+                GTUtility.getIntegratedCircuit(11),
+                WerkstoffLoader.Neon.getFluidOrGas(550),
+                36 * SECONDS,
+                eut),
+            alloySmelterAluminium(
+                input,
+                GTUtility.getIntegratedCircuit(11),
+                WerkstoffLoader.Krypton.getFluidOrGas(400),
+                30 * SECONDS,
+                eut),
+            alloySmelterAluminium(
+                input,
+                GTUtility.getIntegratedCircuit(11),
+                WerkstoffLoader.Xenon.getFluidOrGas(250),
+                24 * SECONDS,
+                eut),
+            alloySmelterAluminium(
+                input,
+                GTUtility.getIntegratedCircuit(11),
+                WerkstoffLoader.Oganesson.getFluidOrGas(100),
+                18 * SECONDS,
+                eut));
+        recipes.machine(alloyBlastSmelterRecipes)
+            .removeExactly(obsolete, 7);
+    }
+
+    private static RecipeMatch alloySmelterAluminium(ItemStack input, ItemStack circuit, FluidStack gas,
+        int ebfDuration, long eut) {
+        RecipeMatch.Builder match = RecipeMatch.builder()
+            .itemInputs(input, circuit)
+            .itemOutputs()
+            .fluidOutputs(Materials.Aluminium.getMolten(144))
+            .duration(smelterDuration(ebfDuration))
+            .eut(eut);
+        if (gas == null) match.fluidInputs();
+        else match.fluidInputs(gas);
+        return match.build();
+    }
+
+    private static int smelterDuration(int ebfDuration) {
+        // GT++ generates Alloy Blast Smelter recipes at 80% of the EBF duration.
+        return ebfDuration * 4 / 5;
     }
 
     private static RecipeMatch gasRecipe(ItemStack input, ItemStack output, FluidStack gas, int duration, long eut,

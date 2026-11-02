@@ -663,6 +663,11 @@ A new Cast Iron production route is added:
 The bulk EV route remains unchanged: 50 Iron dust, one Any Carbon dust and
 circuit 2 produce 50 Steel ingots and one Ash dust in 150 seconds at 2,000 K.
 
+The Alloy Blast Smelter's old Iron-and-Coal route is also removed. Its Cast
+Iron route requires 3 dust and 6,000 L Oxygen, producing 432 L molten Steel in
+36 seconds at MV. As with GT++'s generated recipes, it produces the molten
+metal rather than the EBF's item and gas byproducts.
+
 ## Aluminium production
 
 ### Direct Aluminium Oxide + Carbon route
@@ -707,6 +712,11 @@ When TConstruct is present:
 - the no-gas route remains, but duration increases from 75 to 120 seconds and
   heat rises from 1,300 to 1,600 K;
 - the seven alternative noble-gas routes listed above are removed.
+
+The corresponding Alloy Blast Smelter routes follow the same gas restrictions.
+Their base duration is 80% of the corresponding EBF duration: 72 seconds with
+Nitrogen, 112 seconds without gas for Aluminium dust and 96 seconds without
+gas for TConstruct aluminium.
 
 ## Ilmenite, Rutile and Ruby processing
 

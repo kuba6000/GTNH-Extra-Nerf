@@ -132,6 +132,7 @@ public final class MixinRecipeIntegrationTests {
         verifyUnrelatedRecipes();
         LvRecipeIntegrationTests.verify();
         IndustrialRecipeIntegrationTests.verify();
+        AlloyBlastSmelterIntegrationTests.verify();
         Ae2RecipeIntegrationTests.verify();
         WirelessPowerIntegrationTests.verify();
         verifyStaballoyCentrifuges();
