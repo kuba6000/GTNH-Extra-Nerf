@@ -11,19 +11,20 @@ NOTICE_MARKER = "<!-- extra-nerf-telemetry -->"
 NOTICE = """<!-- extra-nerf-telemetry -->
 ### Telemetry
 
-Extra Nerf has telemetry enabled by default outside development environments. The logical game
-server (including singleplayer) sends a random ID valid for one server run,
-online player count, highest available world progression tier, singleplayer status
-and an optional randomized JAR proof about once per hour. No player
-names, player UUIDs or world coordinates are included. Reports go to
-`extranerf.kuba6000.pl`.
+Extra Nerf telemetry is opt-in and nothing is sent until a world has been asked. The first time
+a world is played, an operator (or the owner of a singleplayer world) chooses in a window
+whether to send nothing, minimal statistics or full team tracking; a dedicated server's
+console is told how to answer with `extranerftelemetry on` or `off`. The choice is saved in
+the world and can be changed at any time with `/extranerftelemetry on|off`.
 
-We'd appreciate you keeping telemetry enabled. It is used only for community
-statistics about active servers, online players, and world progression.
+Minimal statistics are a random ID valid for one server run, the online player count, the
+highest available world progression tier, singleplayer status and an optional randomized JAR
+proof, about once per hour. No player names, player UUIDs or world coordinates are included.
+Reports go to `extranerf.kuba6000.pl`, and are used only for community statistics about
+active servers, online players, and world progression.
 Read our [Privacy & Telemetry Policy](https://extranerf.kuba6000.pl/privacy).
 
-The world/server owner can opt out with `/extranerftelemetry off` or by setting
-`telemetry.enabled=false` in `config/gtnhextranerf.cfg`. Development environments do not send production reports. See the repository's `docs/TELEMETRY.md`.
+Development environments do not send production reports. See the repository's `docs/TELEMETRY.md`.
 """
 
 

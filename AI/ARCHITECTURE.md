@@ -221,7 +221,7 @@ tasks. The root project adds only:
 
 - two pinned mod dependencies;
 - JUnit Jupiter;
-- `fullPack.cleanServerRuntime = true`;
+- `fullPack.cleanServerRuntime` for the CI path only (`-PfullPackCi`);
 - CI-specific server configuration.
 
 The distributable JAR is a combined FML mod/coremod with the early loader,

@@ -1,6 +1,5 @@
 package pl.kuba6000.gtnhextranerf.integration;
 
-import java.io.File;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.util.UUID;
@@ -30,7 +29,6 @@ public final class TelemetryIntegrationTests {
         // Prevent production HTTP during fixture lifecycle restarts.
         ServerTelemetry.stop();
         ServerTelemetry.initialize(null, true);
-        File config = Config.configurationFile();
         boolean originallyEnabled = Config.telemetryEnabled;
         WorldServer world = DimensionManager.getWorld(0);
         ProgressionData progression = (ProgressionData) world.mapStorage
@@ -52,10 +50,11 @@ public final class TelemetryIntegrationTests {
                 server.getCommandManager()
                     .executeCommand(server, "extranerftelemetry off") == 1,
                 "telemetry opt-out command failed");
-            Config.synchronizeConfiguration(config);
-            check(!Config.telemetryEnabled, "telemetry opt-out did not survive configuration reload");
+            check(Config.telemetryAsked, "the opt-out command did not count as an answer");
+            Config.loadWorld();
+            check(!Config.telemetryEnabled, "telemetry opt-out did not survive reloading the world record");
             Config.setTelemetryEnabled(true);
-            Config.synchronizeConfiguration(config);
+            Config.loadWorld();
             check(Config.telemetryEnabled, "telemetry could not be enabled again");
 
             // Capture through the actual service, with a loopback-only client that is never scheduled.
@@ -110,7 +109,6 @@ public final class TelemetryIntegrationTests {
             progression.readFromNBT(savedProgression);
             progression.markDirty();
             Config.setTelemetryEnabled(originallyEnabled);
-            Config.synchronizeConfiguration(config);
         }
     }
 

@@ -43,7 +43,7 @@ public final class TeamTracking implements AutoCloseable {
 
     public static final String ENDPOINT = "https://extranerf.kuba6000.pl/teamtracking";
     static final String SITE = "https://extranerf.kuba6000.pl";
-    static final String POLICY_URL = SITE + "/team-tracking";
+    public static final String POLICY_URL = SITE + "/team-tracking";
     static final String CONTACT = "extranerf@kuba6000.pl";
     private static final long INTERVAL = 15 * 60 * 1000L;
     private static final long FIRST_REPORT_DELAY = 10 * 60 * 1000L;
@@ -256,6 +256,38 @@ public final class TeamTracking implements AutoCloseable {
             if (id != null && Member.validName(name)) members.add(new Member(id, name));
         }
         return members;
+    }
+
+    /**
+     * Lists this server as a team, named after {@code sender} or, for the console, the first player online. Shared by
+     * the command and the consent window. False when there is nobody to name the team after.
+     */
+    public static boolean enable(MinecraftServer server, EntityPlayerMP sender) {
+        Member commandSender = null;
+        if (sender != null) {
+            UUID id = sender.getGameProfile()
+                .getId();
+            if (id != null && Member.validName(sender.getCommandSenderName()))
+                commandSender = new Member(id, sender.getCommandSenderName());
+        }
+        Member leader = chooseLeader(commandSender, onlinePlayers(server));
+        if (leader == null) return false;
+        // The ID is created once and then kept, also across opting out and in again.
+        String teamId = isUuid(Config.teamId) ? Config.teamId
+            : UUID.randomUUID()
+                .toString();
+        Config.enableTeamTracking(teamId, leader.id.toString(), leader.name);
+        start(server);
+        return true;
+    }
+
+    private static boolean isUuid(String value) {
+        try {
+            UUID.fromString(value);
+            return true;
+        } catch (IllegalArgumentException invalid) {
+            return false;
+        }
     }
 
     /** The player who typed the command, or the first online player when the console did. */

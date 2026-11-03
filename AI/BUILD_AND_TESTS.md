@@ -135,6 +135,8 @@ GTNH runtimes with the current project artifact overlaid. Downloads are
 shared in the Gradle cache. `runFullPackServer` requires the Minecraft EULA
 for a normal run. The existing CI-only `fullPackCi` property prepares that
 server configuration for the dedicated-server smoke check.
+The root build sets `cleanServerRuntime` only for that CI path, so a local server run
+keeps its accepted `eula.txt`, its world and its configuration.
 
 ## Root test suite
 

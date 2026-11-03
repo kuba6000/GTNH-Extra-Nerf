@@ -13,15 +13,16 @@ Supported pack release: **GT New Horizons 2.9.0** (see
 
 ## Telemetry and team tracking
 
-Telemetry is enabled by default outside development environments. The logical server
-reports a random ID valid for one server run, online player count, highest available
-world progression tier, singleplayer status and an optional randomized JAR proof
-about once per hour.
-We'd appreciate you keeping telemetry enabled. It is used only for community
-statistics about active servers, online players, and world progression.
-The owner can disable reporting with
-`/extranerftelemetry off` or `telemetry.enabled=false` in
-`config/gtnhextranerf.cfg`. See the
+Telemetry is opt-in and is decided for each world. The first time a world is played, an
+operator (or the owner of a singleplayer world) is shown a window with three choices: disable
+telemetry, send minimal statistics, or enable full team tracking. The console of a dedicated
+server is told how to answer with `extranerftelemetry on` or `off`. Nothing is sent until
+someone has answered, and the server never waits for it.
+Minimal statistics are a random ID valid for one server run, the online player count, the
+highest available world progression tier, singleplayer status and an optional randomized JAR
+proof, about once per hour. They are used only for community statistics about active
+servers, online players, and world progression.
+The choice can be changed at any time with `/extranerftelemetry on|off`. See the
 [Privacy & Telemetry Policy](https://extranerf.kuba6000.pl/privacy) and
 [telemetry details and testing](docs/TELEMETRY.md).
 

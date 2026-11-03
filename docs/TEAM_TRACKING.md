@@ -1,12 +1,14 @@
 # Team tracking
 
 An opt-in feature that lists a server as a team. It is separate from
-[telemetry](TELEMETRY.md): its own command, configuration and report. Turning telemetry off does not affect it, and the other
+[telemetry](TELEMETRY.md): its own command and report. Turning telemetry off does not affect it, and the other
 way around.
 
 ## Opting in
 
-An operator (or the console, or the world owner in singleplayer) runs:
+An operator (or the console, or the world owner in singleplayer) runs the command below, or
+chooses **Enable full team tracking** in the window that asks a new world about telemetry (see
+[TELEMETRY.md](TELEMETRY.md#consent)). Either way the world counts as asked.
 
 ```
 /extranerfteam on
@@ -17,8 +19,8 @@ An operator (or the console, or the world owner in singleplayer) runs:
 - The team is named after its **leader**: `<leader name>'s team`. The leader is the player
   who ran the command. From the console it is the first player online; with nobody online the
   command asks you to join first.
-- The first `on` creates a permanent **team ID** (a random UUID). It never changes, also
-  across `off` and `on`, restarts and world changes on the same installation.
+- The first `on` creates a permanent **team ID** (a random UUID), saved in the world. It never changes, also
+  across `off` and `on` and restarts of that world.
 - Running `on` again makes the player who ran it the new leader and keeps the ID.
 
 ## Telling players and opting out
@@ -29,8 +31,9 @@ Every player who joins a server with team tracking on gets a chat message saying
 
 ## What is saved and sent
 
-The values are saved in the mod configuration file under `team_tracking`: `enabled`, `id`,
-`leader` (the leader's UUID) and `leaderName`. The leader's name is refreshed whenever the
+The values are saved in the world (`TelemetryConsent`): whether it is on, the team ID, the
+leader's UUID and `leaderName`. A team that older versions saved in the configuration file is moved into the
+first world that is loaded. The leader's name is refreshed whenever the
 leader is online.
 
 Every 15 minutes (first report after 10 minutes), a daemon worker posts to

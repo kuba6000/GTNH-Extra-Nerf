@@ -107,7 +107,9 @@ or for a dedicated server:
 
 The server task does not accept the Minecraft EULA for normal local runs. Read
 and accept the EULA in the prepared runtime before expecting the server to
-start.
+start. A local run keeps the accepted `eula.txt` and the world; only the CI
+path (`-PfullPackCi`) starts from an empty directory. A new runtime directory
+appears whenever the downloaded pack manifest changes, and needs the EULA again.
 
 Full-pack preparation downloads a moving daily manifest by default, so it may
 take a significant amount of time on the first run and may test a newer pack

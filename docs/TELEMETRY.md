@@ -1,6 +1,6 @@
 # Telemetry
 
-Extra Nerf reports optional community statistics from the logical Minecraft server.
+Extra Nerf reports optional community statistics from the logical Minecraft server, only for worlds whose owners have agreed.
 Dedicated servers and integrated singleplayer servers report; connected remote clients do not.
 Development environments remain disabled. Other builds can report even when their JAR cannot be read.
 The endpoint is `https://extranerf.kuba6000.pl/iamalive`.
@@ -58,18 +58,47 @@ Your IP address is not part of the report. See the
 [privacy notice](https://extranerf.kuba6000.pl/privacy) for how long the receiving
 server keeps what it receives.
 
+## Consent
+
+Telemetry is opt-in, and the choice belongs to the world: it is saved in the world
+(`TelemetryConsent`, in the overworld's map storage) together with the team tracking settings.
+Until a world has been **asked**, no setting counts and nothing is sent; `status` says
+`not asked yet`.
+
+- **The window.** A few seconds after an operator (or the owner of a singleplayer world, who
+  needs no cheats) joins a world that has not been asked, the server opens a window that
+  describes what minimal statistics are, that they are used only to show community statistics on
+  the website, and links to the privacy and team tracking policies.
+  It has three buttons: **Disable telemetry**, **Send minimal statistics** and **Enable full team
+  tracking** (minimal statistics plus team tracking, with the player who clicked as leader).
+  The server checks who clicked; the first answer wins. Closing the window with Esc is not an
+  answer: the same player is asked again after the next login, once per server run.
+- **The console.** A dedicated server logs the question about fifteen seconds after it has started (so that
+  the start-up output of other mods does not bury it), with the two commands that answer it,
+  and a reminder two minutes later. The server does not wait: it
+  carries on and sends nothing. The console cannot enable team tracking while nobody is online,
+  because the team needs a leader.
+- **The commands.** `/extranerftelemetry on` and `off`, and `/extranerfteam on` and `off`, all
+  count as an answer. `/extranerfteam on` does not turn minimal statistics on.
+- **Older settings.** A world without a record takes over what older versions kept in
+  `config/gtnhextranerf.cfg`, once: a team that was listed there is moved into the first world
+  that is loaded (and cleared from the file, so that no other world lists itself under the same
+  ID) and counts as an answer; a refusal (`telemetry.enabled=false`) is copied to every world
+  and is not asked again; everything else, including the old default of `true`, is asked.
+  The keys in the file are only read for this.
+
 ## Lifecycle and opt-out
 
-First report after about ten minutes, then hourly. Snapshot capture happens on the
-server thread; hashing/HTTP run on one daemon worker. Five-second connect/read
-timeouts, no redirect following, one in-flight attempt, no retry queue. HTTP and
-JAR errors do not affect gameplay. Server stop and opt-out cancel queued work;
-a request already in progress may finish. Development runtimes never start a sender.
+First report after about ten minutes, then hourly. Snapshot capture happens on the server
+thread; hashing/HTTP run on one daemon worker. Five-second connect/read timeouts, no redirect
+following, one in-flight attempt, no retry queue. HTTP and JAR errors do not affect gameplay.
+Server stop and opt-out cancel queued work; a request already in progress may finish.
+Development runtimes never start a sender (set `-Dgtnhextranerf.consentPreview=true` to see
+the question there anyway).
 
-Owners can use `/extranerftelemetry off`, `on` and `status` (no slash in console).
-Dedicated servers require operator level 4. The integrated world owner does not
-need cheats; LAN guests require permission. `off` persists `telemetry.enabled=false`
-in `config/gtnhextranerf.cfg`. Status shows the last result and next scheduled report.
+Owners can use `/extranerftelemetry on`, `off` and `status` (no slash in console). Dedicated
+servers require operator level 4. The integrated world owner does not need cheats; LAN guests
+require permission. Status shows the last result and next scheduled report.
 A world that earns any certificate above Steam before its overworld has run 5 hours (`getTotalWorldTime`, which `/time set` does not change) is treated as a test, creative or cheat world: telemetry is turned off for it for good. The decision is saved in the world (`ProgressionData`, `telemetryBlocked`), is taken when the certificate is earned, and `/extranerftelemetry on` does not undo it; the log says so. Nothing extra is sent. Team tracking follows the same decision and does not report from such a world either.
 
 There is no force-send command. While telemetry is active, everyone who may run

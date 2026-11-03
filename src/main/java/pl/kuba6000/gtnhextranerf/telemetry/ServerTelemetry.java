@@ -89,6 +89,11 @@ public final class ServerTelemetry implements AutoCloseable {
 
     public static void start(MinecraftServer server) {
         stop();
+        if (!Config.telemetryAsked) {
+            // Until the world has been asked, no setting counts.
+            inactiveReason = "not asked yet";
+            return;
+        }
         if (!Config.telemetryEnabled || development) {
             inactiveReason = !Config.telemetryEnabled ? "opted out" : "development environment";
             return;

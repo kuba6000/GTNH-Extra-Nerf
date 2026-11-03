@@ -1227,7 +1227,7 @@ handles JSON, optional SHA256(salt || SHA256(JAR)) proof and bounded HTTP. The J
 is attempted once in the worker; failure yields null proof. The report has no version
 header, client timestamp or request UUID, and the client refuses plain HTTP outside loopback. Only these two classes plus the existing
 administrative `TelemetryCommand` are needed. Commands implement `ICommand` for
-production remapping. Owner opt-out persists configuration, without chat notices.
+production remapping. Telemetry is opt-in per world: `TelemetryConsent` (world data) holds whether the world was asked and the answer, `Config` mirrors it for the running world, and nothing starts until the world was asked. `ConsentPrompt` opens `ConsentGui` (MUI2, answered through `ConsentSyncHandler`) for operators and the singleplayer owner and logs the question on dedicated consoles.
 
 See `docs/TELEMETRY.md` for the JSON contract, the join notice, the early-certificate shutdown and
 opt-out, `docs/TEAM_TRACKING.md` for the separate opt-in team report and `docs/UPDATE_CHECK.md` for the

@@ -17,6 +17,14 @@ catalog, including exact values, conditions and unchanged fields, is
   inventory without consuming them. Crafting remains valid, and saved task IDs
   are preserved.
 
+## Telemetry consent
+
+- Telemetry is opt-in and decided per world. A new world asks its operators (or the owner of a
+  singleplayer world) in a window with three choices, and a dedicated server's console is told
+  how to answer. Nothing is sent until someone has answered. The old `enabled=true` default of
+  the configuration file does not count as an answer; a refusal and a listed team are carried
+  into the first world, and the settings now live in the world.
+
 ## Soybean crops
 
 - HarvestCraft soybean crops yield Blighted Soybean instead of Soybean.

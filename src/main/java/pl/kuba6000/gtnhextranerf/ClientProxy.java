@@ -1,5 +1,9 @@
 package pl.kuba6000.gtnhextranerf;
 
+import java.awt.Desktop;
+import java.net.URI;
+
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
@@ -59,6 +63,18 @@ public class ClientProxy extends CommonProxy {
     @Override
     protected void handleIntegrityFailure(RuntimeException failure) {
         ClientStartupErrors.request(StartupErrorRequest.failure(failure));
+    }
+
+    @Override
+    public void openUrl(String url) {
+        try {
+            Desktop.getDesktop()
+                .browse(new URI(url));
+        } catch (Throwable failure) {
+            // No browser (or no desktop) to open: the address is on the clipboard instead.
+            GuiScreen.setClipboardString(url);
+            GTNHExtraNerf.LOG.info("Could not open {}; copied it to the clipboard", url);
+        }
     }
 
     @Override

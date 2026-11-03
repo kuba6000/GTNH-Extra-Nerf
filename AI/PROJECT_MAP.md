@@ -117,6 +117,8 @@ The mod only sends reports and reads one version file. See `docs/TELEMETRY.md`, 
 | `telemetry/ServerTelemetry.java` | One logical-server session: captures the snapshot on the server thread, schedules reports, join notice. |
 | `telemetry/TelemetryClient.java` | JSON transport with the optional salted JAR proof; owned by the telemetry worker. |
 | `telemetry/TelemetryCommand.java` | `/extranerftelemetry on\|off\|status` for the owner. |
+| `telemetry/TelemetryConsent.java` | Per-world record: asked, telemetry answer, team tracking settings; takes over the old configuration once. |
+| `telemetry/ConsentPrompt.java`, `ConsentGui.java`, `ConsentSyncHandler.java` | The question: operator window (MUI2), console notice, server-side check and application of the answer. |
 | `teams/TeamTracking.java` | Opt-in team report every 15 minutes, leader selection and player list. |
 | `teams/TeamClient.java` | Encodes and posts one team report. |
 | `teams/TeamCommand.java` | `/extranerfteam on\|off\|status`. |

@@ -1,7 +1,6 @@
 package pl.kuba6000.gtnhextranerf.teams;
 
 import java.util.List;
-import java.util.UUID;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
@@ -62,36 +61,12 @@ public final class TeamCommand extends CommandBase implements ICommand {
     }
 
     private void enable(ICommandSender sender) {
-        MinecraftServer server = MinecraftServer.getServer();
-        TeamTracking.Member commandSender = null;
-        if (sender instanceof EntityPlayerMP) {
-            EntityPlayerMP player = (EntityPlayerMP) sender;
-            UUID id = player.getGameProfile()
-                .getId();
-            if (id != null && TeamTracking.Member.validName(player.getCommandSenderName()))
-                commandSender = new TeamTracking.Member(id, player.getCommandSenderName());
-        }
-        TeamTracking.Member leader = TeamTracking.chooseLeader(commandSender, TeamTracking.onlinePlayers(server));
-        if (leader == null) {
+        EntityPlayerMP player = sender instanceof EntityPlayerMP ? (EntityPlayerMP) sender : null;
+        if (!TeamTracking.enable(MinecraftServer.getServer(), player)) {
             reply(sender, new ChatComponentTranslation("gtnhextranerf.team.needs_player"));
             return;
         }
-        // The ID is created once and then kept, also across opting out and in again.
-        String teamId = isUuid(Config.teamId) ? Config.teamId
-            : UUID.randomUUID()
-                .toString();
-        Config.enableTeamTracking(teamId, leader.id.toString(), leader.name);
-        TeamTracking.start(server);
         reply(sender, TeamTracking.status());
-    }
-
-    private static boolean isUuid(String value) {
-        try {
-            UUID.fromString(value);
-            return true;
-        } catch (IllegalArgumentException invalid) {
-            return false;
-        }
     }
 
     private static void reply(ICommandSender sender, IChatComponent message) {

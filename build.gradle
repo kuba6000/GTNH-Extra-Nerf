@@ -4,7 +4,8 @@ plugins {
 }
 
 fullPack {
-    cleanServerRuntime.set(true)
+    // CI starts every server run from an empty directory. A local run keeps its EULA, world and configuration.
+    cleanServerRuntime.set(providers.gradleProperty('fullPackCi').isPresent())
 }
 
 // The tag identifies the release; the completed JAR's SHA-256 goes into release.json.

@@ -40,6 +40,8 @@ import pl.kuba6000.gtnhextranerf.recipes.RecipeValidationException;
 import pl.kuba6000.gtnhextranerf.recipes.crafting.ArcaneWorkbenchSync;
 import pl.kuba6000.gtnhextranerf.teams.TeamCommand;
 import pl.kuba6000.gtnhextranerf.teams.TeamTracking;
+import pl.kuba6000.gtnhextranerf.telemetry.ConsentGui;
+import pl.kuba6000.gtnhextranerf.telemetry.ConsentPrompt;
 import pl.kuba6000.gtnhextranerf.telemetry.ServerTelemetry;
 import pl.kuba6000.gtnhextranerf.telemetry.TelemetryCommand;
 import pl.kuba6000.gtnhextranerf.update.UpdateChecker;
@@ -67,6 +69,7 @@ public class CommonProxy {
         ComponentLoader.register();
         ProgressionCertificates.register();
         CertificationExams.register(event.getModConfigurationDirectory());
+        ConsentGui.register();
         MinecraftForge.EVENT_BUS.register(new EnergyHatchCertification());
         FMLCommonHandler.instance()
             .bus()
@@ -169,8 +172,11 @@ public class CommonProxy {
     // register server commands in this event handler (Remove if not needed)
     public void serverStarting(FMLServerStartingEvent event) {
         ServerLootRuntime.start(event.getServer());
+        // The decisions about telemetry and teams belong to the world, so they are read before anything starts.
+        Config.loadWorld();
         ServerTelemetry.startServer(event.getServer());
         TeamTracking.start(event.getServer());
+        ConsentPrompt.start(event.getServer(), GTNHExtraNerf.isDevelopmentEnvironment());
         UpdateChecker.start(Tags.VERSION);
         event.registerServerCommand(new TelemetryCommand());
         event.registerServerCommand(new TeamCommand());
@@ -180,13 +186,18 @@ public class CommonProxy {
         try {
             ServerLootRuntime.stop();
         } finally {
+            ConsentPrompt.stop();
             ServerTelemetry.stopServer();
             TeamTracking.stop();
             UpdateChecker.stop();
             ProgressionServerTasks.reset();
             ArcaneWorkbenchSync.reset();
+            Config.unloadWorld();
         }
     }
+
+    /** Opens a web page for the player; there is nobody to show it to on a dedicated server. */
+    public void openUrl(String url) {}
 
     public void showCertificate(ProgressionTier tier) {}
 

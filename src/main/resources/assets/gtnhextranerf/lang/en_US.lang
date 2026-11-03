@@ -354,3 +354,14 @@ item.gtnhextranerf.blighted_soybean.name=Blighted Soybean
 item.gtnhextranerf.magicnetized_manasteel_rod.name=Magicnetized Manasteel Rod
 
 gtnhextranerf.task.crafting_or_retrieval=Crafting or Retrieval
+
+# Telemetry consent window
+gtnhextranerf.consent.title=Extra Nerf statistics
+gtnhextranerf.consent.minimal=Minimal statistics are a random ID for this server run, the number of players online, the highest progression tier and whether this is singleplayer. They never include player names, UUIDs, chat or coordinates. They are used only to show community statistics on the Extra Nerf website.
+gtnhextranerf.consent.team=Full team tracking also lists your team publicly on the website, with its progression tier and the Minecraft names of its players.
+gtnhextranerf.consent.scope=Nothing is sent until you choose. The choice applies to this whole world and can be changed later with /extranerftelemetry and /extranerfteam.
+gtnhextranerf.consent.link.privacy=Privacy & Telemetry Policy
+gtnhextranerf.consent.link.team=Team tracking policy
+gtnhextranerf.consent.decline=Disable telemetry
+gtnhextranerf.consent.send_minimal=Send minimal statistics
+gtnhextranerf.consent.send_team=Enable full team tracking
