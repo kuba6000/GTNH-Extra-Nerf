@@ -6,8 +6,14 @@ in [`../docs/NERFS.md`](../docs/NERFS.md).
 
 ## Blighted Soybean
 
-`MixinSoybeanCrop` replaces Soybean drops from HarvestCraft crops with the
-unusable Blighted Soybean item. NEI hides it from its item panel.
+When HarvestCraft is loaded, `MixinSoybeanCrop` modifies the crop and seed
+return values of `BlockPamCrop`. It substitutes Blighted Soybean only when the
+original item is `harvestcraft:soybeanItem`; a distinct seed item is not
+substituted. The two target methods require at least two return matches in
+total. `BlightedSoybean` is registered during common pre-init, is not edible
+and has no recipe registered by this mod. NEI hides it from its item panel.
+The complete-server startup checks mixin application; the existing integration
+suite does not separately exercise soybean crop drops.
 
 ## Audit conventions
 

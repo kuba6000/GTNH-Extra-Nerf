@@ -8,8 +8,9 @@ Percent chances use GregTech's 10,000-point convention: 1,000 is 10%, 500 is
 
 ## Blighted Soybean
 
-Harvesting soybean crops yields Blighted Soybean instead of Soybean. It has no
-food or recipe use and is hidden from NEI.
+HarvestCraft soybean crops yield Blighted Soybean where they would otherwise
+drop Soybean. It is not edible, has no recipes added by Extra Nerf and is hidden
+from NEI's item list.
 
 ## Assembly Lines in AE2 Spatial worlds
 

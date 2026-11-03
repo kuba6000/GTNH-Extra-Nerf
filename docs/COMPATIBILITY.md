@@ -45,6 +45,7 @@ the pinned dependencies. It directly interacts with content from:
 - GT++;
 - GTNH Lanthanides;
 - TConstruct;
+- Extra Utilities and HarvestCraft when present;
 - Forestry-dependent recipes when Forestry is present.
 
 The Forge annotation currently lists GregTech, Dreamcraft and BartWorks as
@@ -67,6 +68,9 @@ implementation, so a reduced custom installation is not a supported target.
   1.3.5. Unexpected controller definitions and corrupt saved global claims fail closed.
   Back up the whole world, including `data/gtnhextranerf/loot`, when moving saves.
 
+- HarvestCraft soybean crop changes activate when HarvestCraft is loaded. The
+  replacement item is registered during common pre-init.
+- The Hungry Axe behavior activates when Extra Utilities is loaded.
 - TConstruct aluminium blast-furnace changes run only when the TConstruct
   class is available.
 - Indium comb, Praseodymium centrifuge and GT++ vacuum-furnace changes in the

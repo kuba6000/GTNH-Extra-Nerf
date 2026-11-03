@@ -23,9 +23,12 @@ toolchains and Java 8-compatible output.
 
 - `com.github.GTNewHorizons:GT5-Unofficial:5.09.54.261:dev`;
 - `com.github.GTNewHorizons:NewHorizonsCoreMod:2.9.99:dev`;
+- EnhancedLootBags `1.3.5:dev` as an implementation dependency;
+- Chisel `2.17.34-GTNH:dev`, Extra Utilities `2264384`, Custom Main Menu
+  `1.14.1:dev` and ChromaticTooltips `1.0.36-GTNH:dev` for compilation;
 - NotEnoughItems `2.8.171-GTNH:dev` for non-published runtime development;
-- JUnit Platform/Jupiter 6.1.3;
-- Objenesis 3.6 and fastutil 8.5.19 for tests.
+- JUnit Platform/Jupiter 6.1.3, Objenesis 3.6, fastutil 8.5.19 and LWJGL 2.9.3
+  for tests.
 
 The mod is designed for the complete GTNH environment. Direct class
 references in source exceed the three Forge requirements currently declared

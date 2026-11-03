@@ -1,9 +1,8 @@
 # Agent documentation
 
 This directory is the technical source of truth for coding agents and
-maintainers working on GTNH Extra Nerf. It describes the repository as it
-exists on 2026-11-01. Gameplay values must still be checked against source
-code when the implementation changes.
+maintainers working on GTNH Extra Nerf. Gameplay values must still be checked
+against source code when the implementation changes.
 
 ## Reading order
 

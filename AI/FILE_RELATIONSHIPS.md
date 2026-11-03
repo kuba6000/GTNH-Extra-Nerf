@@ -78,12 +78,13 @@ the Proxy's exact UEV Sensor input with a stack from `ComponentLoader`.
 | File | Calls/uses | Called/loaded by | Change impact |
 | --- | --- | --- | --- |
 | `GTNHExtraNerf.java` | `CommonProxy`, generated `Tags.VERSION`, Launch blackboard | Forge mod discovery | Mod ID, dependencies, lifecycle, proxy names and development-environment detection are integration contracts. |
-| `CommonProxy.java` | `Config`, `ComponentLoader`, `RecipeLoader`, `AuditManager`, `FMLCommonHandler` | `GTNHExtraNerf` | Registers component identities before recipes; only deobfuscated dev launches tolerate final audit gaps. |
+| `CommonProxy.java` | `Config`, `BlightedSoybean`, `ComponentLoader`, `RecipeLoader`, `AuditManager`, `FMLCommonHandler` | `GTNHExtraNerf` | Registers items before recipes; only deobfuscated dev launches tolerate final audit gaps. |
+| `items/BlightedSoybean.java` | Forge `GameRegistry`, GregTech materials tab | `CommonProxy.preInit`, `MixinSoybeanCrop`, NEI integration | Registers the replacement item and substitutes the specific HarvestCraft soybean item in crop drops. |
 | `ClientProxy.java` | `CommonProxy`, `ComponentItemRenderer`, startup-error display | `@SidedProxy` on clients | Keeps component renderers and error-screen behavior on the client. |
 | `components/ComponentRegistry.java` | `ComponentTier`, `ComponentType`, `ComponentItem` | `ComponentLoader`, client renderer/NEI integration, recipe consumers | Owns all identities and returns fresh stacks; never eagerly resolves GregTech appearance sources. |
 | `loader/ComponentLoader.java` | `ComponentRegistry`, Forge `GameRegistry` | `CommonProxy.preInit` | Registry names are save-data contracts; registers items once on both sides. |
 | `client/ComponentItemRenderer.java` | Source `IItemRenderer`, copied appearance stacks | `ClientProxy.init` | Uses real UEV rendering, including material effects. |
-| `client/nei/NEIExtraNerfConfig.java` | `ComponentLoader`, NEI handlers, `API.hideItem`, wildcard stacks | NEI plugin discovery; client handler-info event | Hides the item-panel entries and registers information pages and their dimensions. |
+| `client/nei/NEIExtraNerfConfig.java` | `BlightedSoybean`, `ComponentLoader`, NEI handlers, `API.hideItem`, wildcard stacks | NEI plugin discovery; client handler-info event | Hides item-panel entries and registers information pages and their dimensions. |
 | `client/nei/UfoAssemblerRecipeHandler.java` | Component/fabrication catalogs, localized text, owned sprites and GT GUI textures | NEI recipe/usage/catalyst queries | One cached UEV + part -> UQV display per component; UFO opens eight pages; no gameplay recipes or transfer overlay. |
 | `fabrication/UfoAssemblyRegistry.java` | `FabricationIngredient`, `FabricationItem`, component identities | `ComponentLoader`, NEI integration | Complete, unique component/part mapping with independent native item identities. |
 | `Config.java` | Forge `Configuration` | `CommonProxy.preInit` | No properties are defined; adding one requires human docs and migration defaults. |
@@ -155,6 +156,7 @@ the following together:
 | `MixinCraftingManagerAccessor` | Minecraft | `@Accessor` | private raw `recipes` list |
 | `MixinRecipeAccessor` | Minecraft | 2 `@Invoker`s | `IRecipe.getRecipeOutput` and `matches` |
 | `MixinShapedOreRecipeAccessor` | Forge | `@Accessor` | private `mirrored` flag |
+| `MixinSoybeanCrop` | HarvestCraft | `@ModifyReturnValue(require = 2)` | crop and seed return values equal to `harvestcraft:soybeanItem` |
 | `MixinAe2Crafting` | NHCore | 3 `@WrapOperation` handlers | shared AE2-output/Titanium ingredient selection across crafting registration APIs |
 | `MixinWirelessConnectionPower` | AE2 | 1 `@WrapMethod` replacing power recalculation | distance^4 EU/t capped at 10,000,000 per link, split across endpoints; hubs sum their shares |
 | `MixinMeP2PChannelCapacity` | AE2 | 1 `@Inject` at constructor return | standard eight-channel external node capacity, shared across output branches |
@@ -227,10 +229,12 @@ full-pack server rather than assertions over production source text.
 
 ## External dependency ownership
 
-The root declares direct Maven dependencies only on GT5-Unofficial and
-NewHorizonsCoreMod. Those development artifacts expose types from additional
-mods used by the source. Runtime code also couples to BartWorks, Dreamcraft,
-Good Generator, GT++, GTNH Lanthanides, TConstruct and optionally Forestry.
+The root directly declares GT5-Unofficial, NewHorizonsCoreMod and
+EnhancedLootBags, plus compile-only Chisel, Extra Utilities, Custom Main Menu
+and ChromaticTooltips and a development-only NEI dependency. The GT5 development
+artifact also exposes types from merged addons used by the source. Runtime code
+interacts with BartWorks, Dreamcraft, Good Generator, GT++, GTNH Lanthanides,
+TConstruct and optionally Forestry and HarvestCraft.
 
 Before changing dependency declarations, distinguish:
 

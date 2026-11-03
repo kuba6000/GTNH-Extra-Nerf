@@ -1,9 +1,9 @@
 # Next progression nerfs: preliminary research
 
 Date: 2026-10-11. Branch: `codex/next-progression-nerfs`, based on merged
-`master` (`dd45620`). Implementation was authorized on 2026-10-11 and is now
-proceeding in numbered stages. The status table below distinguishes implemented
-changes from the source review. Quantities needing a decision remain unspecified.
+`master` (`dd45620`). Implementation was authorized on 2026-10-11. The status
+table below distinguishes implemented changes from deferred decisions. For the
+current behavior, see [the gameplay catalog](NERFS.md).
 
 The follow-up decisions below were agreed during the design review.
 Compact Fusion, the ozone variant, the specified Naquadah intermediate
@@ -14,9 +14,9 @@ restriction and moving Ruthenium separation into Coolant Tower. Points
 **14, 15 and 18 are deferred** at the user's request. Point 17 was resumed
 with the operation-only singleblock restriction below. The Toxic Everglades
 machine ban, the exact UU-Matter removals and native two-member Chisel groups
-for tiered raw/finished casings are also recorded below. Verify
-the progression dependencies and review the remaining alternative production
-paths before implementation.
+for tiered raw/finished casings are also recorded below. The original review
+called for checking progression dependencies and alternative production paths
+before implementation.
 
 The original source review used the then-prepared full-pack server runtime:
 
@@ -26,13 +26,13 @@ The original source review used the then-prepared full-pack server runtime:
 
 The UU-Matter and carving follow-up checked CropsNH 2.0.134 and Chisel
 2.17.34-GTNH from that runtime, alongside the client's CropsNH .137. Source
-links retain the original review revisions. The current single supported
-baseline is GT **5.09.54.221**, NHCore **2.9.88** and NEI **2.8.159-GTNH**.
-The full-pack server fixtures and aggregate audit were rerun successfully on
-that baseline after the dependency update.
+links retain the original review revisions. The full-pack server fixtures and
+aggregate audit were rerun during that work on GT **5.09.54.221**, NHCore
+**2.9.88** and NEI **2.8.159-GTNH**. See [compatibility](COMPATIBILITY.md) for
+the currently supported baseline.
 
-Development dependencies now match that target; no older-GT mixin variants
-are maintained. The reduced dev policy for missing optional content remains.
+Development dependencies matched that target at the time; no older-GT mixin
+variants were maintained. The reduced dev policy for missing optional content remains.
 Sources were downloaded from official
 GitHub tags into ignored `build/research/next-nerfs/`; `SOURCE.json` records
 the commit for each source tree. This review does not claim a complete scan

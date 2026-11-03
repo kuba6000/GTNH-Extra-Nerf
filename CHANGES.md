@@ -1,12 +1,17 @@
 # Current gameplay changes
 
-- Soybean crops yield Blighted Soybean.
-- MV Electric Motor crafting and Assembler recipes require a Magicnetized
-  Manasteel Rod made in an Arcane Workbench.
-
 This file is a concise summary of the active ruleset. The complete canonical
 catalog, including exact values, conditions and unchanged fields, is
 [`docs/NERFS.md`](docs/NERFS.md).
+
+## Soybean crops
+
+- HarvestCraft soybean crops yield Blighted Soybean instead of Soybean.
+
+## MV Electric Motor
+
+- The crafting and Assembler recipes require a Magicnetized Manasteel Rod made
+  in an Arcane Workbench.
 
 ## Hungry Axe
 
