@@ -91,6 +91,14 @@ scenario failures and 2 for infrastructure or incomplete evidence.
 `NativeScenarios` reports the existing recipe, machine, progression, loot and
 telemetry fixtures individually. `ArcaneWorkbenchScenarios` exercises real GUI
 input and verifies both server inventory and the visible client inventory.
+
+When changing a recipe, add Horizon-QA assertions for its final registered form
+in every machine that offers it, including ordinary, industrial and multiblock
+variants. Identify each machine's actual recipe map and verify the expected
+ingredients, quantities and outputs after loading. Recipe maps can be independent
+or copy and inherit recipes in unexpected ways, so check each affected map
+explicitly.
+
 The reduced development fixture uses the same runner:
 
 ```powershell

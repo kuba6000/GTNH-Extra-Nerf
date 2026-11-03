@@ -21,6 +21,11 @@ final class HeatingCoilIntegrationTests {
     private HeatingCoilIntegrationTests() {}
 
     static void verify() {
+        verifyAssembler(
+            Materials.Cupronickel,
+            ItemList.Casing_Coil_Cupronickel,
+            NHItemList.AluminoSilicateWool.get(24),
+            NHItemList.MicaInsulatorFoil.get(16));
         verifyAssembler(Materials.Kanthal, ItemList.Casing_Coil_Kanthal, NHItemList.MicaInsulatorFoil.get(24));
         verifyAssembler(Materials.Nichrome, ItemList.Casing_Coil_Nichrome, NHItemList.MicaInsulatorFoil.get(32));
         verifyAssembler(Materials.TPV, ItemList.Casing_Coil_TungstenSteel, NHItemList.MicaInsulatorFoil.get(40));
@@ -54,45 +59,48 @@ final class HeatingCoilIntegrationTests {
             64);
     }
 
-    private static void verifyAssembler(Materials material, ItemList coil, ItemStack insulation) {
-        RecipeMatch expected = RecipeMatch.builder()
-            .itemInputs(
-                GTOreDictUnificator.get(OrePrefixes.wireGt08, material, 8),
-                insulation,
-                GTUtility.getIntegratedCircuit(3))
-            .itemOutputs(coil.get(1))
-            .build();
+    private static void verifyAssembler(Materials material, ItemList coil, ItemStack... insulationVariants) {
         long recipes = RecipeMaps.assemblerRecipes.getAllRecipes()
             .stream()
             .filter(
                 recipe -> Arrays.stream(recipe.mOutputs)
                     .anyMatch(coil::isStackEqual))
             .count();
-        check(
-            recipes == 1 && RecipeMaps.assemblerRecipes.getAllRecipes()
-                .stream()
-                .anyMatch(expected),
-            "Unexpected heating coil cost: " + coil);
-        if (insulation.stackSize > insulation.getMaxStackSize()) {
-            GTRecipe recipe = RecipeMaps.assemblerRecipes.getAllRecipes()
-                .stream()
-                .filter(expected)
-                .findFirst()
-                .get();
-            ItemStack first = insulation.copy();
-            first.stackSize = first.getMaxStackSize();
-            ItemStack second = insulation.copy();
-            second.stackSize -= first.stackSize;
-            ItemStack wire = GTOreDictUnificator.get(OrePrefixes.wireGt08, material, 8);
-            FluidStack[] fluids = Arrays.stream(recipe.mFluidInputs)
-                .map(FluidStack::copy)
-                .toArray(FluidStack[]::new);
+        check(recipes == insulationVariants.length, "Unexpected heating coil variants: " + coil);
+        for (ItemStack insulation : insulationVariants) {
+            RecipeMatch expected = RecipeMatch.builder()
+                .itemInputs(
+                    GTOreDictUnificator.get(OrePrefixes.wireGt08, material, 8),
+                    insulation,
+                    GTUtility.getIntegratedCircuit(3))
+                .itemOutputs(coil.get(1))
+                .build();
             check(
-                recipe.isRecipeInputEqual(true, fluids, wire, first, second, GTUtility.getIntegratedCircuit(3)),
-                "Split coil insulation was rejected: " + coil);
-            check(
-                first.stackSize == 0 && second.stackSize == 0 && wire.stackSize == 0,
-                "Split coil inputs were not consumed: " + coil);
+                RecipeMaps.assemblerRecipes.getAllRecipes()
+                    .stream()
+                    .anyMatch(expected),
+                "Unexpected heating coil cost: " + coil);
+            if (insulation.stackSize > insulation.getMaxStackSize()) {
+                GTRecipe recipe = RecipeMaps.assemblerRecipes.getAllRecipes()
+                    .stream()
+                    .filter(expected)
+                    .findFirst()
+                    .get();
+                ItemStack first = insulation.copy();
+                first.stackSize = first.getMaxStackSize();
+                ItemStack second = insulation.copy();
+                second.stackSize -= first.stackSize;
+                ItemStack wire = GTOreDictUnificator.get(OrePrefixes.wireGt08, material, 8);
+                FluidStack[] fluids = Arrays.stream(recipe.mFluidInputs)
+                    .map(FluidStack::copy)
+                    .toArray(FluidStack[]::new);
+                check(
+                    recipe.isRecipeInputEqual(true, fluids, wire, first, second, GTUtility.getIntegratedCircuit(3)),
+                    "Split coil insulation was rejected: " + coil);
+                check(
+                    first.stackSize == 0 && second.stackSize == 0 && wire.stackSize == 0,
+                    "Split coil inputs were not consumed: " + coil);
+            }
         }
     }
 

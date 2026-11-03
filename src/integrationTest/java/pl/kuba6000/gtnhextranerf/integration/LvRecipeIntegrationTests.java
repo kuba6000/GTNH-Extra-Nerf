@@ -201,6 +201,19 @@ final class LvRecipeIntegrationTests {
                 .stream()
                 .anyMatch(assembler),
             "magicnetized MV motor assembler recipe is missing");
+        RecipeMatch oldAssembler = RecipeMatch.builder()
+            .itemInputs(
+                magnetic,
+                item(OrePrefixes.stick, Materials.Aluminium, 2),
+                item(OrePrefixes.wireGt02, Materials.Cupronickel, 4))
+            .oreDictInput("cableGt01AnyCopper", 2)
+            .itemOutputs(motor)
+            .build();
+        check(
+            RecipeMaps.assemblerRecipes.getAllRecipes()
+                .stream()
+                .noneMatch(oldAssembler),
+            "old MV motor assembler recipe survived");
         for (Materials copper : new Materials[] { Materials.Copper, Materials.AnnealedCopper }) {
             RecipeMatch coal = RecipeMatch.builder()
                 .itemInputs(

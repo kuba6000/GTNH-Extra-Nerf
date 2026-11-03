@@ -18,6 +18,7 @@ import gregtech.api.util.GTUtility;
 import gregtech.common.items.CombType;
 import gregtech.loaders.misc.GTBees;
 import gtnhlanth.common.register.WerkstoffMaterialPool;
+import pl.kuba6000.gtnhextranerf.recipes.machine.RecipeMatch;
 
 /** Checks the final recipes available to single-block and industrial machines. */
 final class IndustrialRecipeIntegrationTests {
@@ -124,6 +125,13 @@ final class IndustrialRecipeIntegrationTests {
             .fluids(fluids)
             .find();
         check(single != null && industrial != null, name + " must be available in both machine types");
+        RecipeMatch expectedInputs = RecipeMatch.builder()
+            .itemInputs(items)
+            .build();
+        check(expectedInputs.test(single), name + " has an incorrect item cost in " + singleMap.unlocalizedName);
+        check(
+            expectedInputs.test(industrial),
+            name + " has an incorrect item cost in " + industrialMap.unlocalizedName);
         check(
             single.mDuration == industrial.mDuration && single.mEUt == industrial.mEUt,
             name + " has different base time or voltage in the industrial machine");
