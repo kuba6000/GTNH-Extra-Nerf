@@ -68,6 +68,7 @@ public final class CoreModRecipeNerf implements RecipeModule {
             CoreModRecipeNerf::modifyIntegratedLogicCircuitInputs);
         registry.register(AuditScope.MODIFY_GOOD_CIRCUIT_INPUTS, CoreModRecipeNerf::modifyGoodCircuitInputs);
         registry.register(AuditScope.MODIFY_CUPRONICKEL_COIL_INPUTS, CoreModRecipeNerf::modifyCupronickelCoilInputs);
+        registry.register(AuditScope.MODIFY_HEATING_COIL_INPUTS, CoreModRecipeNerf::modifyHeatingCoilInputs);
         registry.register(AuditScope.MODIFY_MV_ENERGY_HATCH_INPUTS, CoreModRecipeNerf::modifyMvEnergyHatchInputs);
         registry.register(AuditScope.MODIFY_RAW_NEUTRONIUM_RECIPE, CoreModRecipeNerf::modifyRawNeutronium);
         registry.register(AuditScope.MODIFY_INDIUM_COMB_RECIPES, CoreModRecipeNerf::modifyIndiumCombRecipes);
@@ -662,6 +663,108 @@ public final class CoreModRecipeNerf implements RecipeModule {
                         GTOreDictUnificator.get(OrePrefixes.wireGt02, Materials.Cupronickel, 8),
                         GTOreDictUnificator.get(OrePrefixes.wireGt08, Materials.Cupronickel, 8))
                     .itemInputAmount(NHItemList.MicaInsulatorFoil.get(8), 16)
+                    .build());
+    }
+
+    private static void modifyHeatingCoilInputs(RecipeContext recipes) {
+        modifyHeatingCoil(
+            recipes,
+            Materials.Kanthal,
+            ItemList.Casing_Coil_Kanthal,
+            NHItemList.MicaInsulatorFoil.get(12),
+            Materials.Cupronickel,
+            15 * SECONDS,
+            TierEU.RECIPE_MV);
+        modifyHeatingCoil(
+            recipes,
+            Materials.Nichrome,
+            ItemList.Casing_Coil_Nichrome,
+            NHItemList.MicaInsulatorFoil.get(16),
+            Materials.Kanthal,
+            20 * SECONDS,
+            TierEU.RECIPE_HV);
+        modifyHeatingCoil(
+            recipes,
+            Materials.TPV,
+            ItemList.Casing_Coil_TungstenSteel,
+            NHItemList.MicaInsulatorFoil.get(20),
+            Materials.Nichrome,
+            25 * SECONDS,
+            TierEU.RECIPE_EV);
+        modifyHeatingCoil(
+            recipes,
+            Materials.HSSG,
+            ItemList.Casing_Coil_HSSG,
+            NHItemList.MicaInsulatorFoil.get(24),
+            Materials.TPV,
+            30 * SECONDS,
+            TierEU.RECIPE_IV);
+        modifyHeatingCoil(
+            recipes,
+            Materials.HSSS,
+            ItemList.Casing_Coil_HSSS,
+            NHItemList.MicaInsulatorFoil.get(28),
+            Materials.HSSG,
+            35 * SECONDS,
+            TierEU.RECIPE_IV);
+        modifyHeatingCoil(
+            recipes,
+            Materials.Naquadah,
+            ItemList.Casing_Coil_Naquadah,
+            NHItemList.MicaInsulatorFoil.get(32),
+            Materials.HSSS,
+            40 * SECONDS,
+            TierEU.RECIPE_LuV);
+        modifyHeatingCoil(
+            recipes,
+            Materials.NaquadahAlloy,
+            ItemList.Casing_Coil_NaquadahAlloy,
+            NHItemList.MicaInsulatorFoil.get(36),
+            Materials.Naquadah,
+            45 * SECONDS,
+            TierEU.RECIPE_LuV);
+        modifyHeatingCoil(
+            recipes,
+            Materials.Trinium,
+            ItemList.Casing_Coil_Trinium,
+            ItemList.Naquarite_Universal_Insulator_Foil.get(8),
+            Materials.NaquadahAlloy,
+            50 * SECONDS,
+            TierEU.RECIPE_ZPM);
+        modifyHeatingCoil(
+            recipes,
+            Materials.ElectrumFlux,
+            ItemList.Casing_Coil_ElectrumFlux,
+            ItemList.Naquarite_Universal_Insulator_Foil.get(12),
+            Materials.Trinium,
+            55 * SECONDS,
+            TierEU.RECIPE_UV);
+        modifyHeatingCoil(
+            recipes,
+            Materials.DraconiumAwakened,
+            ItemList.Casing_Coil_AwakenedDraconium,
+            ItemList.Naquarite_Universal_Insulator_Foil.get(16),
+            Materials.ElectrumFlux,
+            60 * SECONDS,
+            TierEU.RECIPE_UHV);
+    }
+
+    private static void modifyHeatingCoil(RecipeContext recipes, Materials material, ItemList output,
+        ItemStack insulation, Materials solder, int duration, long eut) {
+        ItemStack wire = GTOreDictUnificator.get(OrePrefixes.wireGt02, material, 8);
+        recipes.machine(assemblerRecipes)
+            .modifyOne(
+                RecipeMatch.builder()
+                    .itemInputs(wire, insulation, GTUtility.getIntegratedCircuit(3))
+                    .itemOutputs(output.get(1))
+                    .fluidInputs(solder.getMolten(144))
+                    .fluidOutputs()
+                    .duration(duration)
+                    .eut(eut)
+                    .build(),
+                RecipeChange.builder()
+                    .replaceItemInput(wire, GTOreDictUnificator.get(OrePrefixes.wireGt08, material, 8))
+                    .itemInputAmount(insulation, insulation.stackSize * 2)
                     .build());
     }
 

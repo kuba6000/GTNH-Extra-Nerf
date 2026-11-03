@@ -1033,13 +1033,24 @@ Each also used 4 fine Copper wires and integrated circuit 4.
 
 ## Machine casings and components
 
-### Cupronickel Coils
+### Heating coils
 
-In both assembler recipes, the Cupronickel input changes from eight 2x wires
-to eight 8x wires.
+Heating coils from Cupronickel through Awakened Draconium require eight 8x
+wires instead of eight 2x wires and twice as much insulation.
 
-- the Alumino Silicate Wool variant increases from 12 to 24 Wool;
-- the Mica Insulator Foil variant increases from 8 to 16 Foils.
+| Coil | Insulation per block |
+| --- | --- |
+| Cupronickel | 24 Alumino Silicate Wool or 16 Mica Insulator Foils |
+| Kanthal | 24 Mica Insulator Foils |
+| Nichrome | 32 Mica Insulator Foils |
+| TPV-Alloy | 40 Mica Insulator Foils |
+| HSS-G | 48 Mica Insulator Foils |
+| HSS-S | 56 Mica Insulator Foils |
+| Naquadah | 64 Mica Insulator Foils |
+| Naquadah Alloy | 72 Mica Insulator Foils |
+| Trinium | 16 Naquarite Universal Insulator Foils |
+| Fluxed Electrum | 24 Naquarite Universal Insulator Foils |
+| Awakened Draconium | 32 Naquarite Universal Insulator Foils |
 
 ### MV Energy Hatch
 

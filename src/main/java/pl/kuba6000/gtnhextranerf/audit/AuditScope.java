@@ -185,6 +185,7 @@ public enum AuditScope implements AuditDefinition {
     MODIFY_INTEGRATED_LOGIC_CIRCUIT_INPUTS(modified(1)),
     MODIFY_GOOD_CIRCUIT_INPUTS(modified(1)),
     MODIFY_CUPRONICKEL_COIL_INPUTS(modified(2)),
+    MODIFY_HEATING_COIL_INPUTS(modified(10)),
     MODIFY_MV_ENERGY_HATCH_INPUTS(modified(1)),
     REMOVE_MV_ENERGY_HATCH_HAND_CRAFTING(removed(1)),
     MODIFY_RAW_NEUTRONIUM_RECIPE(modified(2)),

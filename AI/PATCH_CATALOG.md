@@ -957,13 +957,14 @@ The crafting-table version is independently patched by `CraftingNerf`.
 | Integrated Logic Circuit | ILC Chips `1 -> 4` | `MODIFY_INTEGRATED_LOGIC_CIRCUIT_INPUTS`, exactly 1 modified |
 | Good Circuit | Basic Electronic Circuits `2 -> 4` | `MODIFY_GOOD_CIRCUIT_INPUTS`, exactly 1 modified |
 
-### Cupronickel Coils
+### Heating coils
 
-- Both assembler variants replace eight Cupronickel 2x wires with eight 8x
-  wires.
-- Alumino Silicate Wool changes from 12 to 24; Mica Insulator Foil changes
-  from 8 to 16.
-- Audit scope: `MODIFY_CUPRONICKEL_COIL_INPUTS`, exactly two modified recipes.
+`CoreModRecipeNerf` changes Assembler coils from Cupronickel through Awakened
+Draconium to eight 8x wires and doubles their insulation. The Cupronickel
+variants use `MODIFY_CUPRONICKEL_COIL_INPUTS`; the following tiers use
+`MODIFY_HEATING_COIL_INPUTS`.
+
+Awakened Draconium is the final heating coil covered by the nerf.
 
 ### MV Energy Hatch
 
