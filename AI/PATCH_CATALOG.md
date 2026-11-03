@@ -11,6 +11,13 @@ unusable Blighted Soybean item. NEI hides it from its item panel.
 
 ## Audit conventions
 
+`MagicnetizedManasteelRod` registers an arcane recipe using a Manasteel Rod,
+two Magnetic Steel Rods, a Solegnolia, 10 Aer and 10 Ordo. The workbench
+keeps the flower in the workbench and converts the Magnetic Steel Rods to Steel Rods.
+`CraftingNerf` and `CoreModRecipeNerf` replace the
+Magnetic Steel Rod in the MV motor's hand and Assembler recipes. The COAL
+recipe uses Long Magnetic Steel Rods.
+
 `MixinVoidMinerFluids` replaces the old tier-based rejection with a consumption
 matrix. Its strict two-site `ModifyExpressionValue` changes both reads of
 `batchMultiplier` in native `consumeNobleGas`: availability and deduction.

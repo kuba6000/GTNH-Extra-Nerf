@@ -1,6 +1,8 @@
 # Current gameplay changes
 
 - Soybean crops yield Blighted Soybean.
+- MV Electric Motor crafting and Assembler recipes require a Magicnetized
+  Manasteel Rod made in an Arcane Workbench.
 
 This file is a concise summary of the active ruleset. The complete canonical
 catalog, including exact values, conditions and unchanged fields, is

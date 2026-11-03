@@ -14,7 +14,8 @@ public enum TargetedMod implements ITargetMod {
     APPLIED_ENERGISTICS_2("appliedenergistics2"),
     EXTRA_UTILITIES("ExtraUtilities"),
     HARVESTCRAFT("harvestcraft"),
-    ENHANCED_LOOT_BAGS("enhancedlootbags");
+    ENHANCED_LOOT_BAGS("enhancedlootbags"),
+    THAUMCRAFT("Thaumcraft");
 
     private final TargetModBuilder builder;
 

@@ -12,6 +12,11 @@ import com.gtnewhorizon.gtnhmixins.builders.MixinBuilder;
 
 public enum Mixin implements IMixins {
 
+    ArcaneCraftingRemainders(
+        new MixinBuilder().addCommonMixins("MixinArcaneCraftingRemainders", "MixinArcaneWorkbenchSync")
+            .addRequiredMod(TargetedMod.THAUMCRAFT)
+            .setPhase(LATE)),
+
     SoybeanCrop(new MixinBuilder().addCommonMixins("MixinSoybeanCrop")
         .addRequiredMod(TargetedMod.HARVESTCRAFT)
         .setPhase(LATE)),

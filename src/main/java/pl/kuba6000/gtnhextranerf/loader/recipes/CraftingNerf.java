@@ -14,6 +14,7 @@ import gregtech.api.enums.ToolDictNames;
 import gregtech.api.util.GTOreDictUnificator;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import pl.kuba6000.gtnhextranerf.audit.AuditScope;
+import pl.kuba6000.gtnhextranerf.items.MagicnetizedManasteelRod;
 import pl.kuba6000.gtnhextranerf.machines.RawMachineCasings;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeContext;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeModule;
@@ -28,6 +29,7 @@ public final class CraftingNerf implements RecipeModule {
 
     @Override
     public void register(RecipeRegistry registry) {
+        registry.register(AuditScope.MODIFY_MV_MOTOR_HAND_CRAFTING, CraftingNerf::mvMotor);
         registry.register(AuditScope.REDUCE_BRONZE_DUST_HAND_CRAFTING_OUTPUT, CraftingNerf::bronzeDust);
         registry.register(AuditScope.MODIFY_LARGE_CHEMICAL_REACTOR_HAND_CRAFTING, CraftingNerf::largeChemicalReactor);
         registry.register(AuditScope.MODIFY_LV_CIRCUIT_ASSEMBLER_HAND_CRAFTING, CraftingNerf::lvCircuitAssembler);
@@ -38,6 +40,25 @@ public final class CraftingNerf implements RecipeModule {
         registry.register(AuditScope.MODIFY_DIAMOND_SAWBLADE_HAND_CRAFTING, CraftingNerf::diamondSawblade);
         registry
             .register(AuditScope.REMOVE_MV_ENERGY_HATCH_HAND_CRAFTING, CraftingNerf::removeMvEnergyHatchHandCrafting);
+    }
+
+    private static void mvMotor(RecipeContext recipes) {
+        CraftingDefinition original = CraftingRecipeBuilder.shaped()
+            .pattern("CWR", "WIW", "RWC")
+            .ingredient('C', "cableGt01AnyCopper")
+            .ingredient('W', "wireGt02Cupronickel")
+            .ingredient('R', "stickAluminium")
+            .ingredient('I', "stickSteelMagnetic")
+            .output(ItemList.Electric_Motor_MV.get(1))
+            .matchType(CraftingRecipeType.GT_SHAPED)
+            .removable(false)
+            .build();
+        recipes.crafting()
+            .replaceOne(
+                original,
+                original.toBuilder()
+                    .ingredient('I', MagicnetizedManasteelRod.stack())
+                    .build());
     }
 
     private static void bronzeDust(RecipeContext recipes) {

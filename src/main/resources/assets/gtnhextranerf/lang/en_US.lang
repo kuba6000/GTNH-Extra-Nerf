@@ -343,3 +343,4 @@ gtnhextranerf.error.explanation=The required recipe changes could not be verifie
 gtnhextranerf.error.logs=See logs/latest.log for the full error report. Close the game before changing your installation.
 gtnhextranerf.error.preview=Development preview - forced by JVM flag
 item.gtnhextranerf.blighted_soybean.name=Blighted Soybean
+item.gtnhextranerf.magicnetized_manasteel_rod.name=Magicnetized Manasteel Rod

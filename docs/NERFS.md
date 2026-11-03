@@ -555,6 +555,16 @@ The shapeless Tool Station Slab recipe requires:
 - The Iron Magnetic/Any Iron variant is removed from crafting and the Assembler.
 - The Steel Magnetic/Steel variant remains and becomes dismantleable.
 
+### MV Electric Motor
+
+The hand-crafting and Assembler recipes require a Magicnetized Manasteel Rod
+instead of a Magnetic Steel Rod. In an Arcane Workbench, place a Manasteel Rod
+between two Magnetic Steel Rods with a Solegnolia below it. The recipe costs
+10 Aer and 10 Ordo vis, keeps the Solegnolia in the workbench, and turns the
+Magnetic Steel Rods into Steel Rods.
+
+The Component Assembly Line produces MV motors with Long Magnetic Steel Rods.
+
 ### Rings
 
 - GregTech ring crafting requires a long stick instead of a normal stick.

@@ -9,11 +9,14 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
 import com.dreammaster.scripts.IngredientFactory;
 
 import bartworks.system.material.WerkstoffLoader;
+import cpw.mods.fml.common.registry.GameRegistry;
+import goodgenerator.api.recipe.GoodGeneratorRecipeMaps;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.Mods;
@@ -25,7 +28,12 @@ import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTRecipeBuilder;
 import gtPlusPlus.core.material.MaterialsAlloy;
+import pl.kuba6000.gtnhextranerf.items.MagicnetizedManasteelRod;
 import pl.kuba6000.gtnhextranerf.recipes.machine.RecipeMatch;
+import thaumcraft.api.ThaumcraftApi;
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.crafting.ShapedArcaneRecipe;
+import thaumcraft.common.tiles.TileMagicWorkbench;
 
 /** Final registered recipes, queried through Minecraft and GT's public APIs. */
 final class LvRecipeIntegrationTests {
@@ -36,6 +44,7 @@ final class LvRecipeIntegrationTests {
         verifyLvCircuitVariants();
         verifyOreDictionaryMatching();
         verifyMotors();
+        verifyMvMotor();
         verifyCasing(Materials.CastIron, ItemList.Casing_ULV);
         verifyCasing(Materials.Steel, ItemList.Casing_LV);
         verifyCasing(Materials.Aluminium, ItemList.Casing_MV);
@@ -164,6 +173,80 @@ final class LvRecipeIntegrationTests {
                     copper,
                     cable)),
             "steel crafting motor is missing");
+    }
+
+    private static void verifyMvMotor() {
+        ItemStack motor = ItemList.Electric_Motor_MV.get(1);
+        ItemStack magic = MagicnetizedManasteelRod.stack();
+        ItemStack magnetic = item(OrePrefixes.stick, Materials.SteelMagnetic, 1);
+        ItemStack aluminium = item(OrePrefixes.stick, Materials.Aluminium, 1);
+        ItemStack wire = item(OrePrefixes.wireGt02, Materials.Cupronickel, 1);
+        ItemStack cable = item(OrePrefixes.cableGt01, Materials.Copper, 1);
+        check(
+            same(motor, craft(cable, wire, aluminium, wire, magic, wire, aluminium, wire, cable)),
+            "magicnetized MV motor crafting is missing");
+        check(
+            !same(motor, craft(cable, wire, aluminium, wire, magnetic, wire, aluminium, wire, cable)),
+            "old MV motor crafting survived");
+        RecipeMatch assembler = RecipeMatch.builder()
+            .itemInputs(
+                magic,
+                item(OrePrefixes.stick, Materials.Aluminium, 2),
+                item(OrePrefixes.wireGt02, Materials.Cupronickel, 4))
+            .oreDictInput("cableGt01AnyCopper", 2)
+            .itemOutputs(motor)
+            .build();
+        check(
+            RecipeMaps.assemblerRecipes.getAllRecipes()
+                .stream()
+                .anyMatch(assembler),
+            "magicnetized MV motor assembler recipe is missing");
+        for (Materials copper : new Materials[] { Materials.Copper, Materials.AnnealedCopper }) {
+            RecipeMatch coal = RecipeMatch.builder()
+                .itemInputs(
+                    item(OrePrefixes.stickLong, Materials.SteelMagnetic, 24),
+                    item(OrePrefixes.stickLong, Materials.Aluminium, 48),
+                    item(OrePrefixes.wireGt16, Materials.Cupronickel, 24),
+                    item(OrePrefixes.cableGt16, copper, 6))
+                .itemOutputs(ItemList.Electric_Motor_MV.get(64))
+                .build();
+            check(
+                GoodGeneratorRecipeMaps.componentAssemblyLineRecipes.getAllRecipes()
+                    .stream()
+                    .anyMatch(coal),
+                "original MV motor COAL recipe is missing");
+        }
+        boolean arcane = false;
+        for (Object candidate : ThaumcraftApi.getCraftingRecipes()) {
+            if (!(candidate instanceof ShapedArcaneRecipe)) continue;
+            ShapedArcaneRecipe recipe = (ShapedArcaneRecipe) candidate;
+            if (same(magic, recipe.getRecipeOutput()) && recipe.getAspects()
+                .getAmount(Aspect.AIR) == 10
+                && recipe.getAspects()
+                    .getAmount(Aspect.ORDER) == 10) {
+                TileMagicWorkbench grid = new TileMagicWorkbench();
+                ItemStack flower = new ItemStack(GameRegistry.findItem("Botania", "specialFlower"));
+                NBTTagCompound tags = new NBTTagCompound();
+                tags.setString("type", "solegnolia");
+                tags.setString("test-extra-data", "preserved");
+                flower.setTagCompound(tags);
+                grid.stackList[3] = magnetic.copy();
+                grid.stackList[4] = item(OrePrefixes.stick, Materials.Manasteel, 1);
+                grid.stackList[5] = magnetic.copy();
+                grid.stackList[7] = flower;
+                check(recipe.matches(grid, null, null), "magicnetized rod ingredients do not match");
+                check(
+                    same(
+                        item(OrePrefixes.stick, Materials.Steel, 1),
+                        MagicnetizedManasteelRod.craftingRemainder(magnetic)),
+                    "magnetic steel should return steel");
+                check(same(flower, MagicnetizedManasteelRod.craftingRemainder(flower)), "Solegnolia data was lost");
+                grid.stackList[7] = null;
+                check(!recipe.matches(grid, null, null), "magicnetized rod recipe accepts a missing flower");
+                arcane = true;
+            }
+        }
+        check(arcane, "magicnetized Manasteel Rod arcane recipe is missing");
     }
 
     private static void verifyHandCraftedComponents() {

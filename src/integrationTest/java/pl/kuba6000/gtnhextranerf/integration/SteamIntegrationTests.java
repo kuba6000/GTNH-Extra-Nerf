@@ -35,6 +35,7 @@ import gregtech.api.metatileentity.implementations.MTEBasicMachine;
 import gregtech.api.metatileentity.implementations.MTEBasicMachineBronze;
 import gregtech.api.metatileentity.implementations.MTEFluidPipe;
 import gregtech.api.util.GTOreDictUnificator;
+import io.netty.channel.embedded.EmbeddedChannel;
 import pl.kuba6000.gtnhextranerf.progression.CertificateStatusPanel;
 import pl.kuba6000.gtnhextranerf.progression.MachineProgression;
 import pl.kuba6000.gtnhextranerf.progression.ProgressionCertificates;
@@ -47,16 +48,15 @@ final class SteamIntegrationTests {
     private SteamIntegrationTests() {}
 
     static void verify(WorldServer world) {
-        // Forge FakePlayer ignores damage; use the real server player with an unconnected packet queue.
+        // Forge FakePlayer ignores damage, so use a server player with an in-memory connection.
         EntityPlayerMP player = new EntityPlayerMP(
             MinecraftServer.getServer(),
             world,
             new GameProfile(UUID.randomUUID(), "PressureTest"),
             new ItemInWorldManager(world));
-        player.playerNetServerHandler = new NetHandlerPlayServer(
-            MinecraftServer.getServer(),
-            new NetworkManager(false),
-            player);
+        NetworkManager network = new NetworkManager(false);
+        EmbeddedChannel channel = new EmbeddedChannel(network);
+        player.playerNetServerHandler = new NetHandlerPlayServer(MinecraftServer.getServer(), network, player);
         // Let vanilla's initial spawn protection expire through normal player ticks.
         for (int tick = 0; tick < 61; tick++) player.onUpdate();
         player.capabilities.isCreativeMode = false;
@@ -197,6 +197,7 @@ final class SteamIntegrationTests {
         check(steam.mProgresstime > 0, "recertified Steam machine did not resume");
         player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
         world.setBlockToAir(36, 240, 8);
+        channel.finish();
     }
 
     private static void activate(WorldServer world, EntityPlayerMP player, ItemStack certificate) {

@@ -39,6 +39,7 @@ import gtPlusPlus.core.fluids.GTPPFluids;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.core.material.MaterialsElements;
 import pl.kuba6000.gtnhextranerf.audit.AuditScope;
+import pl.kuba6000.gtnhextranerf.items.MagicnetizedManasteelRod;
 import pl.kuba6000.gtnhextranerf.machines.RawMachineCasings;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeContext;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeModule;
@@ -50,6 +51,7 @@ public final class CoreModRecipeNerf implements RecipeModule {
 
     @Override
     public void register(RecipeRegistry registry) {
+        registry.register(AuditScope.MODIFY_MV_MOTOR_ASSEMBLER, CoreModRecipeNerf::modifyMvMotor);
         registry.register(AuditScope.REMOVE_IRON_LV_MOTOR_ASSEMBLER_RECIPE, CoreModRecipeNerf::removeIronLvMotor);
         registry.register(AuditScope.MODIFY_SUPERCONDUCTOR_COIL_RECIPE, CoreModRecipeNerf::modifySuperconductorCoil);
         registry.register(
@@ -74,6 +76,27 @@ public final class CoreModRecipeNerf implements RecipeModule {
             CoreModRecipeNerf::modifyPraseodymiumCentrifuge);
         registry
             .register(AuditScope.MODIFY_VACUUM_FURNACE_INDIUM_RECIPES, CoreModRecipeNerf::modifyVacuumFurnaceIndium);
+    }
+
+    private static void modifyMvMotor(RecipeContext recipes) {
+        ItemStack rod = GTOreDictUnificator.get(OrePrefixes.stick, Materials.SteelMagnetic, 1);
+        recipes.machine(assemblerRecipes)
+            .modifyOne(
+                RecipeMatch.builder()
+                    .itemInputs(
+                        rod,
+                        GTOreDictUnificator.get(OrePrefixes.stick, Materials.Aluminium, 2),
+                        GTOreDictUnificator.get(OrePrefixes.wireGt02, Materials.Cupronickel, 4))
+                    .oreDictInput("cableGt01AnyCopper", 2)
+                    .itemOutputs(ItemList.Electric_Motor_MV.get(1))
+                    .fluidInputs()
+                    .fluidOutputs()
+                    .duration(20 * TICKS)
+                    .eut(TierEU.RECIPE_LV)
+                    .build(),
+                RecipeChange.builder()
+                    .replaceItemInput(rod, MagicnetizedManasteelRod.stack())
+                    .build());
     }
 
     private static void removeIronLvMotor(RecipeContext recipes) {

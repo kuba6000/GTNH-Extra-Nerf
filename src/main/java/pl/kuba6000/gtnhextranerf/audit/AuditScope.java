@@ -9,6 +9,12 @@ import gregtech.common.tileentities.machines.basic.MTEMassfabricator;
 /** Catalog of audit definitions; contains no session state or global result lookups. */
 public enum AuditScope implements AuditDefinition {
 
+    ADD_MAGICNETIZED_MANASTEEL_ROD(AuditExpectation.exact()
+        .added(1)
+        .build()),
+    MODIFY_MV_MOTOR_HAND_CRAFTING(modified(1)),
+    MODIFY_MV_MOTOR_ASSEMBLER(modified(1)),
+
     VERIFY_ASSEMBLY_LINE_SPATIAL_DIMENSION(Mods.AppliedEnergistics2::isModLoaded, AuditExpectation.exact()
         .build()),
 
