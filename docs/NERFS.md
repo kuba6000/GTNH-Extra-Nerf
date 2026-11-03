@@ -1165,7 +1165,8 @@ These changes run only when Forestry is loaded.
 ## Hungry Axe (Extra Utilities Healing Axe)
 
 Extra Utilities' Healing Axe gives its holder one hunger point every 40 ticks while it is the selected hotbar
-item. With Extra Utilities installed, the same axe takes one hunger point instead, never below zero.
+item. With Extra Utilities installed, the same axe takes one hunger point instead, never below zero. Saturation,
+exhaustion and the food timer are preserved.
 
 Nothing announces the change. The axe is an ordinary "Healing Axe" in NEI, chests and the creative tab. The first
 time a stack is in a player's inventory (the inventory ticks every stack it holds, so picking it up, crafting it,
@@ -1176,8 +1177,8 @@ tag, so it also shows as one tag in advanced tooltips.
 
 `mixins.late.MixinHealingAxeHunger` injects at the start of `ItemHealingAxe.onUpdate` to set the mark, wraps the
 `FoodStats.addStats` call to take hunger and overrides the display name. Hodgepodge's mixins on the same class touch
-`onLeftClickEntity` and the constructor only. `items.HungryAxe` holds the rules and is unit tested; the mixin itself
-needs a game run to verify.
+`onLeftClickEntity` and the constructor only. `items.HungryAxe` uses the shared `FoodStats` NBT API rather than the
+client-only hunger setter. A dedicated-server integration test exercises a player's inventory ticks with the real axe.
 
 ## Features not present in the current version
 

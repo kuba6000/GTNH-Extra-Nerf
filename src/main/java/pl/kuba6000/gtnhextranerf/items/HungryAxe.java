@@ -33,7 +33,13 @@ public final class HungryAxe {
     /** The exact opposite of the axe's +1 hunger point: one point is taken, and never below empty. */
     public static void drain(FoodStats stats) {
         int level = stats.getFoodLevel();
-        if (level > 0) stats.setFoodLevel(level - 1);
+        if (level <= 0) return;
+
+        // FoodStats.setFoodLevel is client-only in 1.7.10; its NBT API exists on both sides.
+        NBTTagCompound state = new NBTTagCompound();
+        stats.writeNBT(state);
+        state.setInteger("foodLevel", level - 1);
+        stats.readNBT(state);
     }
 
     public static String displayName() {

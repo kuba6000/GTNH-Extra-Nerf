@@ -48,6 +48,8 @@ public final class MixinRecipeIntegrationTests {
     @Mod.EventHandler
     public void verifyP2P(FMLServerStartingEvent event) {
         try {
+            HealingAxeIntegrationTests.verify(DimensionManager.getWorld(0));
+            GTNHExtraNerf.LOG.info("Extra Nerf Healing Axe server integration tests PASSED");
             SteamConsumptionIntegrationTests.verifyDisplays(DimensionManager.getWorld(0));
             GTNHExtraNerf.LOG.info("Extra Nerf Steam display integration tests PASSED");
             SteamConsumptionIntegrationTests.verifyGrinder(DimensionManager.getWorld(0));

@@ -57,7 +57,10 @@ class HungryAxeTest {
         assertEquals(20, stats.getFoodLevel());
         HungryAxe.drain(stats);
         assertEquals(19, stats.getFoodLevel());
-        stats.setFoodLevel(1);
+        net.minecraft.nbt.NBTTagCompound state = new net.minecraft.nbt.NBTTagCompound();
+        stats.writeNBT(state);
+        state.setInteger("foodLevel", 1);
+        stats.readNBT(state);
         HungryAxe.drain(stats);
         assertEquals(0, stats.getFoodLevel());
         HungryAxe.drain(stats);

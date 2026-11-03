@@ -12,6 +12,7 @@ nie są opisem bieżących wyników po poprawkach. Decyzje i zmiany z 3 listopad
 | Stare receptury stali i aluminium w Alloy Blast Smelterze | Poprawione w `0c17277`, także dla aluminium z TConstruct. |
 | Utrata fizycznego Integrated Circuit przy niszczeniu maszyny | Poprawiona w `0fb72d3`, również dla natywnej ścieżki dropu przy wybuchu. |
 | Najwyższa warstwa świata dla Lightning Rod | Poprawiona w `5656f6a`. |
+| Healing Axe powodował `NoSuchMethodError` na dedykowanym serwerze | Błąd wykryty po audycie: setter głodu istniał tylko po stronie klienta. Poprawiony i sprawdzony w serwerowym teście ticku ekwipunku. |
 | Tańsze przepisy Circuit Assembly Line | Zamierzone; nie są błędem i pozostały bez zmian. |
 | Advanced Seismic Prospector przyjmuje materiały bez certyfikatu | Świadomie pozostawione bez zmian jako mało istotne; sama praca pozostaje blokowana. |
 | Zapisany ghost circuit działa do pierwszego otwarcia GUI | Świadomie pozostawione zachowanie migracji istniejących zapisów. |

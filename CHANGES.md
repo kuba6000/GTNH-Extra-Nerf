@@ -8,6 +8,10 @@ This file is a concise summary of the active ruleset. The complete canonical
 catalog, including exact values, conditions and unchanged fields, is
 [`docs/NERFS.md`](docs/NERFS.md).
 
+## Hungry Axe
+
+- Fixed a dedicated-server crash when holding Extra Utilities' Healing Axe.
+
 ## Industrial recipe consistency
 
 - Updated the Alloy Blast Smelter's generated Steel and Aluminium recipes to

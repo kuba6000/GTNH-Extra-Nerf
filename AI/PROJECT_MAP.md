@@ -81,6 +81,7 @@ fence structures and generated energy through the public post-tick API.
 | `.../fabrication/FabricationItem.java` | Inert items with owned pixel textures and localized joke tooltips. |
 | `.../fabrication/UfoAssemblyRegistry.java` | Shared UFO/ingredient catalog and fresh-stack/lookup API. |
 | `.../Config.java` | Opens the suggested Forge configuration and saves only when changed. |
+| `.../items/HungryAxe.java` | Hungry Axe mark, hunger drain and translated display name. |
 | `.../audit/AuditScope.java` | Typed semantic patch identities, activation conditions and expected statistics. |
 | `.../audit/AuditManager.java` | Scoped exclusive-time/statistic collection, success reporting, final verification and lifecycle cleanup. |
 | `.../audit/AuditDefinition.java` | State-free id, activation and expectation contract. |
@@ -186,6 +187,7 @@ All paths below start at
 | `mixins/late/MixinMTEDieselGenerator.java` | `MTEDieselGenerator` | Efficiency cap. |
 | `mixins/late/MixinMTEGasTurbine.java` | `MTEGasTurbine` | Efficiency cap. |
 | `mixins/late/MixinMTELargeChemicalReactor.java` | `MTELargeChemicalReactor` | 3/4 overclock and tooltip. |
+| `mixins/late/MixinHealingAxeHunger.java` | Extra Utilities `ItemHealingAxe` | Marks the carried axe, changes its displayed name and replaces hunger gain with drain. |
 | `mixins/late/MixinMetaTileEntity.java` | `MetaTileEntity` | Steam fill conversion. |
 | `mixins/late/MixinConfigurationCircuitSupport.java` | `CommonWidgets.createCircuitSlot` | Physical Integrated Circuit slot below HV for every tiered machine with configuration-circuit support. |
 | `mixins/late/MixinPhysicalCircuitBlockDrop.java` | `BlockMachines.breakBlock` | Include the reserved physical circuit in ordinary inventory drops. |
@@ -221,6 +223,7 @@ All paths below start at
 | `src/integrationTest/java/.../IndustrialRecipeIntegrationTests.java` | Final machine lookup and parity across the affected ordinary and industrial maps. |
 | `src/integrationTest/java/.../AlloyBlastSmelterIntegrationTests.java` | Steel and Aluminium EBF/Alloy Blast Smelter lookup and removed gas routes. |
 | `src/integrationTest/java/.../PhysicalCircuitDropIntegrationTests.java` | Physical circuit and ordinary inventory drops from real machines and input buses. |
+| `src/integrationTest/java/.../HealingAxeIntegrationTests.java` | Real dedicated-server player inventory ticks with the Extra Utilities axe. |
 | `src/test/java/.../mixins/support/GeneratorEfficiencyTest.java` | Standard and EV-relative generator efficiency curves. |
 
 ## CI and auxiliary tooling

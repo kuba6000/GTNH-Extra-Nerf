@@ -336,6 +336,17 @@ Small Coal Boiler production.
 - Tooltip redirect requires one match.
 - Audit: mixin application only.
 
+## Hungry Axe
+
+With Extra Utilities present, `MixinHealingAxeHunger` marks a stack when a
+player first carries it on the server, changes its name and replaces the held
+axe's hunger gain with a one-point drain every 40 ticks, bounded at zero.
+`HungryAxe.drain` reads and writes `FoodStats` through its common NBT API,
+preserving saturation, exhaustion and food timer; the apparent setter
+`FoodStats.setFoodLevel` is client-only in Minecraft 1.7.10.
+`HealingAxeIntegrationTests` exercises the actual item through server player
+inventory ticks, including the name, timing, lower bound and preserved food state.
+
 ## Late registration mixins
 
 ### Ring crafting
