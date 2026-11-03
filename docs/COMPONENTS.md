@@ -1,8 +1,7 @@
 # Fictional components and UFO Assembler
 
 UQV means **Ultimately Questionable Voltage**. These are separate component
-items that borrow the complete appearance of UEV components. UQV does not add
-an energy value, voltage index, machine tier or circuit family to GregTech.
+items that borrow the complete appearance of UEV components.
 
 The eight component identities remain `gtnhextranerf:uqv_motor`, `uqv_piston`,
 `uqv_pump`, `uqv_conveyor`, `uqv_robot_arm`, `uqv_sensor`, `uqv_emitter` and

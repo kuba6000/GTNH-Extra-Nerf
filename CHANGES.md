@@ -1,5 +1,7 @@
 # Current gameplay changes
 
+- Soybean crops yield Blighted Soybean.
+
 This file is a concise summary of the active ruleset. The complete canonical
 catalog, including exact values, conditions and unchanged fields, is
 [`docs/NERFS.md`](docs/NERFS.md).
@@ -80,12 +82,11 @@ catalog, including exact values, conditions and unchanged fields, is
 
 - Assembly Line and Advanced Assembly Line require an AE2 Spatial world. A
   hidden controller error appears only after the ordinary structure is complete;
-  it asks for a more fluixy world. Recipes and machine tooltips are unchanged.
+  it asks for a more fluixy world.
 
 - Lightning Rods generate only during thunderstorms, with a 10 million EU
   buffer, a minimum 16-fence mast and a length-based strike chance capped at
-  25% for 32 fences. Controller height provides no bonus; native output ratings,
-  buffer loss, mast consumption and crafting recipes remain unchanged.
+  25% for 32 fences. Controller height provides no bonus.
 
 - GT singleblock transformers (normal, Hi-Amp, wet/advanced) and buck converters
   retain their recipes but cannot receive, transform or emit energy. Manual
@@ -94,7 +95,7 @@ catalog, including exact values, conditions and unchanged fields, is
 
 - GT machines and addon controllers explode before processing in Toxic
   Everglades, including disabled/unpowered machines and normally immune
-  TecTech controllers. Other dimensions and non-GT machines are unaffected.
+  TecTech controllers.
 
 - LV-UXV machine casings must be finished with Chisel after crafting or
   assembly. Native groups also define a MAX placeholder; ULV is unchanged.

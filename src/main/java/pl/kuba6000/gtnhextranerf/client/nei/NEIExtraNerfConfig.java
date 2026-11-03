@@ -12,6 +12,7 @@ import pl.kuba6000.gtnhextranerf.GTNHExtraNerf;
 import pl.kuba6000.gtnhextranerf.Tags;
 import pl.kuba6000.gtnhextranerf.components.ComponentItem;
 import pl.kuba6000.gtnhextranerf.fabrication.FabricationItem;
+import pl.kuba6000.gtnhextranerf.items.BlightedSoybean;
 import pl.kuba6000.gtnhextranerf.loader.ComponentLoader;
 import pl.kuba6000.gtnhextranerf.progression.ProgressionCertificateItem;
 import pl.kuba6000.gtnhextranerf.progression.ProgressionCertificates;
@@ -23,6 +24,7 @@ public final class NEIExtraNerfConfig implements IConfigureNEI {
 
     @Override
     public void loadConfig() {
+        API.hideItem(ItemStackMap.wildcard(BlightedSoybean.item()));
         API.registerRecipeHandler(new CertificateRecipeHandler());
         API.registerUsageHandler(new CertificateRecipeHandler());
         for (ProgressionCertificateItem item : ProgressionCertificates.items()) {

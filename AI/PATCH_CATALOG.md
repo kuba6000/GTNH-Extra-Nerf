@@ -4,12 +4,16 @@ This is the exhaustive technical catalog for the current source snapshot. It
 records implemented behavior, not historical intent. Player-facing wording is
 in [`../docs/NERFS.md`](../docs/NERFS.md).
 
+## Blighted Soybean
+
+`MixinSoybeanCrop` replaces Soybean drops from HarvestCraft crops with the
+unusable Blighted Soybean item. NEI hides it from its item panel.
+
 ## Audit conventions
 
 `MixinVoidMinerFluids` replaces the old tier-based rejection with a consumption
 matrix. Its strict two-site `ModifyExpressionValue` changes both reads of
 `batchMultiplier` in native `consumeNobleGas`: availability and deduction.
-No batch field, ore multiplier, gas selection or processing duration is changed.
 Native insufficient-gas fallback remains unboosted and does not drain fluid.
 `VERIFY_VOID_MINER_GAS_USAGE` checks native registrations, the hook and the
 four-gas identity/order contract. The obsolete GUI error resource is removed.
@@ -51,8 +55,7 @@ lookup and consumption in every variant and retain the cutter route.
 
 `MixinPlasmaForgeCoils` adds a translatable native error at `checkMachine`
 TAIL only when the existing list is empty and coil heat is below Hypogen.
-No recipe heat, builder, hint or tooltip code is changed. The common late
-mixin implements a hook marker checked by `VERIFY_PLASMA_FORGE_COILS`, which
+The common late mixin implements a hook marker checked by `VERIFY_PLASMA_FORGE_COILS`, which
 also validates the packaged default localization. Server verification reads
 the resource rather than invoking client-only text/widget rendering. Native
 fixtures build the full Forge, test incomplete/low/Hypogen/Eternal states
@@ -131,12 +134,12 @@ systems are outside this allowance.
 components during common pre-init: motor, piston, pump, conveyor, robot arm,
 sensor, emitter and field generator. Each is an independent inert item with a
 stable `gtnhextranerf:uqv_<type>` registry name and no production recipe or
-Ore Dictionary alias. `ComponentTier` is cosmetic and does not modify GT voltage
-arrays. `ComponentRegistry.stack` returns fresh stacks for recipe consumers.
+Ore Dictionary alias. `ComponentTier` is cosmetic. `ComponentRegistry.stack`
+returns fresh stacks for recipe consumers.
 
 Client appearance delegates to the corresponding real UEV component, including
-icons, colors, atlas, passes, effects and custom material rendering. There are
-no new texture assets. `NEIExtraNerfConfig` hides all damage/NBT variants from
+icons, colors, atlas, passes, effects and custom material rendering.
+`NEIExtraNerfConfig` hides all damage/NBT variants from
 the item panel; exact ingredients remain visible inside recipes. These items
 have no Creative tab. English names/tooltips are supplied.
 
@@ -171,9 +174,7 @@ distance^4 cost to each endpoint, and uses AE2's
 configured conversion rates and power multiplier. It visits only active links
 and compares squared distance with a precomputed cap threshold before taking
 the fourth power. Coordinate subtraction uses doubles to avoid integer overflow.
-Recalculation runs when upstream requests a power update and does not traverse
-all tiles or recipe maps. This runtime
-rule does not write to the startup audit after the audit session has finished.
+Recalculation runs when upstream requests a power update.
 
 ## TPV Alloy mixer yield
 
@@ -291,8 +292,7 @@ gauge use the same conversion through `MixinSteamMachineDisplay`,
 steam drain and WAILA rate by five. The Steam Water Pump is excluded, including
 its separate 1,500 L per-cycle operation. `MixinSteamMultiBlockWailaData`
 reproduces the native integer drain calculation for WAILA data; the inherited
-floating-point calculation can otherwise round differently. The multiplier
-does not modify boilers. All new injection sites have strict expected match
+floating-point calculation can otherwise round differently. All new injection sites have strict expected match
 counts; audit is mixin application only. The integration fixture checks real single
 and multiblock drain, insufficient steam, displayed values, the water pump and
 Small Coal Boiler production.
@@ -389,7 +389,6 @@ modified recipe.
   Quantumprocessor.
 - Multiplies every non-null basic item input stack size by 6, capped at 64
   per stack. Zero-sized non-consumable inputs remain zero.
-- Does not modify fluids, output, duration or EU/t, or the separate SoC routes.
 - Expected scope: four builders (nano/quantum, standard/advanced variants).
 - Audit scope: `SCALE_NANO_QUANTUM_CIRCUIT_ASSEMBLER_INPUTS`, exactly four
   modified and four successfully added recipes.
@@ -404,7 +403,6 @@ and the exact `CWR/WIW/RWC` pattern.
   suppressed by returning success without adding the recipe.
 - Steel route (`SteelMagnetic` center stick and Steel rods): the
   `DISMANTLEABLE` recipe bit is added before normal registration.
-- Shared copper wire and Tin cable ingredients remain unchanged.
 - Audit scopes: `REMOVE_IRON_LV_MOTOR_HAND_CRAFTING` requires one removed
   recipe; `MARK_STEEL_LV_MOTOR_HAND_CRAFTING_DISMANTLEABLE` requires one
   modified and one successfully added recipe.
@@ -446,8 +444,6 @@ immediately.
 - Replaces exactly one non-mirrored shaped recipe for the LV Circuit
   Assembler.
 - The two MV circuit ingredients become LV circuits.
-- LV Robot Arm, LV Emitter, two LV Conveyor Modules, LV Hull, Tin cables,
-  output and layout remain unchanged.
 - Audit scope: `MODIFY_LV_CIRCUIT_ASSEMBLER_HAND_CRAFTING`, exactly one
   modified recipe.
 
@@ -473,7 +469,6 @@ Applied only when Dreamcraft is loaded.
 - Replaces the active Dreamcraft flint-and-steel recipe.
 - Small Steel gear changes to a full Steel gear (`gearSteel`).
 - Small Steel spring changes to a full Steel spring (`springSteel`).
-- Flint and output remain unchanged.
 
 ### Tool Station Slab
 
@@ -482,10 +477,7 @@ Applied only when Dreamcraft is loaded.
 - Replaces the NHCore ShapelessUniversalRecipe for TConstruct CraftingSlab metadata 1.
 - Final inputs: crafting saw, ToolStationBlock metadata 0, and any LV circuit
   from the `circuitBasic` OreDictionary category.
-- Ordinary Tool Station recipes are no longer rewritten.
 - Audit: MODIFY_TOOL_STATION_SLAB_HAND_CRAFTING, exactly one modification.
-
-There is no active shears patch in the current source.
 
 ## Aluminium load-complete module
 
@@ -526,7 +518,6 @@ The complete Ruby Juice scope requires 18 removals.
 
 - Preserves the existing Iron, Niobium, Tantalum, Manganese and Magnesium
   outputs and chances.
-- Adds no Gallium output.
 - Duration changes from 2 seconds to 10 seconds.
 - EU/t remains MV recipe voltage.
 - Both the ordinary and industrial centrifuge maps are changed, with two
@@ -751,12 +742,6 @@ Staballoy decomposition (9 Uranium-238 dust + 1 Titanium dust, 48 seconds,
 `MODIFY_STABALLOY_CENTRIFUGE_RECIPES` is active with GT++ and requires exactly
 two modifications. A missing, duplicate or changed source recipe fails validation.
 
-### Sphalerite electrolyzer
-
-No Extra Nerf patch modifies the Sphalerite electrolysis recipe. On the pinned
-GT baseline, both ordinary and industrial maps retain the native 9.17% Gallium
-chance.
-
 ### Quantum Star bath
 
 `misc.quantum-star` changes Radon required for one Nether Star -> Quantum Star
@@ -940,23 +925,17 @@ The crafting-table version is independently patched by `CraftingNerf`.
 | Integrated Logic Circuit | ILC Chips `1 -> 4` | `MODIFY_INTEGRATED_LOGIC_CIRCUIT_INPUTS`, exactly 1 modified |
 | Good Circuit | Basic Electronic Circuits `2 -> 4` | `MODIFY_GOOD_CIRCUIT_INPUTS`, exactly 1 modified |
 
-All other item inputs, soldering fluid, output, duration and voltage in these
-exact Circuit Assembler recipes remain unchanged.
-
 ### Cupronickel Coils
 
 - Both assembler variants replace eight Cupronickel 2x wires with eight 8x
   wires.
 - Alumino Silicate Wool changes from 12 to 24; Mica Insulator Foil changes
   from 8 to 16.
-- Molten Tin, circuit 3, output, duration and voltage remain unchanged.
 - Audit scope: `MODIFY_CUPRONICKEL_COIL_INPUTS`, exactly two modified recipes.
 
 ### MV Energy Hatch
 
 - ULPIC Chips change from 2 to 4.
-- Copper cable, MV Pump, MV Hull, two MV Coils, circuit 4, 2,000 L Lubricant,
-  output, duration and MV voltage remain unchanged.
 - Audit scope: `MODIFY_MV_ENERGY_HATCH_INPUTS`, exactly one modified recipe.
 - The shaped hand recipe `ICL/WHP/ICL` (ULPIC Chip, MV Coil, Lubricant cell, Copper
   cable, MV Hull, MV Pump) is removed by `CraftingNerf`. Audit scope:
@@ -1192,19 +1171,7 @@ See `docs/TELEMETRY.md` for the JSON contract, the join notice, the early-certif
 opt-out, `docs/TEAM_TRACKING.md` for the separate opt-in team report and `docs/UPDATE_CHECK.md` for the
 version check.
 
-## Explicitly absent historical behavior
-
-The current source does **not** implement:
-
-- a shears crafting patch;
-- a small-batch/circuit-9 Plutonium decay recipe;
-- removal of the TConstruct no-gas Aluminium route;
-- configurable toggles for individual nerfs.
-
-Do not reintroduce these statements into public documentation unless the code
-is changed first.
-
-### Iron LV motor Assembler alternative
+## Iron LV motor Assembler alternative
 
 `REMOVE_IRON_LV_MOTOR_ASSEMBLER_RECIPE` removes exactly one recipe: one
 magnetic Iron rod, two Tin cables, the OreDict slots `stickAnyIron` (2) and
@@ -1219,8 +1186,7 @@ methods on `MTEAssemblyLine` and `MTEAdvAssLine`. It injects at every return,
 including the normal line's early successful orientation checks. On the logical
 server it adds a native `StructureError` only when all upstream diagnostics are
 empty and the tile's world does not use AE2 `StorageWorldProvider`.
-The parent multiblock's formed-state validation gates native processing; no
-recipe, tooltip, dimension ID, packet or saved state is added. The
+The parent multiblock's formed-state validation gates native processing. The
 `VERIFY_ASSEMBLY_LINE_SPATIAL_DIMENSION` audit verifies both hooks, registered
 controllers and the English error resource when AE2 is loaded.
 
@@ -1232,15 +1198,13 @@ random roll uses `min(length, 32) / 128`, independently of controller Y.
 Mast and sky validation include the top valid layer, `world.getHeight() - 1`.
 A strict constant injection reduces storage to 10,000,000 EU.
 `VERIFY_LIGHTNING_RODS` checks the shared hook, all three native registrations,
-storage and the existing voltage/amperage ratings. No recipe mutation or
-additional world/player state is introduced.
+storage and the existing voltage/amperage ratings.
 
 `MixinSingleblockTransformerPorts` targets the common BaseMetaTileEntity energy
 facade. It rejects sided/unsided input/output, native network participation and
 legacy offers/demands for `ProgressionMachineNerf.isDisabledTransformer`'s typed
-families. The same-voltage BartWorks distributor is excluded. No recipe, item,
-energy balance or NBT field is modified; native RF pulling and GT network
-emission already consult the closed faces. `VERIFY_SINGLEBLOCK_TRANSFORMER_PORTS`
+families. The same-voltage BartWorks distributor is excluded. Native RF pulling
+and GT network emission already consult the closed faces. `VERIFY_SINGLEBLOCK_TRANSFORMER_PORTS`
 checks strict hook activation, registrations and Manual Transformer exemption.
 IC2 transformers are outside this mixin and explicitly remain functional.
 

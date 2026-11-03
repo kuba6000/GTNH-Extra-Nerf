@@ -12,6 +12,10 @@ import com.gtnewhorizon.gtnhmixins.builders.MixinBuilder;
 
 public enum Mixin implements IMixins {
 
+    SoybeanCrop(new MixinBuilder().addCommonMixins("MixinSoybeanCrop")
+        .addRequiredMod(TargetedMod.HARVESTCRAFT)
+        .setPhase(LATE)),
+
     SteamInputHatch(new MixinBuilder().addCommonMixins("MixinSteamInputHatch")
         .addRequiredMod(GT5U)
         .addExcludedMod(GT6)

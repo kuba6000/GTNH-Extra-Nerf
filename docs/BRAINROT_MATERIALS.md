@@ -192,9 +192,8 @@ rules; ingredient details are shown by recipes.
 
 The pedestal must be empty to start; an occupied pedestal prevents input consumption.
 After GT commits the input transaction, the controller places one raw Tungstensteel
-ingot on it, including for the molten recipe. Thaumcraft's existing renderer makes
-it float and rotate, and its tile packets synchronize it to clients. No new renderer,
-packet or entity is needed.
+ingot on it, including for the molten recipe. Thaumcraft's renderer makes it float
+and rotate, and its tile packets synchronize it to clients.
 
 The display ingot carries a unique NBT marker for that processing cycle. Immediately
 before releasing any output, the controller verifies the item, amount and complete
@@ -213,11 +212,10 @@ loading does not recreate a stolen marker. Existing active saves without marker
 state stop safely rather than release unverified output.
 
 Processing, energy, hatch inventories, maintenance, output protection, batch mode
-and the machine UI use GT's existing multiblock implementation. No separate
-client/server protocol is needed. `MTEIndustrialBrainrotter` owns the structure;
+and the machine UI use GT's multiblock implementation. `MTEIndustrialBrainrotter` owns the structure;
 its shape and construction offsets can be replaced with Structure Writer output
 without changing recipes. `Brainrotter` owns the controller, compilation and
-audited recipe registration. There is no new machine registry framework.
+audited recipe registration.
 
 ## Implementation and verification
 

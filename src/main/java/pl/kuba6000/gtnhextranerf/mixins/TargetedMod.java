@@ -13,6 +13,7 @@ public enum TargetedMod implements ITargetMod {
     GOODGENERATOR("goodgenerator"),
     APPLIED_ENERGISTICS_2("appliedenergistics2"),
     EXTRA_UTILITIES("ExtraUtilities"),
+    HARVESTCRAFT("harvestcraft"),
     ENHANCED_LOOT_BAGS("enhancedlootbags");
 
     private final TargetModBuilder builder;

@@ -6,6 +6,11 @@ describes the resulting behavior, not removed historical experiments.
 Percent chances use GregTech's 10,000-point convention: 1,000 is 10%, 500 is
 5%, and 10 is 0.1%.
 
+## Blighted Soybean
+
+Harvesting soybean crops yields Blighted Soybean instead of Soybean. It has no
+food or recipe use and is hidden from NEI.
+
 ## Assembly Lines in AE2 Spatial worlds
 
 The native Assembly Line and GigaGramFab Advanced Assembly Line form only in
@@ -518,8 +523,7 @@ The recipe is explicitly non-mirrored.
 When the Dreamcraft recipe is present:
 
 - Small Steel gear becomes a full Steel gear;
-- Small Steel spring becomes a full Steel spring;
-- Flint and output remain unchanged.
+- Small Steel spring becomes a full Steel spring.
 
 ### TConstruct Tool Station Slab
 
@@ -529,16 +533,11 @@ The shapeless Tool Station Slab recipe requires:
 - a TConstruct Tool Station;
 - any LV circuit registered as `circuitBasic`.
 
-The ordinary Tool Station recipes retain their upstream ingredients; the extra
-circuit requirement applies only when converting the station into its slab.
-
 ### LV Circuit Assembler
 
 - The two MV circuits in the shaped crafting recipe become LV circuits.
 - Both slots accept any `circuitBasic` variant, including mixed variants; no
   conversion into a universal circuit item is required.
-- The LV Robot Arm, LV Emitter, two LV Conveyor Modules, LV Hull, Tin cables,
-  output and non-mirrored layout remain unchanged.
 
 ### Good Circuit
 
@@ -753,7 +752,6 @@ The recipe remains HV at 1,700 K.
 - Duration increases from 2 to 10 seconds.
 - Existing Iron, Niobium, Tantalum, Manganese and Magnesium outputs keep their
   original chances.
-- No Gallium output is added.
 - The same changes apply to the Industrial Centrifuge.
 
 ### Removed Ruby Juice chain
@@ -853,9 +851,7 @@ A Large Chemical Reactor route is added:
 - output: 63 Plutonium dust and 960 L Radon;
 - 75 seconds at HV.
 
-There is no active small-batch circuit-9 Plutonium patch.
-
-## Endstone, Sphalerite and Tellurium
+## Endstone, Staballoy and Tellurium
 
 ### Endstone centrifuge
 
@@ -871,12 +867,6 @@ Separating 10 Staballoy dust into 9 Uranium-238 dust and 1 Titanium dust require
 **IV (7,680 EU/t)** instead of HV (480 EU/t). This applies to both the ordinary
 centrifuge and the industrial centrifuge recipe map. The base duration remains
 48 seconds, with the same inputs, outputs and guaranteed yields.
-
-### Sphalerite electrolyzer
-
-Extra Nerf leaves the Sphalerite recipe unchanged. On the pinned GT version,
-the ordinary and industrial electrolyzer recipes retain the native 9.17%
-Gallium chance.
 
 ### Tellurium from crushed Lead
 
@@ -960,23 +950,17 @@ changed Circuit Assembler recipes. This is intentional.
 ### Integrated Logic Circuit
 
 - ILC Chip input increases from 1 to 4.
-- Coated Circuit Board, Resistors, Diodes, fine Copper wire, Tin bolts,
-  soldering fluid, output, duration and voltage remain unchanged.
 
 ### Good Circuit
 
 - Basic Electronic Circuit input increases from 2 to 4.
-- Phenolic Circuit Board, Diodes, Copper wire, soldering fluid, output,
-  duration and voltage remain unchanged.
 
 ### Advanced Circuit
 
 In both the standard and ASMD Circuit Assembler recipes:
 
 - ILC Chip input increases from 2 to 8;
-- RAM Chip input increases from 2 to 8;
-- all other inputs, soldering fluid, output, duration and voltage remain
-  unchanged.
+- RAM Chip input increases from 2 to 8.
 
 ### Nano and Quantum processors
 
@@ -989,9 +973,7 @@ for four Circuit Assembler recipes:
 - Quantumprocessor advanced-component variant.
 
 For example, 8 items become 48, while 12 or 16 items become 64. Zero-sized
-non-consumable inputs remain zero. Fluids, result count, duration and EU/t
-are unchanged. SoC recipes and recipes producing circuit boards are not
-modified by this patch.
+non-consumable inputs remain zero.
 
 ### Elite circuits
 
@@ -1046,14 +1028,11 @@ In both assembler recipes, the Cupronickel input changes from eight 2x wires
 to eight 8x wires.
 
 - the Alumino Silicate Wool variant increases from 12 to 24 Wool;
-- the Mica Insulator Foil variant increases from 8 to 16 Foils;
-- molten Tin, circuit 3, output, duration and voltage remain unchanged.
+- the Mica Insulator Foil variant increases from 8 to 16 Foils.
 
 ### MV Energy Hatch
 
 - ULPIC Chip input increases from 2 to 4.
-- Copper cable, MV Pump, MV Hull, MV Coils, circuit 4, 2,000 L Lubricant,
-  output, duration and voltage remain unchanged.
 - The hand-crafting recipe (two ULPIC Chips, two MV Coils, two Lubricant Cells,
   Copper cable, MV Pump and MV Hull) is removed. Its grid is full, so the extra
   chips cannot be added, and the Assembler is the only way to make it.
@@ -1083,7 +1062,6 @@ crafting retains the wrench in the center of the plate ring.
 ### Diamond Sawblade
 
 - The assembler gear input changes from Cobalt Brass to Blood Steel.
-- Diamond dust, output, duration and EU/t remain unchanged.
 - The hand-crafting recipe takes a Blood Steel Gear instead of a Cobalt Brass
   Gear, with the same four Small Piles of Diamond Dust.
 
@@ -1096,7 +1074,6 @@ crafting retains the wrench in the center of the plate ring.
   Insulator Foil increases from 4 to 8, matching the doubled wire thickness.
 - Both still produce one Superconducting Coil Block in 50 seconds at 9,001 EU/t.
   Molten Trinium remains 1,440 L for LuV and 576 L for ZPM.
-- Higher-tier variants remain unchanged.
 
 ## Endgame and space materials
 
@@ -1109,7 +1086,6 @@ crafting retains the wrench in the center of the plate ring.
 ### Raw Neutronium
 
 - Helium plasma input increases from 144 L to 1,440 L.
-- Neutronium dust, circuit, output, duration and voltage remain unchanged.
 - The Industrial Mixer also requires the increased amount of plasma.
 
 ### TPV Alloy
@@ -1166,24 +1142,20 @@ These changes run only when Forestry is loaded.
 ### Praseodymium centrifuge recipe
 
 - The final Indium output decreases from 12 dust to 8.
-- Other outputs and their chances remain unchanged.
 - The same reduction applies in the Industrial Centrifuge.
 
 ### GT++ Sphalerite vacuum furnace
 
 - Three separate 64-dust Indium output stacks each become 32.
-- Other metal outputs and fluids remain unchanged.
 
 ### GT++ Chalcopyrite vacuum furnace
 
 - Indium output decreases from 30 dust to 20.
-- Other metal outputs and fluids remain unchanged.
 
 ## Hungry Axe (Extra Utilities Healing Axe)
 
 Extra Utilities' Healing Axe gives its holder one hunger point every 40 ticks while it is the selected hotbar
-item. With Extra Utilities installed, the same axe takes one hunger point instead, never below zero. Hitting mobs
-with it is unchanged.
+item. With Extra Utilities installed, the same axe takes one hunger point instead, never below zero.
 
 Nothing announces the change. The axe is an ordinary "Healing Axe" in NEI, chests and the creative tab. The first
 time a stack is in a player's inventory (the inventory ticks every stack it holds, so picking it up, crafting it,

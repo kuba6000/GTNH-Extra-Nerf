@@ -55,7 +55,7 @@ mutate already-live tables outside the load transaction; edit XML and reload ins
 ## Hidden global limit
 
 `ServerLootRuntime` surrounds the native right-click to establish a server-thread
-context. It does not replace its implementation. Narrow mixins:
+context. Narrow mixins:
 
 1. Reject exhausted global rewards before ELB updates its own per-player counters.
 2. After ELB materializes a selected stack, durably claim its allowance before it

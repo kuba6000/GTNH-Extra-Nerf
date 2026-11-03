@@ -342,3 +342,4 @@ gtnhextranerf.error.supported=Extra Nerf is supported only on GT New Horizons (G
 gtnhextranerf.error.explanation=The required recipe changes could not be verified. Please use the supported pack version with its original mods and configuration.
 gtnhextranerf.error.logs=See logs/latest.log for the full error report. Close the game before changing your installation.
 gtnhextranerf.error.preview=Development preview - forced by JVM flag
+item.gtnhextranerf.blighted_soybean.name=Blighted Soybean

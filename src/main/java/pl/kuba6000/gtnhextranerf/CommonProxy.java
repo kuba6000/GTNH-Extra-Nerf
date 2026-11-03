@@ -15,6 +15,7 @@ import gregtech.api.GregTechAPI;
 import pl.kuba6000.gtnhextranerf.audit.AuditManager;
 import pl.kuba6000.gtnhextranerf.audit.AuditReport;
 import pl.kuba6000.gtnhextranerf.audit.AuditScope;
+import pl.kuba6000.gtnhextranerf.items.BlightedSoybean;
 import pl.kuba6000.gtnhextranerf.loader.ComponentLoader;
 import pl.kuba6000.gtnhextranerf.loader.LootLoader;
 import pl.kuba6000.gtnhextranerf.loader.RecipeLoader;
@@ -53,6 +54,7 @@ public class CommonProxy {
         NerfMaterials.registerBlocks();
         RawMachineCasings.register();
         Brainrotter.registerItem();
+        BlightedSoybean.register();
         ComponentLoader.register();
         ProgressionCertificates.register();
         CertificationExams.register(event.getModConfigurationDirectory());

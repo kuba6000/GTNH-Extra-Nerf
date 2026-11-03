@@ -21,7 +21,7 @@ See [`../docs/LOOTBAG_SYSTEM_DESIGN.md`](../docs/LOOTBAG_SYSTEM_DESIGN.md).
 ## Purpose and operating model
 
 GTNH Extra Nerf is a compatibility-sensitive balance mod for a specific GTNH
-snapshot. It does not introduce a general gameplay framework. It changes
+snapshot. It changes
 upstream behavior through mixins during class/recipe registration and through
 exact recipe-map mutations after all normal registration has completed.
 
@@ -104,8 +104,6 @@ constructing a value or registering a recipe. Techniques include:
 - cancellable `@Inject` for tier-gated circuit widget selection;
 - `@ModifyArg` for material fuel values;
 - `@ModifyConstant` for the steam conversion constants.
-
-No mixin currently overwrites a complete upstream method.
 
 The generator mixins delegate their tier-relative percentage policy to
 `GeneratorEfficiency`. Steam Turbine converts the shared percentage back into

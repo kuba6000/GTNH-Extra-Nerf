@@ -1,9 +1,5 @@
 # AE2 progression
 
-The previous Extra Nerf change to Charged Certus Quartz is removed: both chemical
-reactor maps retain the upstream Redstone recipe. No separate Fluix, questbook,
-lootbag, DOB bee, vending or meteor patch is active in this mod.
-
 New rules apply to recipes producing items registered by Applied Energistics 2:
 
 - Titanium ingredients become TPV in the same form and quantity, including
@@ -50,8 +46,7 @@ connected pylon cluster counts as a single multiblock channel. Thus the
 Controller's Assembly Line recipe is not itself required to enter Spatial.
 
 The restriction is discovered through the controller only after the complete
-structure validates. It does not change Spatial crafting, recipes, research,
-dimension allocation or the standard machine descriptions.
+structure validates.
 
 ## Implementation and verification
 
