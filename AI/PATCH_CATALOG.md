@@ -20,15 +20,15 @@ suite does not separately exercise soybean crop drops.
 `MagicnetizedManasteelRod` registers an arcane recipe using a Manasteel Rod,
 two Magnetic Steel Rods, a Solegnolia, 10 Aer and 10 Ordo. The workbench
 keeps the flower in the workbench and converts the Magnetic Steel Rods to Steel Rods.
+`ArcaneWorkbenchSync` sends the final Shift-click inventory at server tick END.
 `CraftingNerf` and `CoreModRecipeNerf` replace the
 Magnetic Steel Rod in the MV motor's hand and Assembler recipes. The COAL
 recipe uses Long Magnetic Steel Rods.
 
 `CommonProxy` registers the item in pre-init and its arcane recipe during
 load-complete. `MixinArcaneCraftingRemainders` handles the rod and flower
-remainders; `MixinArcaneWorkbenchSync` synchronizes shift-crafting on the
-server. `LvRecipeIntegrationTests` checks the recipes, arcane ingredients and
-remainder helper, but does not exercise a player's workbench clicks.
+remainders and requests the final inventory snapshot. `LvRecipeIntegrationTests`
+checks the recipes, arcane ingredients and remainder helper.
 
 ## Audit conventions
 

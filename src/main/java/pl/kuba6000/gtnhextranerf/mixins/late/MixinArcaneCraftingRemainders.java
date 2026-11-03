@@ -1,6 +1,7 @@
 package pl.kuba6000.gtnhextranerf.mixins.late;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -17,6 +18,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 
 import pl.kuba6000.gtnhextranerf.items.MagicnetizedManasteelRod;
+import pl.kuba6000.gtnhextranerf.recipes.crafting.ArcaneWorkbenchSync;
 import thaumcraft.common.container.SlotCraftingArcaneWorkbench;
 
 @Mixin(value = SlotCraftingArcaneWorkbench.class, remap = false)
@@ -35,6 +37,9 @@ public abstract class MixinArcaneCraftingRemainders {
         gtnhextranerf$magicnetizing = MagicnetizedManasteelRod.isCrafting(craftMatrix, player, result);
         try {
             original.call(player, result);
+            if (gtnhextranerf$magicnetizing && player instanceof EntityPlayerMP) {
+                ArcaneWorkbenchSync.request((EntityPlayerMP) player, player.openContainer);
+            }
         } finally {
             gtnhextranerf$magicnetizing = previous;
         }

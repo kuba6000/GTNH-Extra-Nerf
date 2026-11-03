@@ -158,7 +158,7 @@ the following together:
 | `MixinRecipeAccessor` | Minecraft | 2 `@Invoker`s | `IRecipe.getRecipeOutput` and `matches` |
 | `MixinShapedOreRecipeAccessor` | Forge | `@Accessor` | private `mirrored` flag |
 | `MixinSoybeanCrop` | HarvestCraft | `@ModifyReturnValue(require = 2)` | crop and seed return values equal to `harvestcraft:soybeanItem` |
-| `MixinArcaneCraftingRemainders`, `MixinArcaneWorkbenchSync` | Thaumcraft | `@WrapMethod` + `@WrapOperation` | specific Magicnetized Manasteel Rod recipe; remainder handling and shift-click sync |
+| `MixinArcaneCraftingRemainders` | Thaumcraft | `@WrapMethod` + `@WrapOperation` | Magicnetized Manasteel Rod crafting remainders and scheduling inventory synchronization |
 | `MixinAe2Crafting` | NHCore | 3 `@WrapOperation` handlers | shared AE2-output/Titanium ingredient selection across crafting registration APIs |
 | `MixinWirelessConnectionPower` | AE2 | 1 `@WrapMethod` replacing power recalculation | distance^4 EU/t capped at 10,000,000 per link, split across endpoints; hubs sum their shares |
 | `MixinMeP2PChannelCapacity` | AE2 | 1 `@Inject` at constructor return | standard eight-channel external node capacity, shared across output branches |

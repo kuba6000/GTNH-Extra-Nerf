@@ -35,6 +35,7 @@ import pl.kuba6000.gtnhextranerf.progression.SteamSafety;
 import pl.kuba6000.gtnhextranerf.progression.exam.CertificationExams;
 import pl.kuba6000.gtnhextranerf.progression.exam.ExamSyncHandler;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeValidationException;
+import pl.kuba6000.gtnhextranerf.recipes.crafting.ArcaneWorkbenchSync;
 import pl.kuba6000.gtnhextranerf.teams.TeamCommand;
 import pl.kuba6000.gtnhextranerf.teams.TeamTracking;
 import pl.kuba6000.gtnhextranerf.telemetry.ServerTelemetry;
@@ -57,6 +58,9 @@ public class CommonProxy {
         Brainrotter.registerItem();
         BlightedSoybean.register();
         MagicnetizedManasteelRod.register();
+        FMLCommonHandler.instance()
+            .bus()
+            .register(ArcaneWorkbenchSync.INSTANCE);
         ComponentLoader.register();
         ProgressionCertificates.register();
         CertificationExams.register(event.getModConfigurationDirectory());
@@ -177,6 +181,7 @@ public class CommonProxy {
             TeamTracking.stop();
             UpdateChecker.stop();
             ProgressionServerTasks.reset();
+            ArcaneWorkbenchSync.reset();
         }
     }
 

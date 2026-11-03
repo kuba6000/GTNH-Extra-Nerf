@@ -192,7 +192,7 @@ All paths below start at
 | `mixins/late/MixinHealingAxeHunger.java` | Extra Utilities `ItemHealingAxe` | Marks the carried axe, changes its displayed name and replaces hunger gain with drain. |
 | `mixins/late/MixinSoybeanCrop.java` | HarvestCraft `BlockPamCrop` | Replaces soybean item returns from crop and seed methods. |
 | `mixins/late/MixinArcaneCraftingRemainders.java` | Thaumcraft `SlotCraftingArcaneWorkbench` | Returns the flower and demagnetized rods when crafting the MV ingredient. |
-| `mixins/late/MixinArcaneWorkbenchSync.java` | Thaumcraft `ContainerArcaneWorkbench` | Synchronizes shift-crafted remainders to the player. |
+| `recipes/crafting/ArcaneWorkbenchSync.java` | Server tick event | Sends final workbench inventories after the crafting transaction. |
 | `mixins/late/MixinMetaTileEntity.java` | `MetaTileEntity` | Steam fill conversion. |
 | `mixins/late/MixinConfigurationCircuitSupport.java` | `CommonWidgets.createCircuitSlot` | Physical Integrated Circuit slot below HV for every tiered machine with configuration-circuit support. |
 | `mixins/late/MixinPhysicalCircuitBlockDrop.java` | `BlockMachines.breakBlock` | Include the reserved physical circuit in ordinary inventory drops. |
