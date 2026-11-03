@@ -19,8 +19,6 @@ import com.mojang.authlib.GameProfile;
 
 import appeng.api.AEApi;
 import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import eu.usrv.enhancedlootbags.EnhancedLootBags;
 import eu.usrv.enhancedlootbags.core.serializer.LootGroups;
 import eu.usrv.enhancedlootbags.core.serializer.LootGroups.LootGroup;
@@ -32,11 +30,9 @@ import pl.kuba6000.gtnhextranerf.loot.modules.MeControllerLootModule;
 import pl.kuba6000.gtnhextranerf.loot.runtime.ServerLootRuntime;
 
 /** Runs the original transformed ELB right-click; only its RNG is deterministic in this fixture. */
-@Mod(modid = "extranerfloottests", version = "1", dependencies = "required-after:gtnhextranerf")
 public final class LootOpeningIntegrationTests {
 
-    @Mod.EventHandler
-    public void verify(FMLServerStartingEvent event) {
+    static void verify(net.minecraft.server.MinecraftServer server) {
         Random previous = EnhancedLootBags.Rnd;
         try {
             Path xml = Loader.instance()
@@ -68,7 +64,7 @@ public final class LootOpeningIntegrationTests {
             open(world, 38, 3, true, 1, controller);
             open(world, 37, 0, true, 0, controller);
             ServerLootRuntime.stop();
-            ServerLootRuntime.start(event.getServer());
+            ServerLootRuntime.start(server);
             if (!EnhancedLootBags.LootGroupHandler.reload()) throw new AssertionError("Second audited reload failed");
             open(world, 38, 1, true, 0, controller);
             open(world, 38, 1, false, 0, controller);

@@ -26,12 +26,10 @@ preserving the machine information and describing the existing 3/4 overclock.
 The mixin requires the current `addMarkdown(ResourceLocation)` call; it does
 not also target the removed `addPerfectOCInfo()` call from older GT versions.
 
-The baseline is verified with `check build`, a production `runFullPack` client
-startup and the opt-in `-PmixinIntegrationTests` fixtures on the complete
-dedicated server (recipe, loot, progression and machine checks). A passing run
-loads the full pack, passes all Extra Nerf audit scopes and stops normally with
-exit code zero. This does not claim manual gameplay/visual QA. See
-[Building](BUILDING.md) for the commands.
+Use `check build` for unit and build verification and the Horizon-QA client
+suite for native recipe, loot, progression, machine and GUI behavior. A valid
+scenario run includes consistent JSON/JUnit evidence and a clean process exit.
+See [Building](BUILDING.md) for commands and selectors.
 
 ## Intended environment
 

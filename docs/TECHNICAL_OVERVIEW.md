@@ -40,9 +40,9 @@ client or dedicated server containing the locally built mod.
 
 GitHub Actions runs ordinary compilation, tests and style checks automatically
 without starting the incomplete standalone development server. A separate
-manual workflow runs the complete server smoke test on demand. Its harness
-waits for a successful ready message, shuts the server down cleanly, rejects
-audit integrity failures and uploads logs/crash reports.
+manual workflow runs the Horizon-QA client scenarios and a dedicated-server
+startup smoke check. The client suite creates a scratch world, exercises native
+machines and GUI input, verifies JSON/JUnit reports and shuts down its own game.
 
 For implementation-level class maps and contracts, see the separate
 [`AI` documentation](../AI/README.md).

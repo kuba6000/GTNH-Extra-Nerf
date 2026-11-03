@@ -68,21 +68,14 @@ Implementation-level mappings are maintained separately in
 
 ### Mixin recipe integration tests
 
-`gradlew -PmixinIntegrationTests check` also compiles the Forge test fixture
-from `src/integrationTest/java`. Launch `runFullPackServer` with the same
-property to execute it after registry initialization. Success is reported as
-`Extra Nerf mixin integration tests PASSED`; assertion failures abort loading.
-The fixture constructs recipes without registering them and uses an isolated
-audit session. It covers direct and dielectric cable inputs, preservation of
-outputs/fluids/timing, duplicate PPS prevention, and ring recipe selection.
+Run registry and machine checks with
+`python .github/scripts/run_horizon_tests.py --tests gtnhextranerftests:NativeScenarios`.
+The pinned Horizon-QA runner starts its own scratch world, reports each scenario
+in JSON and JUnit, and exits automatically. GUI crafting checks use
+`--tests gtnhextranerftests:ArcaneWorkbenchScenarios`.
 
-This property creates a **test build** containing an additional Forge mod.
-Do not distribute that artifact. Run a normal `gradlew clean build` for the
-production artifact; the integration source directory is excluded by default.
-Ordinary JUnit does not provide Forge's LaunchClassLoader and initialized GT
-registries, so registry-dependent scenarios intentionally run inside the pack.
-When using the Python server harness on Windows, set `PYTHONIOENCODING=utf-8`
-so mod log messages cannot interrupt stdout capture with a CP1250 error.
+`horizonQaIntegration` includes the fixture sources for these launches. Ordinary
+builds package the production mod. Unit tests remain under `src/test/java`.
 
 Keep ProcessingWire's single semantic injector. Avoid ordinals and per-recipe
 injection sites. Audit scope still includes recognition time inside callbacks.

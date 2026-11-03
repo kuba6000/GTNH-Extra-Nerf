@@ -4,6 +4,62 @@ on:
   workflow_dispatch:
 
 jobs:
+  full-pack-client:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    steps:
+      - name: Checkout mod repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          submodules: recursive
+      - name: Checkout pinned Horizon-QA client tools
+        uses: actions/checkout@v5
+        with:
+          repository: GTNewHorizons/Horizon-QA
+          ref: ad5adb0f8ccede91de4b5da2db50fc0534a4250c
+          path: build/horizonqa-framework
+          fetch-depth: 0
+      - name: Set up Java toolchains
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: |
+            8
+            17
+            21
+            25
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          validate-wrappers: true
+      - name: Install graphics dependencies
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libglx-mesa0 x11-xserver-utils
+      - name: Run all Horizon-QA scenarios
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: >-
+          xvfb-run -a python3 .github/scripts/run_horizon_tests.py
+          --framework-source build/horizonqa-framework
+          --report-dir build/horizonqa/ci
+          --timeout-seconds 2400
+      - name: Upload Horizon-QA reports and game evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-pack-client-horizonqa
+          path: |
+            build/horizonqa/ci/launch-result.json
+            build/horizonqa/ci/horizonqa-result.json
+            build/horizonqa/ci/TEST-horizonqa.xml
+            build/horizonqa/ci/launch.log
+            build/horizonqa/ci/verification.log
+            build/horizonqa/ci/artifacts
+            build/horizonqa/ci/game/logs
+            build/horizonqa/ci/game/crash-reports
+          retention-days: 14
+
   full-pack-server:
     runs-on: ubuntu-24.04
     timeout-minutes: 50

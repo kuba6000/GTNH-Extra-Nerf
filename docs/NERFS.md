@@ -1190,7 +1190,7 @@ tag, so it also shows as one tag in advanced tooltips.
 `mixins.late.MixinHealingAxeHunger` injects at the start of `ItemHealingAxe.onUpdate` to set the mark, wraps the
 `FoodStats.addStats` call to take hunger and overrides the display name. Hodgepodge's mixins on the same class touch
 `onLeftClickEntity` and the constructor only. `items.HungryAxe` uses the shared `FoodStats` NBT API rather than the
-client-only hunger setter. A dedicated-server integration test exercises a player's inventory ticks with the real axe.
+client-only hunger setter. A Horizon-QA scenario exercises server-side player inventory ticks with the real axe.
 
 ## Features not present in the current version
 

@@ -59,24 +59,64 @@ Unix-like shell:
 Use `check` as the normal pre-commit gate. It runs unit tests, Checkstyle and
 Spotless checks.
 
-## Full-pack tasks
+## Automated integration scenarios
 
-The included GTNHGradle fork supplies:
+Run the full client suite from the repository root:
 
-```text
-prepareFullPackClient
-prepareFullPackServer
-runFullPack
-runFullPackServer
+```powershell
+python .github/scripts/run_horizon_tests.py
 ```
 
-These tasks download manifests and assets and construct a complete GTNH
-runtime with the current project artifact overlaid. Downloads are shared in a
-Gradle cache. The root build sets `cleanServerRuntime = true`.
+The launcher pins Horizon-QA PR 263 at
+`ad5adb0f8ccede91de4b5da2db50fc0534a4250c`. It builds the framework and portable
+tools once in the Gradle dependency cache. A source checkout at the pinned
+revision may be supplied with `--framework-source`. The upstream supervisor
+owns process lifetimes, deadlines, classpath snapshots and JSON/JUnit
+verification.
 
-`runFullPackServer` does not accept the Minecraft EULA for normal users. The
-CI-only `-PfullPackCi` path creates `eula.txt` and a minimal offline server
-configuration after preparing the runtime.
+Select a fixture or GUI scenario:
+
+```powershell
+python .github/scripts/run_horizon_tests.py --tests gtnhextranerftests:NativeScenarios.spatialAssembly
+python .github/scripts/run_horizon_tests.py --tests gtnhextranerftests:ArcaneWorkbenchScenarios
+```
+
+Use `--report-dir` with a new directory to choose where evidence is retained.
+The default is a fresh directory under `build/horizonqa`. The client creates
+a scratch world, executes its selected scenarios and exits automatically.
+`launch-result.json` records the final supervisor exit code. JSON and JUnit
+results are checked together. Exit codes are 0 for success, 1 for required
+scenario failures and 2 for infrastructure or incomplete evidence.
+
+`NativeScenarios` reports the existing recipe, machine, progression, loot and
+telemetry fixtures individually. `ArcaneWorkbenchScenarios` exercises real GUI
+input and verifies both server inventory and the visible client inventory.
+The reduced development fixture uses the same runner:
+
+```powershell
+python .github/scripts/run_horizon_tests.py --client-task :runClient
+```
+
+The reduced runtime currently fails during recipe registration at the missing
+UIV certification fee material, before Brainrotter recipes are registered.
+Use the full-pack suite to validate Brainrotter with the complete dependency set.
+
+The `horizonQaIntegration` build property includes fixture sources and their
+resources. HQA is an explicit test dependency. Normal builds package the
+production mod. `runFullPack` remains the command for manual gameplay.
+
+For automated full-pack runs, preparation copies the assembled pack into the
+supervisor-owned game directory before launching it. Test saves, options,
+logs and the overlaid mod JAR belong to that invocation.
+
+## Full-pack tasks
+
+The included GTNHGradle fork supplies `prepareFullPackClient`,
+`prepareFullPackServer`, `runFullPack` and `runFullPackServer`. They construct
+GTNH runtimes with the current project artifact overlaid. Downloads are
+shared in the Gradle cache. `runFullPackServer` requires the Minecraft EULA
+for a normal run. The existing CI-only `fullPackCi` property prepares that
+server configuration for the dedicated-server smoke check.
 
 ## Root test suite
 
@@ -172,8 +212,8 @@ The manual full-pack server job:
 ## Verification boundaries
 
 The standard unit suite does not bootstrap Minecraft/Forge registries and does
-not apply mixins to live upstream classes. The strongest behavior check is the
-full-pack server job.
+not apply mixins to live upstream classes. The full-pack client scenarios exercise live behavior and GUI synchronization.
+The dedicated-server job separately checks startup compatibility.
 
 A green compile or Mixin annotation processor result proves target signatures
 can be resolved at build time, not that every ordinal or semantic assumption

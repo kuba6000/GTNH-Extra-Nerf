@@ -58,21 +58,7 @@ tasks.register('telemetryReleaseInfo', Exec) {
         '--output', telemetryReleaseOutput.get().asFile
 }
 
-// Opt-in Forge integration fixture. Ordinary builds never compile or package it.
-if (providers.gradleProperty('mixinIntegrationTests').isPresent() || providers.gradleProperty('brainrotterDevTests').isPresent()) {
-    sourceSets.main.java.srcDir('src/integrationTest/java')
-    if (providers.gradleProperty('brainrotterDevTests').isPresent()) {
-        sourceSets.main.java.exclude('**/MixinRecipeIntegrationTests.java', '**/LootOpeningIntegrationTests.java')
-    } else {
-        sourceSets.main.java.exclude('**/BrainrotterDevelopmentTests.java')
-    }
-} else if (providers.gradleProperty('telemetryIntegrationTests').isPresent()) {
-    sourceSets.main.java.srcDir('src/integrationTest/java')
-    sourceSets.main.java.exclude { element ->
-        !element.isDirectory() && element.file.path.replace('\\', '/').contains('/src/integrationTest/') &&
-            element.file.name != 'TelemetryIntegrationTests.java'
-    }
-}
+apply from: 'gradle/horizon-tests.gradle'
 
 if (providers.gradleProperty('fullPackCi').isPresent()) {
     def runtimePathFile = layout.buildDirectory.file('fullpack/server-runtime.path').get().asFile

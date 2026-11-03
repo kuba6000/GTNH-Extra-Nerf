@@ -55,6 +55,10 @@ final class BrainrotterIntegrationTests {
     private BrainrotterIntegrationTests() {}
 
     static void verifyDevelopment(WorldServer world) {
+        check(
+            !Brainrotter.RECIPES.getAllRecipes()
+                .isEmpty(),
+            "Brainrotter processing recipes are absent; inspect the reduced-runtime startup audit");
         check(GameRegistry.findBlock("ExtraUtilities", "timer") == null, "Fixture must exercise a missing timer");
         check(GameRegistry.findBlock("Forestry", "logsFireproof") == null, "Fixture must exercise missing Forestry");
         check(GameRegistry.findBlock("Thaumcraft", "blockStoneDevice") == null, "Fixture must lack a pedestal");
@@ -601,6 +605,7 @@ final class BrainrotterIntegrationTests {
     }
 
     private static BaseMetaTileEntity place(WorldServer world, FakePlayer player, ItemStack item, int x, int y, int z) {
+        FixtureWorld.loadAround(world, x, z);
         world.setBlockToAir(x, y, z);
         check(
             ((ItemBlock) item.getItem()).placeBlockAt(item, player, world, x, y, z, 1, 0.5f, 0.5f, 0.5f, 0),
@@ -627,7 +632,9 @@ final class BrainrotterIntegrationTests {
             consumed += tick(tiles, 1);
             if (machine.mMaxProgresstime > 0) return consumed;
         }
-        throw new AssertionError("Brainrotter did not start processing");
+        throw new AssertionError(
+            "Brainrotter did not start processing: " + machine.getCheckRecipeResult()
+                .getID());
     }
 
     private static int outputs(MTEHatchOutputBus bus) {

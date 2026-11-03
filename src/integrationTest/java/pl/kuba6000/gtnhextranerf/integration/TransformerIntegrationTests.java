@@ -193,6 +193,7 @@ final class TransformerIntegrationTests {
 
     static BaseMetaTileEntity placeAt(WorldServer world, ItemStack item, int x, int y, int z) {
         FakePlayer player = FakePlayerFactory.get(world, new GameProfile(UUID.randomUUID(), "TransformerTest"));
+        FixtureWorld.loadAround(world, x, z);
         world.setBlockToAir(x, y, z);
         check(
             ((ItemBlock) item.getItem()).placeBlockAt(item, player, world, x, y, z, 1, .5f, .5f, .5f, 0),

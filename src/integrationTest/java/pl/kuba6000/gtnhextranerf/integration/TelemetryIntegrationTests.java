@@ -10,12 +10,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
-import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import pl.kuba6000.gtnhextranerf.CommonProxy;
 import pl.kuba6000.gtnhextranerf.Config;
-import pl.kuba6000.gtnhextranerf.GTNHExtraNerf;
 import pl.kuba6000.gtnhextranerf.progression.MachineProgression;
 import pl.kuba6000.gtnhextranerf.progression.ProgressionData;
 import pl.kuba6000.gtnhextranerf.progression.ProgressionTier;
@@ -26,18 +24,7 @@ import pl.kuba6000.gtnhextranerf.telemetry.ServerTelemetry;
 import pl.kuba6000.gtnhextranerf.telemetry.TelemetryClient;
 
 /** Real Forge configuration and server lifecycle; never connects to the production endpoint. */
-@Mod(modid = "extranerftelemetrytests", version = "1", dependencies = "required-after:gtnhextranerf")
 public final class TelemetryIntegrationTests {
-
-    @Mod.EventHandler
-    public void verify(FMLServerStartingEvent event) {
-        try {
-            verify(event.getServer());
-        } catch (Exception | LinkageError | AssertionError failure) {
-            throw new IllegalStateException("GTNH Extra Nerf integrity check failed: telemetry integration", failure);
-        }
-        GTNHExtraNerf.LOG.info("Extra Nerf telemetry integration tests PASSED");
-    }
 
     static void verify(MinecraftServer server) throws Exception {
         // Prevent production HTTP during fixture lifecycle restarts.

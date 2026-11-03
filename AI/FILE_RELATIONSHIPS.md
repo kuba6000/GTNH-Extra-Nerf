@@ -60,9 +60,9 @@ flowchart LR
 `CommonProxy.loadComplete` defers recipe edits and `AuditManager.finish` to
 `GregTechAPI.sGTCompleteLoad` when that queue is still pending; otherwise it
 executes immediately. NHCore registers Space Assembler recipes in this queue.
-`MixinRecipeIntegrationTests` similarly defers its final-registry verification
-after the mod's callback. This avoids auditing recipes before GT's late loaders
-run in a development launch.
+`NativeScenarios.recipes` calls `MixinRecipeIntegrationTests` after Horizon-QA
+starts its scratch server, so final-registry checks run after the mod callback
+and GregTech's late loaders.
 
 `RecipeItems.requireModItem` is shared by `Ae2RecipeNerf`,
 `Ae2AssemblyLineRecipes` and `IntergalacticRecipeNerf`. It wraps GregTech's
@@ -251,3 +251,21 @@ queues a `StartupErrorRequest`. The early client FML handler hook raises it
 inside the existing custom-error catch, and Forge owns the non-dismissable GUI.
 The preview property is forwarded by Gradle only to `runClient`; the client
 also checks Forge's deobfuscated-environment flag.
+
+## Horizon-QA execution
+
+`.github/scripts/run_horizon_tests.py` pins and prepares the framework from
+Horizon-QA PR 263, then invokes its portable supervisor. The supervisor passes
+`horizonQaIntegration` and `horizonQaHome` to `gradle/horizon-tests.gradle`.
+That build script includes fixtures and prepares the invocation-owned full pack.
+
+`IntegrationFixtures` registers test OreDictionary alternatives during pre-init.
+`NativeScenarios` invokes native recipe, machine, loot and telemetry checks after
+the scratch world starts. `ArcaneWorkbenchScenarios` drives the real client GUI
+and checks server consumption, retained flowers and client inventory updates.
+`BrainrotterDevelopmentTests` supplies the reduced-runtime HQA holder.
+
+`MixinArcaneCraftingRemainders` requests an inventory snapshot after each
+completed Magicnetized Rod craft. `recipes/crafting/ArcaneWorkbenchSync` sends pending snapshots at
+server tick END, after vanilla's click transaction, and coalesces requests per
+player. `CommonProxy` registers the listener and clears pending work on stop.

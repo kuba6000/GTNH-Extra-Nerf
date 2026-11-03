@@ -65,6 +65,15 @@ On Windows:
 .\gradlew.bat build
 ```
 
+Run the automated full-pack scenarios with:
+
+```text
+python .github/scripts/run_horizon_tests.py
+```
+
+The runner creates a scratch world, writes JSON/JUnit reports and closes its own
+client after the selected tests finish.
+
 Build artifacts are written to `build/libs`. See
 [`docs/BUILDING.md`](docs/BUILDING.md) for full-pack client/server tasks and
 toolchain details.

@@ -230,7 +230,7 @@ All paths below start at
 | `src/integrationTest/java/.../IndustrialRecipeIntegrationTests.java` | Final machine lookup and parity across the affected ordinary and industrial maps. |
 | `src/integrationTest/java/.../AlloyBlastSmelterIntegrationTests.java` | Steel and Aluminium EBF/Alloy Blast Smelter lookup and removed gas routes. |
 | `src/integrationTest/java/.../PhysicalCircuitDropIntegrationTests.java` | Physical circuit and ordinary inventory drops from real machines and input buses. |
-| `src/integrationTest/java/.../HealingAxeIntegrationTests.java` | Real dedicated-server player inventory ticks with the Extra Utilities axe. |
+| `src/integrationTest/java/.../HealingAxeIntegrationTests.java` | Server-side player inventory ticks with the Extra Utilities axe, run by `NativeScenarios.healingAxe`. |
 | `src/test/java/.../mixins/support/GeneratorEfficiencyTest.java` | Standard and EV-relative generator efficiency curves. |
 
 ## CI and auxiliary tooling
@@ -273,3 +273,15 @@ Client error presentation: `client/StartupErrorRequest.java` holds the support
 message and preview selection; `ClientStartupErrors.java` defers the request;
 `StartupErrorDisplay.java` draws on Forge's error screen. The client-only early
 `MixinFMLClientHandler.java` raises the request inside FML's catch boundary.
+
+## Automated integration tests
+
+`src/integrationTest` contains Horizon-QA holders, native fixtures and structure
+templates. `NativeScenarios` reports native checks individually.
+`ArcaneWorkbenchScenarios` owns GUI crafting and inventory synchronization tests.
+`IntegrationFixtures` supplies pre-init recipe alternatives.
+
+`gradle/horizon-tests.gradle` includes this source tree for HQA builds.
+`.github/scripts/run_horizon_tests.py` prepares the pinned PR dependency and uses
+its portable supervisor to launch, verify reports and finish the owned client.
+See `BUILD_AND_TESTS.md` for selectors and commands.

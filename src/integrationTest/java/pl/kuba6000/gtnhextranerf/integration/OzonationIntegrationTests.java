@@ -77,6 +77,7 @@ final class OzonationIntegrationTests {
             machine.depleteRecipeInputs();
             check(water.getFluidAmount() == 0 && ozone.getFluidAmount() == 0, "Highest variant retained input fluids");
         }
+        FixtureWorld.loadAround(world, x, 48);
         world.setBlockToAir(x, 210, 48);
         world.setBlockToAir(x + 2, 210, 48);
         world.setBlockToAir(x + 4, 210, 48);
@@ -84,6 +85,7 @@ final class OzonationIntegrationTests {
     }
 
     private static BaseMetaTileEntity place(WorldServer world, FakePlayer player, ItemStack item, int x) {
+        FixtureWorld.loadAround(world, x, 48);
         world.setBlockToAir(x, 210, 48);
         check(
             ((ItemBlock) item.getItem()).placeBlockAt(item, player, world, x, 210, 48, 1, 0.5f, 0.5f, 0.5f, 0),

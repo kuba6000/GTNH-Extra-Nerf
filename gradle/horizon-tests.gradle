@@ -1,0 +1,44 @@
+interface HorizonTestFiles {
+    @javax.inject.Inject
+    org.gradle.api.file.FileSystemOperations getFiles()
+}
+
+if (providers.gradleProperty('horizonQaIntegration').map { it.toBoolean() }.getOrElse(false)) {
+    def frameworkPath = providers.gradleProperty('horizonQaHome').get()
+    def framework = file(frameworkPath)
+    if (!new File(framework, 'framework.json').isFile()) {
+        throw new GradleException('Prepare the pinned Horizon-QA dependency with .github/scripts/run_horizon_tests.py')
+    }
+    dependencies {
+        compileOnly files(new File(framework, 'horizonqa-dev.jar'))
+        if (providers.gradleProperty('horizonQaClientTask').getOrElse(':runFullPack') == ':runClient') {
+            runtimeOnlyNonPublishable files(new File(framework, 'horizonqa-dev.jar'))
+        }
+    }
+    sourceSets.main.java.srcDir('src/integrationTest/java')
+    sourceSets.main.resources.srcDir('src/integrationTest/resources')
+
+    def report = providers.gradleProperty('horizonQaClientReportDir').orNull
+    if (report != null) {
+        def game = new File(report, 'game')
+        def runtimePath = layout.buildDirectory.file('fullpack/client-runtime.path').get().asFile
+        def runtimeJar = new File(framework, 'horizonqa.jar')
+        def operations = objects.newInstance(HorizonTestFiles)
+        tasks.named('prepareFullPackClient') {
+            inputs.file(runtimeJar)
+            doLast {
+                def prepared = new File(runtimePath.getText('UTF-8').trim())
+                operations.files.copy {
+                    from prepared
+                    into game
+                    exclude 'saves/**', 'logs/**', 'crash-reports/**', 'screenshots/**', 'options.txt'
+                }
+                operations.files.copy {
+                    from runtimeJar
+                    into new File(game, 'mods')
+                }
+                runtimePath.setText(game.absolutePath, 'UTF-8')
+            }
+        }
+    }
+}

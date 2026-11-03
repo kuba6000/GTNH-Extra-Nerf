@@ -64,6 +64,7 @@ final class EvergladesIntegrationTests {
             tile.updateEntityProfiled();
             check(toxic.isAirBlock(x, 210, 160), "GT machine survived its Everglades tick: " + machines[index]);
         }
+        FixtureWorld.loadAround(toxic, 160, 160);
         toxic.setBlock(160, 210, 160, Blocks.furnace);
         toxic.getTileEntity(160, 210, 160)
             .updateEntity();
@@ -89,6 +90,7 @@ final class EvergladesIntegrationTests {
 
     private static BaseMetaTileEntity place(WorldServer world, ItemStack machine, int x) {
         FakePlayer player = FakePlayerFactory.get(world, new GameProfile(UUID.randomUUID(), "EvergladesTest"));
+        FixtureWorld.loadAround(world, x, 160);
         world.setBlockToAir(x, 210, 160);
         check(
             ((ItemBlock) machine.getItem()).placeBlockAt(machine, player, world, x, 210, 160, 1, .5f, .5f, .5f, 0),

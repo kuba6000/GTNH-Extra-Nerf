@@ -1,0 +1,35 @@
+{
+  "size": [
+    3,
+    2,
+    3
+  ],
+  "format_version": 1,
+  "palette": {
+    "S": {
+      "name": "minecraft:stone",
+      "meta": 0
+    }
+  },
+  "layers": [
+    [
+      "SSS",
+      "SSS",
+      "SSS"
+    ],
+    [
+      "...",
+      "...",
+      "..."
+    ]
+  ],
+  "annotations": {
+    "labels": {
+      "workbench": [
+        1,
+        1,
+        1
+      ]
+    }
+  }
+}

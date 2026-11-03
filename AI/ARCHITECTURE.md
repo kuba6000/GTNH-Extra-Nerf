@@ -218,3 +218,12 @@ Client fatal startup errors are deferred by `ClientProxy` and raised after
 Forge catches the display exception and shows its built-in error screen.
 `StartupErrorRequest` supplies the constant-backed support message and guards
 the dev-only preview flag; the common/server proxy does not link client GUI types.
+
+## Integration-test lifecycle
+
+Opt-in Horizon-QA builds register fixture alternatives during Forge pre-init.
+The framework bootstraps an isolated integrated world and runs selected scenarios
+after normal server startup. GUI operations use its client-thread queue and
+native input, while machine assertions run on the server thread. Reported
+completion drives JSON/JUnit output and client shutdown through the pinned
+portable supervisor. Manual `runFullPack` launches retain their normal lifecycle.

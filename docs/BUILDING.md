@@ -87,10 +87,11 @@ in development.
 Brainrotter substitutes vanilla structure blocks for missing mods only in
 development, and skips the pedestal mechanic only when its block is absent.
 See [the placeholder list](BRAINROT_MATERIALS.md#reduced-development-runtime).
-`-PbrainrotterDevTests` enables its native structure/crafting fixture for
-`runServer25`; run it with `-PrunServerWorkingDirectory` pointing at a disposable
-server directory. This fixture is separate from full-pack integration tests and
-is never included in ordinary builds.
+The reduced-runtime fixture runs through Horizon-QA:
+
+```powershell
+python .github/scripts/run_horizon_tests.py --client-task :runClient
+```
 
 ## Run in a complete GTNH environment
 
@@ -130,11 +131,22 @@ audit-failure and crash-evidence behavior using fake Gradle processes.
 
 Use `python -X utf8 .github/scripts/run_full_pack_server.py --gradle-command .\gradlew.bat`
 on Windows when running the real full-pack harness. Some mod log messages cannot be
-encoded using the default Windows console code page. The opt-in
-`-PmixinIntegrationTests` fixture also verifies native lootbag opening, shared limits,
-Fortune, audited reload, cache rebuilding and ledger reopen on the disposable server;
-ordinary builds exclude it. The fixture controls both ELB's item RNG and the world's
-budget RNG to make its real right-click checks deterministic.
+encoded using the default Windows console code page. Native integration checks run through Horizon-QA:
+
+```powershell
+python .github/scripts/run_horizon_tests.py
+python .github/scripts/run_horizon_tests.py --tests gtnhextranerftests:NativeScenarios.loot
+python .github/scripts/run_horizon_tests.py --tests gtnhextranerftests:ArcaneWorkbenchScenarios
+```
+
+The runner builds the pinned framework from Horizon-QA PR 263, creates a scratch
+world, executes the selected scenarios, verifies JSON/JUnit reports and ends its
+own client. It retains evidence under `build/horizonqa`. Use `--report-dir` with a
+new directory to choose another location and `--timeout-seconds` for a deadline.
+
+The loot scenario controls ELB's item RNG and the world's budget RNG for
+repeatable right-click checks, reload, cache rebuilding and ledger reopen.
+The GUI scenarios check actual workbench input and inventory synchronization.
 
 ## Test the included GTNHGradle fork
 

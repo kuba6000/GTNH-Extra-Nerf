@@ -88,10 +88,7 @@ The fixed `report.json` vector is independently derived with Python hashlib and
 checked by Java. Native configuration/lifecycle/capture checks use:
 
 ```powershell
-$env:ORG_GRADLE_PROJECT_telemetryIntegrationTests = 'true'
-python -X utf8 .github/scripts/run_full_pack_server.py --gradle-command .\gradlew.bat
-Remove-Item Env:ORG_GRADLE_PROJECT_telemetryIntegrationTests
+python .github/scripts/run_horizon_tests.py --tests gtnhextranerftests:NativeScenarios.telemetry
 ```
 
-The fixture explicitly disables production reporting; require its
-`Extra Nerf telemetry integration tests PASSED` log marker.
+The fixture explicitly disables production reporting; verify the scenario result in the generated JSON/JUnit reports.

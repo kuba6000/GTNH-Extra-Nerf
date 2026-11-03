@@ -115,6 +115,7 @@ final class LegacyFusionIntegrationTests {
     }
 
     private static BaseMetaTileEntity place(WorldServer world, FakePlayer player, ItemStack item, int x, int y, int z) {
+        FixtureWorld.loadAround(world, x, z);
         world.setBlockToAir(x, y, z);
         check(
             ((ItemBlock) item.getItem()).placeBlockAt(item, player, world, x, y, z, 1, 0.5f, 0.5f, 0.5f, 0),

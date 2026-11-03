@@ -1,17 +1,10 @@
 package pl.kuba6000.gtnhextranerf.integration;
 
 import java.util.Collections;
-import java.util.EnumSet;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fluids.FluidStack;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.MetaTileEntityIDs;
@@ -32,93 +25,14 @@ import pl.kuba6000.gtnhextranerf.audit.AuditExpectation;
 import pl.kuba6000.gtnhextranerf.audit.AuditSession;
 import pl.kuba6000.gtnhextranerf.mixins.support.ProcessingWireRecipeTransformer;
 import pl.kuba6000.gtnhextranerf.mixins.support.RingRecipeTransformer;
-import pl.kuba6000.gtnhextranerf.progression.MachineProgression;
-import pl.kuba6000.gtnhextranerf.progression.ProgressionTier;
 import pl.kuba6000.gtnhextranerf.recipes.machine.RecipeMatch;
 
-/** Runs against initialized registries; builds recipes without registering them. */
-@Mod(modid = "extranerfmixintests", version = "1", dependencies = "required-after:gtnhextranerf")
-public final class MixinRecipeIntegrationTests {
+/** Queries final registered recipes after the scratch server has started. */
+final class MixinRecipeIntegrationTests {
 
-    @Mod.EventHandler
-    public void prepareUnificationFixture(FMLPreInitializationEvent event) {
-        MaterialIntegrationTests.prepareAlternatives();
-    }
+    private MixinRecipeIntegrationTests() {}
 
-    @Mod.EventHandler
-    public void verifyP2P(FMLServerStartingEvent event) {
-        try {
-            HealingAxeIntegrationTests.verify(DimensionManager.getWorld(0));
-            GTNHExtraNerf.LOG.info("Extra Nerf Healing Axe server integration tests PASSED");
-            SteamConsumptionIntegrationTests.verifyDisplays(DimensionManager.getWorld(0));
-            GTNHExtraNerf.LOG.info("Extra Nerf Steam display integration tests PASSED");
-            SteamConsumptionIntegrationTests.verifyGrinder(DimensionManager.getWorld(0));
-            GTNHExtraNerf.LOG.info("Extra Nerf Steam Grinder consumption integration tests PASSED");
-            SteamConsumptionIntegrationTests.verifyBoiler(DimensionManager.getWorld(0));
-            GTNHExtraNerf.LOG.info("Extra Nerf Steam boiler production integration tests PASSED");
-            SteamConsumptionIntegrationTests.verifySingleMachine(DimensionManager.getWorld(0));
-            GTNHExtraNerf.LOG.info("Extra Nerf single Steam machine consumption integration tests PASSED");
-            SteamConsumptionIntegrationTests.verifyPump(DimensionManager.getWorld(0));
-            GTNHExtraNerf.LOG.info("Extra Nerf Steam Water Pump integration tests PASSED");
-            HatchCertificationIntegrationTests.verify(DimensionManager.getWorld(0));
-            GTNHExtraNerf.LOG.info("Extra Nerf hatch certification integration tests PASSED");
-            CasingFinishingIntegrationTests.verifyHandChisel(DimensionManager.getWorld(0));
-            verifyPoweredMachines(DimensionManager.getWorld(0));
-            ExamIntegrationTests.verify(DimensionManager.getWorld(0));
-            ProgressionIntegrationTests.verify(DimensionManager.getWorld(0));
-            SteamIntegrationTests.verify(DimensionManager.getWorld(0));
-            EvergladesIntegrationTests.verify(DimensionManager.getWorld(0));
-            PhysicalCircuitDropIntegrationTests.verify(DimensionManager.getWorld(0));
-            GTNHExtraNerf.LOG.info("Extra Nerf physical circuit drop integration tests PASSED");
-        } catch (Exception | LinkageError | AssertionError failure) {
-            // Forge can report startup-handler failures after Done and still exit with code zero.
-            throw new IllegalStateException("GTNH Extra Nerf integrity check failed: server integration", failure);
-        }
-        GTNHExtraNerf.LOG.info("Extra Nerf P2P channel integration tests PASSED");
-        GTNHExtraNerf.LOG.info("Extra Nerf casing finishing integration tests PASSED");
-        GTNHExtraNerf.LOG.info("Extra Nerf transformer integration tests PASSED");
-        GTNHExtraNerf.LOG.info("Extra Nerf legacy fusion integration tests PASSED");
-        GTNHExtraNerf.LOG.info("Extra Nerf Plasma Forge integration tests PASSED");
-        GTNHExtraNerf.LOG.info("Extra Nerf Coolant Tower integration tests PASSED");
-        GTNHExtraNerf.LOG.info("Extra Nerf Mass Fabricator integration tests PASSED");
-        GTNHExtraNerf.LOG.info("Extra Nerf ozone integration tests PASSED");
-        GTNHExtraNerf.LOG.info("Extra Nerf Brainrotter integration tests PASSED");
-        GTNHExtraNerf.LOG.info("Extra Nerf progression integration tests PASSED");
-        GTNHExtraNerf.LOG.info("Extra Nerf exam integration tests PASSED");
-        GTNHExtraNerf.LOG.info("Extra Nerf Steam integration tests PASSED");
-        GTNHExtraNerf.LOG.info("Extra Nerf Everglades integration tests PASSED");
-    }
-
-    private static void verifyPoweredMachines(WorldServer world) throws Exception {
-        EnumSet<ProgressionTier> temporary = EnumSet.noneOf(ProgressionTier.class);
-        for (ProgressionTier tier : ProgressionTier.values())
-            if (MachineProgression.certify(world, tier)) temporary.add(tier);
-        try {
-            SpatialAssemblyIntegrationTests.verify(world);
-            LightningRodIntegrationTests.verify(world);
-            TransformerIntegrationTests.verify(world);
-            LegacyFusionIntegrationTests.verify(world);
-            PlasmaForgeIntegrationTests.verify(world);
-            CoolantTowerIntegrationTests.verify(world);
-            MassFabricatorIntegrationTests.verify(world);
-            P2PChannelIntegrationTests.verify(world);
-            BrainrotterIntegrationTests.verify(world);
-            VoidMinerFluidIntegrationTests.verify(world);
-            // Its deliberate explosion revokes the electrical licence; run it after powered processing fixtures.
-            OzonationIntegrationTests.verify(world);
-        } finally {
-            for (ProgressionTier tier : temporary) MachineProgression.revoke(world, tier);
-        }
-    }
-
-    @Mod.EventHandler
-    public void verify(FMLLoadCompleteEvent event) {
-        // Verify the final registries after the mod's deferred recipe changes.
-        if (GregTechAPI.sGTCompleteLoad != null) GregTechAPI.sGTCompleteLoad.add(this::verifyRecipes);
-        else verifyRecipes();
-    }
-
-    private void verifyRecipes() {
+    static void verifyRecipes() {
         MTEHatchCustomFluidBase steamHatch = (MTEHatchCustomFluidBase) GregTechAPI.METATILEENTITIES[MetaTileEntityIDs.Hatch_Input_Steam.ID];
         check(steamHatch.getCapacity() == 640000, "Steam Input Hatch capacity must be 640000 L");
         check(

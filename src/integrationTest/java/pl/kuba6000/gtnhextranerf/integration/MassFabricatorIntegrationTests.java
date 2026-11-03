@@ -22,6 +22,7 @@ final class MassFabricatorIntegrationTests {
     static void verify(WorldServer world) {
         FakePlayer player = FakePlayerFactory.get(world, new GameProfile(UUID.randomUUID(), "AmpGateTest"));
         ItemStack controller = ItemList.MassFabricatorLuV.get(1);
+        FixtureWorld.loadAround(world, 704, 160);
         world.setBlockToAir(704, 210, 160);
         check(
             ((ItemBlock) controller.getItem())
@@ -41,6 +42,7 @@ final class MassFabricatorIntegrationTests {
         check(
             machine.getFillableStack().amount == required,
             "Singleblock did not consume the native amplifier fee once");
+        FixtureWorld.loadAround(world, 704, 160);
         world.setBlockToAir(704, 210, 160);
     }
 

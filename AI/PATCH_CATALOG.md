@@ -29,6 +29,8 @@ recipe uses Long Magnetic Steel Rods.
 load-complete. `MixinArcaneCraftingRemainders` handles the rod and flower
 remainders and requests the final inventory snapshot. `LvRecipeIntegrationTests`
 checks the recipes, arcane ingredients and remainder helper.
+`ArcaneWorkbenchScenarios` checks native workbench clicks and client inventory
+synchronization.
 
 ## Audit conventions
 
