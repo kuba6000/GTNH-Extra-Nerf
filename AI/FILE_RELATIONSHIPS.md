@@ -78,8 +78,9 @@ the Proxy's exact UEV Sensor input with a stack from `ComponentLoader`.
 | File | Calls/uses | Called/loaded by | Change impact |
 | --- | --- | --- | --- |
 | `GTNHExtraNerf.java` | `CommonProxy`, generated `Tags.VERSION`, Launch blackboard | Forge mod discovery | Mod ID, dependencies, lifecycle, proxy names and development-environment detection are integration contracts. |
-| `CommonProxy.java` | `Config`, `BlightedSoybean`, `ComponentLoader`, `RecipeLoader`, `AuditManager`, `FMLCommonHandler` | `GTNHExtraNerf` | Registers items before recipes; only deobfuscated dev launches tolerate final audit gaps. |
+| `CommonProxy.java` | `Config`, `BlightedSoybean`, `MagicnetizedManasteelRod`, `ComponentLoader`, `RecipeLoader`, `AuditManager`, `FMLCommonHandler` | `GTNHExtraNerf` | Registers items before recipes; only deobfuscated dev launches tolerate final audit gaps. |
 | `items/BlightedSoybean.java` | Forge `GameRegistry`, GregTech materials tab | `CommonProxy.preInit`, `MixinSoybeanCrop`, NEI integration | Registers the replacement item and substitutes the specific HarvestCraft soybean item in crop drops. |
+| `items/MagicnetizedManasteelRod.java` | Forge `GameRegistry`, Thaumcraft, Botania, GregTech OreDict | `CommonProxy`, motor recipe modules and Arcane Workbench mixins | Registers the MV motor ingredient and arcane recipe; supplies crafting remainders. |
 | `ClientProxy.java` | `CommonProxy`, `ComponentItemRenderer`, startup-error display | `@SidedProxy` on clients | Keeps component renderers and error-screen behavior on the client. |
 | `components/ComponentRegistry.java` | `ComponentTier`, `ComponentType`, `ComponentItem` | `ComponentLoader`, client renderer/NEI integration, recipe consumers | Owns all identities and returns fresh stacks; never eagerly resolves GregTech appearance sources. |
 | `loader/ComponentLoader.java` | `ComponentRegistry`, Forge `GameRegistry` | `CommonProxy.preInit` | Registry names are save-data contracts; registers items once on both sides. |
@@ -157,6 +158,7 @@ the following together:
 | `MixinRecipeAccessor` | Minecraft | 2 `@Invoker`s | `IRecipe.getRecipeOutput` and `matches` |
 | `MixinShapedOreRecipeAccessor` | Forge | `@Accessor` | private `mirrored` flag |
 | `MixinSoybeanCrop` | HarvestCraft | `@ModifyReturnValue(require = 2)` | crop and seed return values equal to `harvestcraft:soybeanItem` |
+| `MixinArcaneCraftingRemainders`, `MixinArcaneWorkbenchSync` | Thaumcraft | `@WrapMethod` + `@WrapOperation` | specific Magicnetized Manasteel Rod recipe; remainder handling and shift-click sync |
 | `MixinAe2Crafting` | NHCore | 3 `@WrapOperation` handlers | shared AE2-output/Titanium ingredient selection across crafting registration APIs |
 | `MixinWirelessConnectionPower` | AE2 | 1 `@WrapMethod` replacing power recalculation | distance^4 EU/t capped at 10,000,000 per link, split across endpoints; hubs sum their shares |
 | `MixinMeP2PChannelCapacity` | AE2 | 1 `@Inject` at constructor return | standard eight-channel external node capacity, shared across output branches |
@@ -234,7 +236,7 @@ EnhancedLootBags, plus compile-only Chisel, Extra Utilities, Custom Main Menu
 and ChromaticTooltips and a development-only NEI dependency. The GT5 development
 artifact also exposes types from merged addons used by the source. Runtime code
 interacts with BartWorks, Dreamcraft, Good Generator, GT++, GTNH Lanthanides,
-TConstruct and optionally Forestry and HarvestCraft.
+TConstruct, Thaumcraft, Botania and optionally Forestry and HarvestCraft.
 
 Before changing dependency declarations, distinguish:
 

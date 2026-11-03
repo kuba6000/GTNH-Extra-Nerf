@@ -45,6 +45,7 @@ the pinned dependencies. It directly interacts with content from:
 - GT++;
 - GTNH Lanthanides;
 - TConstruct;
+- Thaumcraft and Botania for the MV motor's Arcane Workbench ingredient;
 - Extra Utilities and HarvestCraft when present;
 - Forestry-dependent recipes when Forestry is present.
 

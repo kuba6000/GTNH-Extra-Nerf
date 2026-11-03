@@ -83,6 +83,7 @@ fence structures and generated energy through the public post-tick API.
 | `.../Config.java` | Opens the suggested Forge configuration and saves only when changed. |
 | `.../items/HungryAxe.java` | Hungry Axe mark, hunger drain and translated display name. |
 | `.../items/BlightedSoybean.java` | Registered replacement for HarvestCraft soybean crop drops. |
+| `.../items/MagicnetizedManasteelRod.java` | Registered MV motor ingredient, arcane recipe and crafting remainders. |
 | `.../audit/AuditScope.java` | Typed semantic patch identities, activation conditions and expected statistics. |
 | `.../audit/AuditManager.java` | Scoped exclusive-time/statistic collection, success reporting, final verification and lifecycle cleanup. |
 | `.../audit/AuditDefinition.java` | State-free id, activation and expectation contract. |
@@ -190,6 +191,8 @@ All paths below start at
 | `mixins/late/MixinMTELargeChemicalReactor.java` | `MTELargeChemicalReactor` | 3/4 overclock and tooltip. |
 | `mixins/late/MixinHealingAxeHunger.java` | Extra Utilities `ItemHealingAxe` | Marks the carried axe, changes its displayed name and replaces hunger gain with drain. |
 | `mixins/late/MixinSoybeanCrop.java` | HarvestCraft `BlockPamCrop` | Replaces soybean item returns from crop and seed methods. |
+| `mixins/late/MixinArcaneCraftingRemainders.java` | Thaumcraft `SlotCraftingArcaneWorkbench` | Returns the flower and demagnetized rods when crafting the MV ingredient. |
+| `mixins/late/MixinArcaneWorkbenchSync.java` | Thaumcraft `ContainerArcaneWorkbench` | Synchronizes shift-crafted remainders to the player. |
 | `mixins/late/MixinMetaTileEntity.java` | `MetaTileEntity` | Steam fill conversion. |
 | `mixins/late/MixinConfigurationCircuitSupport.java` | `CommonWidgets.createCircuitSlot` | Physical Integrated Circuit slot below HV for every tiered machine with configuration-circuit support. |
 | `mixins/late/MixinPhysicalCircuitBlockDrop.java` | `BlockMachines.breakBlock` | Include the reserved physical circuit in ordinary inventory drops. |
@@ -212,6 +215,7 @@ All paths below start at
 | `src/main/resources/mixins.gtnhextranerf.early.json` | Required early mixin config. |
 | `src/main/resources/mixins.gtnhextranerf.late.json` | Required late mixin config. |
 | `src/main/resources/assets/gtnhextranerf/textures/items/blighted_soybean.png` | Blighted Soybean item texture. |
+| `src/main/resources/assets/gtnhextranerf/textures/items/magicnetized_manasteel_rod.png` | Magicnetized Manasteel Rod texture. |
 | `src/main/resources/LICENSE` | License included in the built JAR. |
 
 ## Tests

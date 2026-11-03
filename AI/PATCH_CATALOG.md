@@ -15,7 +15,7 @@ and has no recipe registered by this mod. NEI hides it from its item panel.
 The complete-server startup checks mixin application; the existing integration
 suite does not separately exercise soybean crop drops.
 
-## Audit conventions
+## Magicnetized Manasteel Rod
 
 `MagicnetizedManasteelRod` registers an arcane recipe using a Manasteel Rod,
 two Magnetic Steel Rods, a Solegnolia, 10 Aer and 10 Ordo. The workbench
@@ -23,6 +23,14 @@ keeps the flower in the workbench and converts the Magnetic Steel Rods to Steel 
 `CraftingNerf` and `CoreModRecipeNerf` replace the
 Magnetic Steel Rod in the MV motor's hand and Assembler recipes. The COAL
 recipe uses Long Magnetic Steel Rods.
+
+`CommonProxy` registers the item in pre-init and its arcane recipe during
+load-complete. `MixinArcaneCraftingRemainders` handles the rod and flower
+remainders; `MixinArcaneWorkbenchSync` synchronizes shift-crafting on the
+server. `LvRecipeIntegrationTests` checks the recipes, arcane ingredients and
+remainder helper, but does not exercise a player's workbench clicks.
+
+## Audit conventions
 
 `MixinVoidMinerFluids` replaces the old tier-based rejection with a consumption
 matrix. Its strict two-site `ModifyExpressionValue` changes both reads of
