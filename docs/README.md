@@ -31,7 +31,6 @@ Agent-oriented implementation documentation lives separately in
 - [AE2 progression](AE2_PROGRESSION.md): Applied Energistics 2 changes tied to progression.
 - [Telemetry](TELEMETRY.md), [team tracking](TEAM_TRACKING.md) and [update check](UPDATE_CHECK.md): what the mod sends, how to opt out and how to test it.
 - [Mixin review](MIXIN_REVIEW.md), [mixin refactor plan](MIXIN_REFACTOR_PLAN.md) and [audit refactor plan](AUDIT_REFACTOR_PLAN.md): design history.
-- [Nerf audit](NERF_AUDIT_2026-11-02.md): historical findings and their subsequent resolutions.
 - [Brainrot materials and multiblock](BRAINROT_MATERIALS.md): material identities, prototype Brainrotter, registration and compatibility.
 - [Next progression nerfs: preliminary research](NEXT_NERFS_RESEARCH.md): historical source findings, implementation status and deferred decisions.
 
