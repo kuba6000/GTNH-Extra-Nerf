@@ -17,8 +17,8 @@ satisfied, from Stone through UXV. Missing Steam gives Stone; a revoked earlier
 certificate blocks later tiers. MAX is not reported.
 
 No player names, player UUIDs, inventories, coordinates, world files or exam answers
-are included in basic reports. The optional build proof helps identify published
-releases without sending the JAR or its unmodified fingerprint.
+are included in basic reports. The optional build proof is generated without sending
+the JAR or its unmodified fingerprint.
 
 ## What is not in the report
 

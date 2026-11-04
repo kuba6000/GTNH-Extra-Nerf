@@ -47,8 +47,7 @@ It contains the team ID, the leader's Minecraft name and UUID, and the names and
 of up to 256 online players. It also includes the progression tier, world type and an
 optional build proof. Team reports do not include the session ID used for basic statistics.
 
-Team reports can contribute to aggregate server statistics. Teams using recognized
-official releases may appear on the public team list. See the
+Team reports can contribute to aggregate server statistics. See the
 [team tracking policy](https://extranerf.kuba6000.pl/team-tracking) for details.
 Development environments never report.
 
