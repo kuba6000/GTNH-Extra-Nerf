@@ -271,8 +271,8 @@ catalog, including exact values, conditions and unchanged fields, is
 - Elite circuits require Soul Infused Medium in a cleanroom.
 - PPIC processing requires 64 NPIC wafers.
 - Four diode assembler shortcuts are removed.
-- Machine-casing assembler recipes use eight double plates for ULV through
-  MAX.
+- Machine-casing hand and Assembler recipes use eight double plates for ULV
+  through UMV. UXV uses one Dense MHDCSM Plate and four Double Magmatter Plates.
 - Diamond Sawblade uses Blood Steel instead of Cobalt Brass.
 - Superconductor Coil Casing requires 128 LuV 2x wires and 384 Mica foils.
 - Integrated Logic, Good and Advanced circuits require more preceding-tier

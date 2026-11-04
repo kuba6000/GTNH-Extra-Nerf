@@ -856,9 +856,9 @@ production routes for ULV-UHV:
 - Extend [the hand-crafting modifier](../src/main/java/pl/kuba6000/gtnhextranerf/loader/recipes/CraftingNerf.java)
   in the same way. Keep its existing double-plate cost and wrench pattern.
 - Add the four NHCore UEV-UXV production pairs to the output redirection.
-  They are currently outside our double-plate nerf; this finishing change
-  preserves their existing ingredient costs, including UXV's mixed MHDCSM /
-  MagMatter plates. ULV keeps its existing double-plate recipe and finished
+  The initial finishing change preserved their original costs; the later plate
+  nerf makes UEV-UMV require eight double plates and UXV one Dense MHDCSM plus
+  four Double Magmatter Plates. ULV keeps its double-plate recipe and finished
   output. Match MAX production separately if it appears in a newer runtime.
 
 Thus the LV example becomes **8 double Steel plates + wrench/circuit 8 ->

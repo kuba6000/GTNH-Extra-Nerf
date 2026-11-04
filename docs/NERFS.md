@@ -119,8 +119,8 @@ Reduced dev without Everglades does not activate the dimension check.
 ## Chisel finishing for machine casings
 
 - LV through UXV hand and Assembler production yields a raw machine casing.
-  The existing double-plate cost through UHV is retained; UEV-UXV retain their
-  existing plate costs. ULV still produces a finished casing directly.
+  ULV through UMV require double plates; UXV uses a Dense MHDCSM plate and
+  Double Magmatter plates. ULV still produces a finished casing directly.
 - One metadata block contains fourteen raw variants. Each tier has an isolated
   native Chisel group with only its raw variant and the existing GT casing.
   Hand chisels and GT's Industrial Chisel use those groups, including NEI.
@@ -1101,10 +1101,24 @@ Both Assembler and hand-crafting recipes require 8 double plates instead of
 | ZPM | Iridium |
 | UV | Osmium |
 | UHV | Neutronium |
+| UEV | Infinity |
+| UIV | Transcendent Metal |
+| UMV | SpaceTime |
 
 Output is one casing of the corresponding tier: raw from LV upward, finished
 at ULV. Native Chisel supplies the finishing step described above. Hand
 crafting retains the wrench in the center of the plate ring.
+
+UXV instead requires **one Dense MHDCSM Plate and four Double Magmatter
+Plates** in both hand crafting and the Assembler. The Assembler retains
+integrated circuit 8. In hand crafting, `M` is Double Magmatter, `D` is Dense
+MHDCSM, `W` is a wrench, and `.` marks an empty position:
+
+```text
+MDM
+.W.
+M.M
+```
 
 ### Diamond Sawblade
 

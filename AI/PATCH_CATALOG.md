@@ -1276,7 +1276,10 @@ variants and a nested ItemBlock. Chisel's native isolated groups are registered
 in post-init, after Chisel, before GT's lazy NEI cache. Existing ULV-UHV casing
 modifiers preserve their double-plate changes and redirect LV-UHV outputs.
 `REDIRECT_HIGH_TIER_RAW_CASINGS` changes the four higher-tier hand/Assembler
-pairs with an exact eight-modification contract. `VERIFY_RAW_CASING_FINISHING`
+pairs with an exact eight-modification contract. UEV, UIV and UMV require eight
+double plates. UXV requires one Dense MHDCSM Plate and four Double Magmatter
+Plates; its hand grid has three empty positions and retains the wrench.
+`VERIFY_RAW_CASING_FINISHING`
 checks effective groups, NEI entries and absence of direct finished production.
 Without Chisel in reduced dev, output redirection is inactive; missing integration
 fails the full-pack audit. Finished IDs and native recycling are retained.

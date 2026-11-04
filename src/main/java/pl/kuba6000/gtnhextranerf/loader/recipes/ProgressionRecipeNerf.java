@@ -92,12 +92,17 @@ public final class ProgressionRecipeNerf implements RecipeModule {
         Materials[] materials = { Materials.Infinity, Materials.TranscendentMetal, Materials.SpaceTime,
             Materials.MHDCSM };
         for (int tier = 0; tier < casings.length; tier++) {
+            boolean uxv = tier == 3;
             ItemStack finished = casings[tier].get(1), raw = RawMachineCasings.productionOutput(finished);
-            ItemStack plate = GTOreDictUnificator.get(OrePrefixes.plate, materials[tier], tier == 3 ? 4 : 8);
-            ItemStack[] inputs = tier == 3
-                ? new ItemStack[] { plate, GTOreDictUnificator.get(OrePrefixes.plate, Materials.MagMatter, 4),
-                    GTUtility.getIntegratedCircuit(8) }
+            ItemStack plate = item(OrePrefixes.plate, materials[tier], uxv ? 4 : 8);
+            ItemStack magmatter = uxv ? item(OrePrefixes.plate, Materials.MagMatter, 4) : null;
+            ItemStack[] inputs = uxv ? new ItemStack[] { plate, magmatter, GTUtility.getIntegratedCircuit(8) }
                 : new ItemStack[] { plate, GTUtility.getIntegratedCircuit(8) };
+            OrePrefixes upgradedPlate = uxv ? OrePrefixes.plateDense : OrePrefixes.plateDouble;
+            RecipeChange.Builder change = RecipeChange.builder()
+                .replaceItemInput(plate, item(upgradedPlate, materials[tier], uxv ? 1 : 8))
+                .replaceItemOutput(finished, raw);
+            if (uxv) change.replaceItemInput(magmatter, item(OrePrefixes.plateDouble, Materials.MagMatter, 4));
             recipes.machine(assemblerRecipes)
                 .modifyOne(
                     RecipeMatch.builder()
@@ -108,11 +113,9 @@ public final class ProgressionRecipeNerf implements RecipeModule {
                         .duration(50)
                         .eut(TierEU.RECIPE_LV / 2)
                         .build(),
-                    RecipeChange.builder()
-                        .replaceItemOutput(finished, raw)
-                        .build());
+                    change.build());
             CraftingRecipeBuilder crafting = CraftingRecipeBuilder.shaped()
-                .pattern(tier == 3 ? new String[] { "PSP", "SWS", "PSP" } : new String[] { "PPP", "PWP", "PPP" })
+                .pattern(uxv ? new String[] { "PSP", "SWS", "PSP" } : new String[] { "PPP", "PWP", "PPP" })
                 .ingredient(
                     'P',
                     OrePrefixes.plate.get(materials[tier])
@@ -121,19 +124,26 @@ public final class ProgressionRecipeNerf implements RecipeModule {
                 .output(finished)
                 .matchType(CraftingRecipeType.GT_SHAPED)
                 .removable(false);
-            if (tier == 3) crafting.ingredient(
+            if (uxv) crafting.ingredient(
                 'S',
                 OrePrefixes.plate.get(Materials.MagMatter)
                     .toString());
             CraftingDefinition original = crafting.build();
+            CraftingRecipeBuilder replacement = original.toBuilder()
+                .ingredient(
+                    'P',
+                    upgradedPlate.get(materials[tier])
+                        .toString())
+                .output(raw);
+            if (uxv) replacement.pattern("SPS", " W ", "S S")
+                .ingredient(
+                    'S',
+                    OrePrefixes.plateDouble.get(Materials.MagMatter)
+                        .toString());
             recipes.crafting()
                 .expectOutputCount(finished, 1);
             recipes.crafting()
-                .replaceOne(
-                    original,
-                    original.toBuilder()
-                        .output(raw)
-                        .build());
+                .replaceOne(original, replacement.build());
             recipes.crafting()
                 .expectOutputCount(finished, 0);
         }
