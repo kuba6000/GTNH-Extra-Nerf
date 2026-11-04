@@ -39,9 +39,10 @@ import gtPlusPlus.core.fluids.GTPPFluids;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.core.material.MaterialsElements;
 import pl.kuba6000.gtnhextranerf.audit.AuditScope;
-import pl.kuba6000.gtnhextranerf.items.MagicnetizedManasteelRod;
+import pl.kuba6000.gtnhextranerf.items.MagicnetizedRods;
 import pl.kuba6000.gtnhextranerf.machines.RawMachineCasings;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeContext;
+import pl.kuba6000.gtnhextranerf.recipes.RecipeItems;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeModule;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeRegistry;
 import pl.kuba6000.gtnhextranerf.recipes.machine.RecipeChange;
@@ -51,6 +52,9 @@ public final class CoreModRecipeNerf implements RecipeModule {
 
     @Override
     public void register(RecipeRegistry registry) {
+        registry.register(AuditScope.MODIFY_HV_MOTOR_ASSEMBLER, CoreModRecipeNerf::modifyHvMotor);
+        registry.register(AuditScope.ADD_AUTOMATED_MANASTEEL_ROD, CoreModRecipeNerf::automatedManasteelRod);
+        registry.register(AuditScope.ADD_MAGICNETIZED_VOID_METAL_ROD, CoreModRecipeNerf::magicnetizedVoidMetalRod);
         registry.register(AuditScope.MODIFY_MV_MOTOR_ASSEMBLER, CoreModRecipeNerf::modifyMvMotor);
         registry.register(AuditScope.REMOVE_IRON_LV_MOTOR_ASSEMBLER_RECIPE, CoreModRecipeNerf::removeIronLvMotor);
         registry.register(AuditScope.MODIFY_SUPERCONDUCTOR_COIL_RECIPE, CoreModRecipeNerf::modifySuperconductorCoil);
@@ -96,7 +100,75 @@ public final class CoreModRecipeNerf implements RecipeModule {
                     .eut(TierEU.RECIPE_LV)
                     .build(),
                 RecipeChange.builder()
-                    .replaceItemInput(rod, MagicnetizedManasteelRod.stack())
+                    .replaceItemInput(rod, MagicnetizedRods.manasteel())
+                    .build());
+    }
+
+    private static void modifyHvMotor(RecipeContext recipes) {
+        ItemStack rod = GTOreDictUnificator.get(OrePrefixes.stick, Materials.SteelMagnetic, 1);
+        recipes.machine(assemblerRecipes)
+            .modifyOne(
+                RecipeMatch.builder()
+                    .itemInputs(
+                        rod,
+                        GTOreDictUnificator.get(OrePrefixes.stick, Materials.StainlessSteel, 2),
+                        GTOreDictUnificator.get(OrePrefixes.wireGt04, Materials.Electrum, 4),
+                        GTOreDictUnificator.get(OrePrefixes.cableGt02, Materials.Silver, 2))
+                    .itemOutputs(ItemList.Electric_Motor_HV.get(1))
+                    .fluidInputs()
+                    .fluidOutputs()
+                    .duration(20 * TICKS)
+                    .eut(TierEU.RECIPE_LV)
+                    .build(),
+                RecipeChange.builder()
+                    .replaceItemInput(rod, MagicnetizedRods.voidMetal())
+                    .build());
+    }
+
+    private static void automatedManasteelRod(RecipeContext recipes) {
+        ItemStack flower = MagicnetizedRods.solegnolia();
+        flower.stackSize = 0;
+        ItemStack returned = GTOreDictUnificator.get(OrePrefixes.stick, Materials.Steel, 2);
+        recipes.machine(assemblerRecipes)
+            .addOne(
+                GTValues.RA.stdBuilder()
+                    .itemInputs(
+                        GTOreDictUnificator.get(OrePrefixes.stick, Materials.Manasteel, 1),
+                        GTOreDictUnificator.get(OrePrefixes.stick, Materials.SteelMagnetic, 2),
+                        RecipeItems.requireModItem(Mods.Thaumcraft, "ItemResource", 2, 14),
+                        flower)
+                    .itemOutputs(MagicnetizedRods.manasteel(), returned)
+                    .fluidInputs(Materials.Mercury.getFluid(144))
+                    .nbtSensitive()
+                    .duration(20 * SECONDS)
+                    .eut(TierEU.RECIPE_HV),
+                RecipeMatch.builder()
+                    .itemOutputs(MagicnetizedRods.manasteel(), returned)
+                    .build());
+    }
+
+    private static void magicnetizedVoidMetalRod(RecipeContext recipes) {
+        ItemStack flower = MagicnetizedRods.solegnolia();
+        flower.stackSize = 0;
+        ItemStack manasteel = MagicnetizedRods.manasteel();
+        manasteel.stackSize = 2;
+        ItemStack returned = GTOreDictUnificator.get(OrePrefixes.stick, Materials.Manasteel, 2);
+        recipes.machine(assemblerRecipes)
+            .addOne(
+                GTValues.RA.stdBuilder()
+                    .itemInputs(
+                        GTOreDictUnificator.get(OrePrefixes.stick, Materials.Void, 1),
+                        manasteel,
+                        GTOreDictUnificator.get(OrePrefixes.foil, Materials.SteelMagnetic, 4),
+                        RecipeItems.requireModItem(Mods.Thaumcraft, "ItemResource", 2, 14),
+                        flower)
+                    .itemOutputs(MagicnetizedRods.voidMetal(), returned)
+                    .fluidInputs(Materials.Mercury.getFluid(144))
+                    .nbtSensitive()
+                    .duration(30 * SECONDS)
+                    .eut(TierEU.RECIPE_MV),
+                RecipeMatch.builder()
+                    .itemOutputs(MagicnetizedRods.voidMetal(), returned)
                     .build());
     }
 

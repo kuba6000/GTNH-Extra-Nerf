@@ -29,6 +29,11 @@ public final class NativeScenarios {
     }
 
     @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void magicnetizedRods(GameTestHelper helper) {
+        scenario(helper, "magicnetizedRods", false, () -> MagicnetizedRodIntegrationTests.verify(helper.getWorld()));
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
     public static void steamDisplays(GameTestHelper helper) {
         scenario(
             helper,

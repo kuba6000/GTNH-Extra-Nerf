@@ -28,7 +28,7 @@ import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTRecipeBuilder;
 import gtPlusPlus.core.material.MaterialsAlloy;
-import pl.kuba6000.gtnhextranerf.items.MagicnetizedManasteelRod;
+import pl.kuba6000.gtnhextranerf.items.MagicnetizedRods;
 import pl.kuba6000.gtnhextranerf.recipes.machine.RecipeMatch;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.Aspect;
@@ -206,7 +206,7 @@ final class LvRecipeIntegrationTests {
 
     private static void verifyMvMotor() {
         ItemStack motor = ItemList.Electric_Motor_MV.get(1);
-        ItemStack magic = MagicnetizedManasteelRod.stack();
+        ItemStack magic = MagicnetizedRods.manasteel();
         ItemStack magnetic = item(OrePrefixes.stick, Materials.SteelMagnetic, 1);
         ItemStack aluminium = item(OrePrefixes.stick, Materials.Aluminium, 1);
         ItemStack wire = item(OrePrefixes.wireGt02, Materials.Cupronickel, 1);
@@ -278,11 +278,9 @@ final class LvRecipeIntegrationTests {
                 grid.stackList[7] = flower;
                 check(recipe.matches(grid, null, null), "magicnetized rod ingredients do not match");
                 check(
-                    same(
-                        item(OrePrefixes.stick, Materials.Steel, 1),
-                        MagicnetizedManasteelRod.craftingRemainder(magnetic)),
+                    same(item(OrePrefixes.stick, Materials.Steel, 1), MagicnetizedRods.craftingRemainder(magnetic)),
                     "magnetic steel should return steel");
-                check(same(flower, MagicnetizedManasteelRod.craftingRemainder(flower)), "Solegnolia data was lost");
+                check(same(flower, MagicnetizedRods.craftingRemainder(flower)), "Solegnolia data was lost");
                 grid.stackList[7] = null;
                 check(!recipe.matches(grid, null, null), "magicnetized rod recipe accepts a missing flower");
                 arcane = true;

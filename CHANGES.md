@@ -35,10 +35,18 @@ catalog, including exact values, conditions and unchanged fields, is
 
 - HarvestCraft soybean crops yield Blighted Soybean instead of Soybean.
 
+## HV Electric Motor
+
+- HV motors require a Magicnetized Void Metal Rod. Its MV Assembler recipe uses
+  magnetic Manasteel rods, Magnetic Steel Foils, Salis Mundus and Mercury, with
+  Solegnolia as a reusable catalyst. It returns ordinary Manasteel rods
+- An HV Assembler automates Magicnetized Manasteel Rod production
+- GregTech Assembling Machines have two output slots
+
 ## MV Electric Motor
 
 - The crafting and Assembler recipes require a Magicnetized Manasteel Rod made
-  in an Arcane Workbench.
+  in an Arcane Workbench or an HV Assembler.
 
 ## Hungry Axe
 

@@ -93,7 +93,7 @@ fence structures and generated energy through the public post-tick API.
 | `.../Config.java` | Opens the suggested Forge configuration and saves only when changed. |
 | `.../items/HungryAxe.java` | Hungry Axe mark, hunger drain and translated display name. |
 | `.../items/BlightedSoybean.java` | Registered replacement for HarvestCraft soybean crop drops. |
-| `.../items/MagicnetizedManasteelRod.java` | Registered MV motor ingredient, arcane recipe and crafting remainders. |
+| `.../items/MagicnetizedRods.java` | Registered magicnetized motor rods, arcane recipe and crafting remainders. |
 | `.../audit/AuditScope.java` | Typed semantic patch identities, activation conditions and expected statistics. |
 | `.../audit/AuditManager.java` | Scoped exclusive-time/statistic collection, success reporting, final verification and lifecycle cleanup. |
 | `.../audit/AuditDefinition.java` | State-free id, activation and expectation contract. |

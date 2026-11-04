@@ -12,6 +12,11 @@ import com.gtnewhorizon.gtnhmixins.builders.MixinBuilder;
 
 public enum Mixin implements IMixins {
 
+    AssemblerOutputs(new MixinBuilder().addCommonMixins("MixinAssemblerOutputs", "MixinAssemblerRecipeMap")
+        .addRequiredMod(GT5U)
+        .addExcludedMod(GT6)
+        .setPhase(LATE)),
+
     ArcaneCraftingRemainders(new MixinBuilder().addCommonMixins("MixinArcaneCraftingRemainders")
         .addRequiredMod(TargetedMod.THAUMCRAFT)
         .setPhase(LATE)),

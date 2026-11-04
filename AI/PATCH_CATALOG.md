@@ -26,7 +26,7 @@ checks the output, required ingredients, pattern and container-return behavior.
 
 ## Magicnetized Manasteel Rod
 
-`MagicnetizedManasteelRod` registers an arcane recipe using a Manasteel Rod,
+`MagicnetizedRods` registers an arcane recipe using a Manasteel Rod,
 two Magnetic Steel Rods, a Solegnolia, 10 Aer and 10 Ordo. The workbench
 keeps the flower in the workbench and converts the Magnetic Steel Rods to Steel Rods.
 `ArcaneWorkbenchSync` sends the final Shift-click inventory at server tick END.
@@ -40,6 +40,31 @@ remainders and requests the final inventory snapshot. `LvRecipeIntegrationTests`
 checks the recipes, arcane ingredients and remainder helper.
 `ArcaneWorkbenchScenarios` checks native workbench clicks and client inventory
 synchronization.
+
+## Magicnetized Void Metal Rod and automated Manasteel
+
+`MagicnetizedRods` registers both motor ingredients and supplies the Solegnolia
+stack used by their recipes. `CoreModRecipeNerf` adds the automated recipes:
+
+- HV Assembler: one Manasteel Rod, two Magnetic Steel Rods, two Salis Mundus,
+  144 L Mercury and a reusable Solegnolia produce one Magicnetized Manasteel Rod
+  and two ordinary Steel Rods in 20 seconds at 480 EU/t
+- MV Assembler: one Void Metal Rod, two Magicnetized Manasteel Rods, four Magnetic
+  Steel Foils, two Salis Mundus, 144 L Mercury and a reusable Solegnolia produce
+  one Magicnetized Void Metal Rod and two ordinary Manasteel Rods in 30 seconds
+  at 120 EU/t
+
+Both recipes use GT's zero-count catalyst input and NBT-sensitive matching.
+`CraftingNerf` and `CoreModRecipeNerf` replace the central Magnetic Steel Rod in
+HV motor crafting and the Assembler recipe with the new Void Metal rod.
+
+`MixinAssemblerOutputs` changes the output count during native Assembling Machine
+registration. `MixinAssemblerRecipeMap` sets the recipe map's item output capacity
+to two, which also supplies the NEI layout. `EXPAND_ASSEMBLER_OUTPUTS` audits both
+changes. `MagicnetizedRodIntegrationTests`, exposed through the Horizon-QA
+`magicnetizedRods` scenario, checks the registered recipes, catalyst identity and
+consumption, motor routes across recipe maps, native machine processing and
+pending-output persistence.
 
 ## Audit conventions
 

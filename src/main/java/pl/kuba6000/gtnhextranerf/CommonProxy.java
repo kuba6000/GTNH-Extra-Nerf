@@ -17,7 +17,7 @@ import pl.kuba6000.gtnhextranerf.audit.AuditManager;
 import pl.kuba6000.gtnhextranerf.audit.AuditReport;
 import pl.kuba6000.gtnhextranerf.audit.AuditScope;
 import pl.kuba6000.gtnhextranerf.items.BlightedSoybean;
-import pl.kuba6000.gtnhextranerf.items.MagicnetizedManasteelRod;
+import pl.kuba6000.gtnhextranerf.items.MagicnetizedRods;
 import pl.kuba6000.gtnhextranerf.loader.ComponentLoader;
 import pl.kuba6000.gtnhextranerf.loader.LootLoader;
 import pl.kuba6000.gtnhextranerf.loader.RecipeLoader;
@@ -62,7 +62,7 @@ public class CommonProxy {
         RawMachineCasings.register();
         Brainrotter.registerItem();
         BlightedSoybean.register();
-        MagicnetizedManasteelRod.register();
+        MagicnetizedRods.register();
         FMLCommonHandler.instance()
             .bus()
             .register(ArcaneWorkbenchSync.INSTANCE);
@@ -105,7 +105,7 @@ public class CommonProxy {
             runStartupStep(SteamSafety::verify);
             runStartupStep(CertificationExams::verify);
             runStartupStep(CertificationCost::verify);
-            runStartupStep(MagicnetizedManasteelRod::registerArcaneRecipe);
+            runStartupStep(MagicnetizedRods::registerArcaneRecipe);
             runStartupStep(RecipeLoader::run);
             runStartupStep(RawMachineCasings::verify);
             runStartupStep(ProgressionMachineNerf::verifyFusion);

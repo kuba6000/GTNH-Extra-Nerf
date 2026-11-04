@@ -14,7 +14,7 @@ import gregtech.api.enums.ToolDictNames;
 import gregtech.api.util.GTOreDictUnificator;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import pl.kuba6000.gtnhextranerf.audit.AuditScope;
-import pl.kuba6000.gtnhextranerf.items.MagicnetizedManasteelRod;
+import pl.kuba6000.gtnhextranerf.items.MagicnetizedRods;
 import pl.kuba6000.gtnhextranerf.machines.RawMachineCasings;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeContext;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeItems;
@@ -30,6 +30,7 @@ public final class CraftingNerf implements RecipeModule {
 
     @Override
     public void register(RecipeRegistry registry) {
+        registry.register(AuditScope.MODIFY_HV_MOTOR_HAND_CRAFTING, CraftingNerf::hvMotor);
         registry.register(AuditScope.MODIFY_MV_MOTOR_HAND_CRAFTING, CraftingNerf::mvMotor);
         registry.register(AuditScope.ADD_LV_FLORAL_FERTILIZER, CraftingNerf::floralFertilizer);
         registry.register(AuditScope.REDUCE_BRONZE_DUST_HAND_CRAFTING_OUTPUT, CraftingNerf::bronzeDust);
@@ -71,7 +72,26 @@ public final class CraftingNerf implements RecipeModule {
             .replaceOne(
                 original,
                 original.toBuilder()
-                    .ingredient('I', MagicnetizedManasteelRod.stack())
+                    .ingredient('I', MagicnetizedRods.manasteel())
+                    .build());
+    }
+
+    private static void hvMotor(RecipeContext recipes) {
+        CraftingDefinition original = CraftingRecipeBuilder.shaped()
+            .pattern("CWR", "WIW", "RWC")
+            .ingredient('C', "cableGt02Silver")
+            .ingredient('W', "wireGt04Electrum")
+            .ingredient('R', "stickStainlessSteel")
+            .ingredient('I', "stickSteelMagnetic")
+            .output(ItemList.Electric_Motor_HV.get(1))
+            .matchType(CraftingRecipeType.GT_SHAPED)
+            .removable(false)
+            .build();
+        recipes.crafting()
+            .replaceOne(
+                original,
+                original.toBuilder()
+                    .ingredient('I', MagicnetizedRods.voidMetal())
                     .build());
     }
 

@@ -19,28 +19,39 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.crafting.ShapedArcaneRecipe;
 
-public final class MagicnetizedManasteelRod {
+public final class MagicnetizedRods {
 
-    private static final Item ITEM = new Item().setUnlocalizedName("gtnhextranerf.magicnetized_manasteel_rod")
-        .setTextureName(GTNHExtraNerf.MODID + ":magicnetized_manasteel_rod")
-        .setCreativeTab(GregTechAPI.TAB_GREGTECH_MATERIALS);
+    private static final Item MANASTEEL = rod("manasteel");
+    private static final Item VOID_METAL = rod("void_metal");
     private static ShapedArcaneRecipe recipe;
 
-    private MagicnetizedManasteelRod() {}
+    private MagicnetizedRods() {}
 
     public static void register() {
-        GameRegistry.registerItem(ITEM, "magicnetized_manasteel_rod");
+        GameRegistry.registerItem(MANASTEEL, "magicnetized_manasteel_rod");
+        GameRegistry.registerItem(VOID_METAL, "magicnetized_void_metal_rod");
     }
 
-    public static ItemStack stack() {
-        return new ItemStack(ITEM);
+    public static ItemStack manasteel() {
+        return new ItemStack(MANASTEEL);
+    }
+
+    public static ItemStack voidMetal() {
+        return new ItemStack(VOID_METAL);
+    }
+
+    private static Item rod(String material) {
+        String name = "magicnetized_" + material + "_rod";
+        return new Item().setUnlocalizedName("gtnhextranerf." + name)
+            .setTextureName(GTNHExtraNerf.MODID + ":" + name)
+            .setCreativeTab(GregTechAPI.TAB_GREGTECH_MATERIALS);
     }
 
     public static void registerArcaneRecipe() {
         AuditManager.run(AuditScope.ADD_MAGICNETIZED_MANASTEEL_ROD, audit -> {
             recipe = ThaumcraftApi.addArcaneCraftingRecipe(
                 "",
-                stack(),
+                manasteel(),
                 new AspectList().add(Aspect.AIR, 10)
                     .add(Aspect.ORDER, 10),
                 "   ",
@@ -58,7 +69,7 @@ public final class MagicnetizedManasteelRod {
 
     public static boolean isCrafting(IInventory inventory, EntityPlayer player, ItemStack result) {
         return recipe != null && result != null
-            && result.getItem() == ITEM
+            && result.getItem() == MANASTEEL
             && recipe.matches(inventory, player.worldObj, player);
     }
 
@@ -79,7 +90,7 @@ public final class MagicnetizedManasteelRod {
         return null;
     }
 
-    private static ItemStack solegnolia() {
+    public static ItemStack solegnolia() {
         ItemStack flower = new ItemStack(GameRegistry.findItem("Botania", "specialFlower"));
         NBTTagCompound tags = new NBTTagCompound();
         tags.setString("type", "solegnolia");

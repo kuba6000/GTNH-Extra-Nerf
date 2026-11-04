@@ -17,7 +17,7 @@ import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 
-import pl.kuba6000.gtnhextranerf.items.MagicnetizedManasteelRod;
+import pl.kuba6000.gtnhextranerf.items.MagicnetizedRods;
 import pl.kuba6000.gtnhextranerf.recipes.crafting.ArcaneWorkbenchSync;
 import thaumcraft.common.container.SlotCraftingArcaneWorkbench;
 
@@ -34,7 +34,7 @@ public abstract class MixinArcaneCraftingRemainders {
     @WrapMethod(method = "func_82870_a")
     private void gtnhextranerf$craft(EntityPlayer player, ItemStack result, Operation<Void> original) {
         boolean previous = gtnhextranerf$magicnetizing;
-        gtnhextranerf$magicnetizing = MagicnetizedManasteelRod.isCrafting(craftMatrix, player, result);
+        gtnhextranerf$magicnetizing = MagicnetizedRods.isCrafting(craftMatrix, player, result);
         try {
             original.call(player, result);
             if (gtnhextranerf$magicnetizing && player instanceof EntityPlayerMP) {
@@ -52,7 +52,7 @@ public abstract class MixinArcaneCraftingRemainders {
             target = "Lnet/minecraft/item/Item;hasContainerItem(Lnet/minecraft/item/ItemStack;)Z"),
         require = 1)
     private boolean gtnhextranerf$hasRemainder(Item item, ItemStack input, Operation<Boolean> original) {
-        return (gtnhextranerf$magicnetizing && MagicnetizedManasteelRod.craftingRemainder(input) != null)
+        return (gtnhextranerf$magicnetizing && MagicnetizedRods.craftingRemainder(input) != null)
             || original.call(item, input);
     }
 
@@ -64,7 +64,7 @@ public abstract class MixinArcaneCraftingRemainders {
         require = 1)
     private ItemStack gtnhextranerf$remainder(Item item, ItemStack input, Operation<ItemStack> original) {
         if (gtnhextranerf$magicnetizing) {
-            ItemStack remainder = MagicnetizedManasteelRod.craftingRemainder(input);
+            ItemStack remainder = MagicnetizedRods.craftingRemainder(input);
             if (remainder != null) return remainder;
         }
         return original.call(item, input);
@@ -79,7 +79,7 @@ public abstract class MixinArcaneCraftingRemainders {
     private boolean gtnhextranerf$keepFlower(InventoryPlayer inventory, ItemStack remainder,
         Operation<Boolean> original) {
         if (gtnhextranerf$magicnetizing) {
-            ItemStack flower = MagicnetizedManasteelRod.craftingRemainder(remainder);
+            ItemStack flower = MagicnetizedRods.craftingRemainder(remainder);
             ItemStack current = craftMatrix.getStackInSlot(7);
             if (flower != null && flower.isItemEqual(remainder)
                 && ItemStack.areItemStackTagsEqual(flower, remainder)

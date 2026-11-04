@@ -12,6 +12,15 @@ public enum AuditScope implements AuditDefinition {
     ADD_MAGICNETIZED_MANASTEEL_ROD(AuditExpectation.exact()
         .added(1)
         .build()),
+    EXPAND_ASSEMBLER_OUTPUTS(modified(13)),
+    ADD_AUTOMATED_MANASTEEL_ROD(AuditExpectation.exact()
+        .added(1)
+        .build()),
+    ADD_MAGICNETIZED_VOID_METAL_ROD(AuditExpectation.exact()
+        .added(1)
+        .build()),
+    MODIFY_HV_MOTOR_HAND_CRAFTING(modified(1)),
+    MODIFY_HV_MOTOR_ASSEMBLER(modified(1)),
     MODIFY_MV_MOTOR_HAND_CRAFTING(modified(1)),
     MODIFY_MV_MOTOR_ASSEMBLER(modified(1)),
     ADD_LV_FLORAL_FERTILIZER(AuditExpectation.exact()

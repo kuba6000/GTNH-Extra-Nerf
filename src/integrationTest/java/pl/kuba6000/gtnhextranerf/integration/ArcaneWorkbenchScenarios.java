@@ -24,7 +24,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GTOreDictUnificator;
-import pl.kuba6000.gtnhextranerf.items.MagicnetizedManasteelRod;
+import pl.kuba6000.gtnhextranerf.items.MagicnetizedRods;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.client.gui.GuiArcaneWorkbench;
@@ -199,11 +199,11 @@ public final class ArcaneWorkbenchScenarios {
                         mc.thePlayer.inventory.mainInventory,
                         GTOreDictUnificator.get(OrePrefixes.stick, Materials.Steel, 1)) + ", expected " + (amount * 2));
                 if (shift) check(
-                    count(mc.thePlayer.inventory.mainInventory, MagicnetizedManasteelRod.stack()) == amount,
+                    count(mc.thePlayer.inventory.mainInventory, MagicnetizedRods.manasteel()) == amount,
                     "client has not received crafted rods");
                 else check(
                     mc.thePlayer.inventory.getItemStack() != null && mc.thePlayer.inventory.getItemStack()
-                        .isItemEqual(MagicnetizedManasteelRod.stack()),
+                        .isItemEqual(MagicnetizedRods.manasteel()),
                     "crafted rod is missing from cursor");
             })
             .capture("crafted-inventory")

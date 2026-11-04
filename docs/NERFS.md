@@ -619,7 +619,30 @@ between two Magnetic Steel Rods with a Solegnolia below it. The recipe costs
 10 Aer and 10 Ordo vis, keeps the Solegnolia in the workbench, and turns the
 Magnetic Steel Rods into Steel Rods.
 
+An HV Assembler can also produce one Magicnetized Manasteel Rod from one
+Manasteel Rod, two Magnetic Steel Rods, two Salis Mundus and 144 L Mercury.
+Solegnolia acts as a reusable catalyst. The recipe takes 20 seconds at 480 EU/t.
+The two Magnetic Steel Rods return as ordinary Steel Rods.
+
 The Component Assembly Line produces MV motors with Long Magnetic Steel Rods.
+
+### HV Electric Motor
+
+The crafting and Assembler recipes require a Magicnetized Void Metal Rod.
+An MV Assembler produces it in 30 seconds at 120 EU/t using:
+
+| Input | Amount |
+| --- | ---: |
+| Void Metal Rod | 1 |
+| Magicnetized Manasteel Rod | 2 |
+| Magnetic Steel Foil | 4 |
+| Salis Mundus | 2 |
+| Mercury | 144 L |
+| Solegnolia, reusable catalyst | 1 |
+
+The recipe returns two ordinary Manasteel Rods for another magicnetizing cycle.
+GregTech Assembling Machines have two output slots to deliver both products.
+
 
 ### Rings
 
