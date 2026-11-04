@@ -15,6 +15,7 @@ public final class MeControllerLootModule implements LootModule {
 
     public static final ItemKey ITEM = ItemKey.of("appliedenergistics2:tile.BlockController", 0);
     public static final String LIMIT_ID = "gtnhextranerf:me_controller";
+    public static final int GLOBAL_ALLOWANCE = 1;
     private static final String BASIC = "c86156c4-b72c-4ada-9ad2-3bbb229c5664";
     private static final String GOOD = "13a284df-df59-4389-8543-9c3b65fc28dc";
 

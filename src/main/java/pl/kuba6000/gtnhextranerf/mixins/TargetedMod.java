@@ -15,6 +15,7 @@ public enum TargetedMod implements ITargetMod {
     EXTRA_UTILITIES("ExtraUtilities"),
     HARVESTCRAFT("harvestcraft"),
     ENHANCED_LOOT_BAGS("enhancedlootbags"),
+    NOT_ENOUGH_ITEMS("NotEnoughItems"),
     BETTER_QUESTING("betterquesting"),
     BQ_STANDARD("bq_standard"),
     CHISEL("chisel"),

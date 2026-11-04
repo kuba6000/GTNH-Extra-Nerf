@@ -374,16 +374,21 @@ player limits and opening. The XML files are not rewritten.
 
 **ME Controller:** remains in AE Basic (37) and AE Good (38), including the
 inherited Basic pool. Basic stays at one unit; Good changes from four to one.
-Selection weights are unchanged. A hidden server-wide allowance permits at most
+Selection weights are unchanged. A server-wide allowance permits at most
 one controller from lootbags per save, across players, dimensions, Fortune and
 restarts. There is no guaranteed first drop. Crafting, other reward systems and
 existing inventories are not affected.
 
-Both server and client apply the quantity patch to their native tables. NEI shows
-one controller; it continues listing that potential reward after the global limit
-is spent. The hidden allowance is not sent to clients or described in tooltips or
-custom limit messages. Use matching client/server XML: ELB does not synchronize
-full drop lists or arbitrary server-only file edits.
+Both server and client apply the quantity patch to their native tables. NEI keeps
+the controller listed and shows the last allowance received from the server, or
+an unknown state if none is available. Once exhausted, it displays a 0% effective
+chance. An available allowance is not a guarantee: ELB's random draws and separate
+player limits still apply. The displayed snapshot can become stale if another
+player claims the reward concurrently. Controller tooltips replace the native
+base percentages and player counter; other lootbag percentages are identified as
+single-draw weights before limits and retries, with a warning that native player
+counters may be stale. Use matching client/server XML:
+ELB does not synchronize full drop lists or arbitrary server-only file edits.
 
 Changes are verified by the startup audit and each `/lootbags reload` (alias
 `/lbag reload`). Missing/changed expected controller entries fail validation.

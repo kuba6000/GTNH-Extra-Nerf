@@ -7,9 +7,11 @@ import net.minecraftforge.common.MinecraftForge;
 import com.cleanroommc.modularui.widget.Widget;
 
 import codechicken.nei.recipe.GuiCraftingRecipe;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import pl.kuba6000.gtnhextranerf.client.BrainrotTooltips;
 import pl.kuba6000.gtnhextranerf.client.ClientStartupErrors;
 import pl.kuba6000.gtnhextranerf.client.ComponentItemRenderer;
@@ -17,6 +19,7 @@ import pl.kuba6000.gtnhextranerf.client.MainMenuBranding;
 import pl.kuba6000.gtnhextranerf.client.StartupErrorRequest;
 import pl.kuba6000.gtnhextranerf.client.gui.DrawingExamWidget;
 import pl.kuba6000.gtnhextranerf.client.nei.CertificateRecipeHandler;
+import pl.kuba6000.gtnhextranerf.client.nei.LootAllowancePreview;
 import pl.kuba6000.gtnhextranerf.client.nei.NEIExtraNerfConfig;
 import pl.kuba6000.gtnhextranerf.components.ComponentItem;
 import pl.kuba6000.gtnhextranerf.loader.ComponentLoader;
@@ -30,6 +33,9 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(LootAllowancePreview.INSTANCE);
         StartupErrorRequest
             .developmentPreview(
                 GTNHExtraNerf.isDevelopmentEnvironment(),
@@ -59,6 +65,14 @@ public class ClientProxy extends CommonProxy {
     public void showCertificate(ProgressionTier tier) {
         if (Loader.isModLoaded("NotEnoughItems"))
             GuiCraftingRecipe.openRecipeGui(CertificateRecipeHandler.ID, tier.id());
+    }
+
+    @Override
+    public void receiveControllerAllowance(int remaining, MessageContext context) {
+        LootAllowancePreview.receive(
+            context.getClientHandler()
+                .getNetworkManager(),
+            remaining);
     }
 
     @Override

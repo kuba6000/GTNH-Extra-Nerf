@@ -35,7 +35,7 @@ import pl.kuba6000.gtnhextranerf.loot.NativeLootTables;
 import pl.kuba6000.gtnhextranerf.loot.modules.MeControllerLootModule;
 import pl.kuba6000.gtnhextranerf.loot.storage.FileLootLedger;
 
-/** Save-scoped hidden limits around ELB's native opening. No tables, random selection or native count migration. */
+/** Save-scoped limits around ELB's native opening. No changes to tables, random selection or native counts. */
 public final class ServerLootRuntime {
 
     private static ServerLootRuntime active;
@@ -51,7 +51,10 @@ public final class ServerLootRuntime {
         this.ledger = ledger;
         limits = new GlobalLootLimits(
             ledger,
-            new GlobalItemLimit(MeControllerLootModule.LIMIT_ID, MeControllerLootModule.ITEM, 1));
+            new GlobalItemLimit(
+                MeControllerLootModule.LIMIT_ID,
+                MeControllerLootModule.ITEM,
+                MeControllerLootModule.GLOBAL_ALLOWANCE));
     }
 
     public static void start(MinecraftServer server) {
@@ -73,6 +76,7 @@ public final class ServerLootRuntime {
                 ledger.discardedTail());
             ((NativeLootStorage) EnhancedLootBags.LootGroupHandler).resetNativeLootStorage();
             active = new ServerLootRuntime(server, ledger);
+            LootAllowanceSync.broadcast();
         } catch (IOException | RuntimeException failure) {
             if (ledger != null) try {
                 ledger.close();
@@ -86,6 +90,7 @@ public final class ServerLootRuntime {
     public static void stop() {
         ServerLootRuntime previous = active;
         active = null;
+        LootAllowanceSync.broadcast();
         if (previous != null) {
             ((NativeLootStorage) EnhancedLootBags.LootGroupHandler).resetNativeLootStorage();
             try {
@@ -118,6 +123,7 @@ public final class ServerLootRuntime {
             return nativeOpening.get();
         } catch (RuntimeException failure) {
             runtime.failed = true;
+            LootAllowanceSync.broadcast();
             GTNHExtraNerf.LOG.error("Native loot opening failed; disabled for this server session", failure);
             player.addChatMessage(new ChatComponentTranslation("gtnhextranerf.loot.unavailable"));
             return bag;
@@ -127,6 +133,7 @@ public final class ServerLootRuntime {
                     runtime.limits.outcome(issued.id, issued.delivered == issued.amount);
             } catch (IOException | RuntimeException failure) {
                 runtime.failed = true;
+                LootAllowanceSync.broadcast();
                 GTNHExtraNerf.LOG.error("Cannot record global loot delivery; allowance remains spent", failure);
             } finally {
                 runtime.opening = null;
@@ -156,6 +163,7 @@ public final class ServerLootRuntime {
                     stack.getMaxStackSize()));
             if (!id.isPresent()) return null;
             runtime.opening.issued.add(new Issued(id.get(), item, stack.stackSize));
+            LootAllowanceSync.broadcast();
             return stack;
         } catch (IOException failure) {
             throw new IllegalStateException("Cannot persist global loot claim", failure);
@@ -184,6 +192,20 @@ public final class ServerLootRuntime {
             .consumedUnits(
                 "elb-player/" + player.getUniqueID() + "/" + group.getGroupID() + "/" + drop.getIdentifier());
         return (int) Math.min(Integer.MAX_VALUE, count);
+    }
+
+    /** Remaining controller allowance, or -1 when the server cannot currently report it. */
+    public static int controllerAllowance() {
+        ServerLootRuntime runtime = active;
+        if (runtime == null || runtime.failed || Thread.currentThread() != runtime.owner) return -1;
+        try {
+            long used = runtime.ledger.snapshot()
+                .consumedUnits(MeControllerLootModule.LIMIT_ID);
+            return (int) Math.max(0, MeControllerLootModule.GLOBAL_ALLOWANCE - used);
+        } catch (RuntimeException failure) {
+            GTNHExtraNerf.LOG.warn("Cannot read global loot allowance for preview", failure);
+            return -1;
+        }
     }
 
     private static ServerLootRuntime current() {

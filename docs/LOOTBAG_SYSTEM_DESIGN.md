@@ -1,4 +1,4 @@
-# Lootbags: native ELB tables and hidden global allowances
+# Lootbags: native ELB tables and global allowances
 
 Current architecture, 2026-10-04. This replaces the earlier standalone importer/planner
 proposal committed as `ea76683`; Git history retains that proposal. ELB 1.3.5 owns
@@ -52,7 +52,7 @@ failure correctly (the upstream command prints success even when reload returns
 false). Native addloot/addinventory/addgroup commands are blocked because they
 mutate already-live tables outside the load transaction; edit XML and reload instead.
 
-## Hidden global limit
+## Global limit
 
 `ServerLootRuntime` surrounds the native right-click to establish a server-thread
 context. Narrow mixins:
@@ -68,10 +68,9 @@ all players, bag types, Fortune variants and dimensions. It is random, not guara
 Native ELB reroll/exhaustion behavior remains intact, including its ten attempts
 and not consuming a bag when a draw produces no available reward.
 
-The allowance is never sent to clients, added to tooltips, or used to remove entries
-from preview tables. Once spent, the item stays listed as a potential native reward.
-Only generic operational errors may be shown to a player; allowance failures are
-handled as an unavailable native selection, without a custom limit message.
+The allowance does not remove entries from preview tables. Once spent, the item
+stays listed with a 0% effective chance. Only generic operational errors are
+shown while opening a bag; allowance failures use native unavailable selection.
 
 ## Save compatibility and failures
 
@@ -99,14 +98,28 @@ platform contract. Mid-force device failure has not been injected.
 ## Client behavior and extension scope
 
 The same full-file load hook runs on the physical client. NEI reads those patched
-native tables, so it sees one controller. ELB's own server packet contains group
-metadata without drop lists; it does not synchronize arbitrary server-only XML
-edits. Client and server pack configurations must match, as before. No new client
-packet or NEI handler is needed for the built-in quantity change or hidden limit.
+native tables, so it sees one controller. `LootAllowanceSync` sends its current
+world allowance at player login and after a durable claim, as well as when the
+server runtime starts, stops, or becomes unavailable. Sending a notification
+cannot undo a claim. The client ties the last snapshot to its connection and
+clears it on disconnect; before a valid snapshot it displays an unknown state.
+
+`MixinLootBagPreview` replaces the controller's cached native tooltip at display
+time. This keeps an already-open screen current and prevents ELB's base percentages
+and per-player counter from being mistaken for the global chance. An unspent
+allowance is subject to random selection and separate native limits; a spent
+allowance has 0% effective chance. The snapshot is the last received update and
+does not reserve the reward. Other reward tooltips identify their native
+percentages as single-draw weights before limits and retries, and warn that ELB's
+cached player-limit counters may be stale.
+
+ELB's own server packet contains group metadata without drop lists; it does not
+synchronize arbitrary server-only XML edits. Client and server pack configurations
+must match, as before.
 
 Add ordinary balance changes as `LootModule`s in `LootLoader` with a typed audit
 scope, exact target expectations, mutation counts and a verification method. Keep
-hidden global rules separately in `GlobalLootLimits` definitions at runtime startup.
+global rules separately in `GlobalLootLimits` definitions at runtime startup.
 
 The former standalone percentage-per-opening and first-opening-guarantee APIs were
 removed with their custom planner. They are not active features of this native

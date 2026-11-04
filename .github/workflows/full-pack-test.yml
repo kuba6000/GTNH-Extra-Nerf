@@ -35,7 +35,7 @@ jobs:
           validate-wrappers: true
       - name: Install graphics dependencies
         run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libglx-mesa0 x11-xserver-utils
-      - name: Run all Horizon-QA scenarios
+      - name: Run main Horizon-QA scenarios
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LIBGL_ALWAYS_SOFTWARE: '1'
@@ -44,6 +44,16 @@ jobs:
           --framework-source build/horizonqa-framework
           --report-dir build/horizonqa/ci
           --timeout-seconds 2400
+      - name: Run isolated loot and quest scenarios
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: >-
+          xvfb-run -a python3 .github/scripts/run_horizon_tests.py
+          --tests gtnhextranerfquesttests,gtnhextranerfloottests
+          --framework-source build/horizonqa-framework
+          --report-dir build/horizonqa/isolated
+          --timeout-seconds 1200
       - name: Upload Horizon-QA reports and game evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -58,6 +68,14 @@ jobs:
             build/horizonqa/ci/artifacts
             build/horizonqa/ci/game/logs
             build/horizonqa/ci/game/crash-reports
+            build/horizonqa/isolated/launch-result.json
+            build/horizonqa/isolated/horizonqa-result.json
+            build/horizonqa/isolated/TEST-horizonqa.xml
+            build/horizonqa/isolated/launch.log
+            build/horizonqa/isolated/verification.log
+            build/horizonqa/isolated/artifacts
+            build/horizonqa/isolated/game/logs
+            build/horizonqa/isolated/game/crash-reports
           retention-days: 14
 
   full-pack-server:

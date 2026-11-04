@@ -11,6 +11,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import gregtech.api.GregTechAPI;
 import pl.kuba6000.gtnhextranerf.audit.AuditManager;
 import pl.kuba6000.gtnhextranerf.audit.AuditReport;
@@ -20,6 +21,7 @@ import pl.kuba6000.gtnhextranerf.items.MagicnetizedManasteelRod;
 import pl.kuba6000.gtnhextranerf.loader.ComponentLoader;
 import pl.kuba6000.gtnhextranerf.loader.LootLoader;
 import pl.kuba6000.gtnhextranerf.loader.RecipeLoader;
+import pl.kuba6000.gtnhextranerf.loot.runtime.LootAllowanceSync;
 import pl.kuba6000.gtnhextranerf.loot.runtime.ServerLootRuntime;
 import pl.kuba6000.gtnhextranerf.machines.Brainrotter;
 import pl.kuba6000.gtnhextranerf.machines.ProgressionMachineNerf;
@@ -49,6 +51,7 @@ public class CommonProxy {
     // preInit "Run before anything else. Read your config, create blocks, items, etc, and register them with the
     // GameRegistry." (Remove if not needed)
     public void preInit(FMLPreInitializationEvent event) {
+        LootAllowanceSync.initialize();
         Config.synchronizeConfiguration(event.getSuggestedConfigurationFile());
         ServerTelemetry.initialize(event.getSourceFile(), GTNHExtraNerf.isDevelopmentEnvironment());
         TeamTracking.initialize(event.getSourceFile(), GTNHExtraNerf.isDevelopmentEnvironment());
@@ -186,6 +189,8 @@ public class CommonProxy {
     }
 
     public void showCertificate(ProgressionTier tier) {}
+
+    public void receiveControllerAllowance(int remaining, MessageContext context) {}
 
     public void openExam(ProgressionTier tier) {}
 

@@ -39,9 +39,9 @@ Agent-oriented implementation documentation lives separately in
 These documents describe the native ELB integration and its verification boundaries:
 
 - [`LOOTBAG_SYSTEM_DESIGN.md`](LOOTBAG_SYSTEM_DESIGN.md) — EnhancedLootBags research,
-  audited edits of native tables, cache handling and hidden global allowances.
+  audited edits of native tables, cache handling and global allowances.
 - [`LOOTBAG_IMPLEMENTATION_PLAN.md`](LOOTBAG_IMPLEMENTATION_PLAN.md) — implementation
-  implemented native hooks, persistence compatibility and verification status.
+  status, native hooks, persistence compatibility and verification boundaries.
 
 ## Documentation policy
 

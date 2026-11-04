@@ -98,6 +98,11 @@ public enum Mixin implements IMixins {
         .addRequiredMod(TargetedMod.ENHANCED_LOOT_BAGS)
         .setPhase(LATE)),
 
+    LootBagPreview(new MixinBuilder().addClientMixins("MixinLootBagPreview")
+        .addRequiredMod(TargetedMod.ENHANCED_LOOT_BAGS)
+        .addRequiredMod(TargetedMod.NOT_ENOUGH_ITEMS)
+        .setPhase(LATE)),
+
     CasingQuest(new MixinBuilder().addCommonMixins("MixinCasingQuestCrafting", "MixinCasingQuestInventory")
         .addRequiredMod(TargetedMod.BETTER_QUESTING)
         .addRequiredMod(TargetedMod.BQ_STANDARD)

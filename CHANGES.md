@@ -4,6 +4,13 @@ This file is a concise summary of the active ruleset. The complete canonical
 catalog, including exact values, conditions and unchanged fields, is
 [`docs/NERFS.md`](docs/NERFS.md).
 
+## Lootbag previews
+
+- NEI displays the server's current ME Controller lootbag allowance, including
+  an unknown state and 0% after it is spent. Native weight percentages are
+  identified as single-draw values before limits and retries, and native player
+  counters are marked as potentially stale.
+
 ## Machine-casing quest
 
 - The LV machine-casing task accepts the finished casing from Chisel without

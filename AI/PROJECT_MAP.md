@@ -3,7 +3,7 @@
 Paths are relative to the repository root. Generated `.gradle/`, `build/`, and
 `run/` trees are intentionally excluded.
 
-## Native loot tables and hidden limits
+## Native loot tables and global limits
 
 `loader/LootLoader` applies `loot/LootModule` implementations to ELB's actual
 tables after deserialization. `loot/NativeLootTables` provides staged native edits
@@ -18,7 +18,9 @@ separate XML importer, catalog or random planner.
 `NativeLootTablesTest`, `GlobalLootLimitsTest`, `FileLootLedgerTest` cover the public
 boundaries. Opt-in `LootOpeningIntegrationTests` exercises native right-clicks,
 reload/cache invalidation and persistence on the full pack; it is excluded from
-ordinary JARs. Client global-limit synchronization is intentionally absent.
+ordinary JARs. `loot/runtime/LootAllowanceSync`, `client/nei/LootAllowancePreview`
+and `mixins/late/MixinLootBagPreview` synchronize and display the world allowance
+without changing ELB selection. `LootPreviewScenarios` exercises the live GUI.
 
 ## Spatial Assembly Lines
 

@@ -81,11 +81,15 @@ python .github/scripts/run_horizon_tests.py --tests gtnhextranerftests:NativeSce
 python .github/scripts/run_horizon_tests.py --tests gtnhextranerftests:ArcaneWorkbenchScenarios
 ```
 
-The casing-quest scenarios can be selected in a fresh scratch world:
+The loot-preview and casing-quest scenarios need a fresh world independent of
+the native loot fixture, which spends the world's only controller allowance:
 
 ```powershell
-python .github/scripts/run_horizon_tests.py --tests gtnhextranerfquesttests
+python .github/scripts/run_horizon_tests.py --tests gtnhextranerfquesttests,gtnhextranerfloottests
 ```
+
+The full-pack CI workflow runs this isolated selection after the main suite and
+retains separate reports.
 
 Use `--report-dir` with a new directory to choose where evidence is retained.
 The default is a fresh directory under `build/horizonqa`. The client creates

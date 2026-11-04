@@ -146,7 +146,10 @@ merged caches and owns all normal selection/delivery and NEI table data.
 `MeControllerLootModule` preserves the two controller sources, their weights and
 Fortune inheritance. Global allowance `gtnhextranerf:me_controller` permits one
 unit per save, without a guarantee. Narrow opening hooks claim it durably before
-ELB spawns the stack. The limit never alters preview tables or client packets.
+ELB spawns the stack. It never alters preview tables. The server synchronizes the
+remaining allowance; the NEI tooltip uses the latest connection-scoped snapshot,
+including an unknown state and 0% when exhausted. Other native percentages are
+identified as base single-draw weights before limits and retries.
 Native player counts continue in YAMCore, with old journal counts retained as a
 floor. Storage handles reset between saves. Existing inventories and other reward
 systems are outside this allowance.

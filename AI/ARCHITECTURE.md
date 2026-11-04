@@ -9,12 +9,15 @@ RNG, native player limits, delivery and NEI data. Startup requires one successfu
 `MODIFY_ME_CONTROLLER_LOOT` change and `VERIFY_NATIVE_LOOT_TABLES`; later reloads
 use fresh audit sessions with the same scopes.
 
-`MixinItemLootBag` wraps native opening only to enforce hidden global claims via
+`MixinItemLootBag` wraps native opening only to enforce global claims via
 `ServerLootRuntime`/`GlobalLootLimits`. `FileLootLedger` retains its v1 format and
 force-before-spawn behavior. Only limited rewards append new claims. The controller
 key remains `gtnhextranerf:me_controller`, with one unit per save and no guarantee.
 Native storage handles and our runtime reset between saves; old journal player
-counts remain a floor for ELB's own counters. No global state is sent to clients.
+counts remain a floor for ELB's own counters. `LootAllowanceSync` sends the
+controller allowance on login and changes; `LootAllowancePreview` ties it to the
+current connection. A client-only mixin replaces the controller's cached tooltip
+on display, and explains the meaning of other entries' native weight percentages.
 
 See [`../docs/LOOTBAG_SYSTEM_DESIGN.md`](../docs/LOOTBAG_SYSTEM_DESIGN.md).
 
