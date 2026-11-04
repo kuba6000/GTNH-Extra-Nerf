@@ -151,6 +151,20 @@ Native player counts continue in YAMCore, with old journal counts retained as a
 floor. Storage handles reset between saves. Existing inventories and other reward
 systems are outside this allowance.
 
+## LV machine-casing quest
+
+Quest UUID `00000000-0000-0000-0000-000000000049`, task 0, remains a native
+crafting task with its original progress format. For the exact finished LV casing,
+`MixinCasingQuestCrafting` handles Detect and `MixinCasingQuestInventory` uses
+BQ's existing inventory-change queue. `CasingQuest` delegates to the native
+task progress method without consuming the item. Task 1 still requires crafting
+the hull; other quests and item tiers retain their normal behavior. The patch
+does not edit the questbook or require a special reload path.
+
+The [questbook snapshot at `81027c5b`](https://github.com/GTNewHorizons/GT-New-Horizons-Modpack/blob/81027c5b455085a55618e3f9498b1fe0dec625c2/config/betterquesting/DefaultQuests/Quests/Tier05Steam-AAAAAAAAAAAAAAAAAAAAAg%3D%3D/BasicCraftingMac-AAAAAAAAAAAAAAAAAAAASQ%3D%3D.json#L94-L130)
+contains 3,814 quests. A search for finished LV–MAX machine casing tasks found
+this one crafting task and nine optional retrieval tasks; hulls are separate items.
+
 ## Fictional component catalog
 
 `ComponentLoader` registers eight UQV (Ultimately Questionable Voltage)

@@ -27,6 +27,14 @@ condition to normal and Advanced Assembly Lines. Startup verification lives in
 `machines/ProgressionMachineNerf.verifySpatialAssemblyLines`; the opt-in
 `SpatialAssemblyIntegrationTests` uses native AE2 cells and GT server tiles.
 
+## LV casing quest
+
+`progression/quest/CasingQuest` validates the single BetterQuesting task affected
+by Chisel finishing. `MixinCasingQuestCrafting` and `MixinCasingQuestInventory`
+allow Detect and native inventory updates to credit its existing progress.
+`CasingQuestScenarios` and `CasingQuestInventoryScenarios` exercise the loaded
+questbook, hand Chisel, non-consumption, task isolation and questbook reload.
+
 ## Void Miner gas costs
 
 `mixins/late/MixinVoidMinerFluids` owns the three-tier/four-gas consumption

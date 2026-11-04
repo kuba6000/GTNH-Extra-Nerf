@@ -20,6 +20,15 @@ that hidden allowance. It does not own XML, RNG, normal rewards or native player
 a native DB-handle reset for save switching. `MixinLootBagCommand` permits audited
 file reloads and blocks inline table edits that would bypass this boundary.
 
+## Machine-casing quest
+
+`MixinCasingQuestCrafting` invokes `CasingQuest` on native Detect;
+`MixinCasingQuestInventory` uses the existing BQ inventory-change queue.
+The helper validates quest UUID, task index and the exact finished LV casing
+before invoking the native `TaskCrafting` progress path. It neither changes
+quest definitions nor replaces serialized progress; the neighboring hull task
+and other quests keep their native rules.
+
 ## Top-level runtime graph
 
 ```mermaid
@@ -177,6 +186,8 @@ the following together:
 | `MixinMTEGasTurbine` | GregTech | `@ModifyReturnValue` | shared `GeneratorEfficiency` curve starting at LV |
 | `MixinMTELargeChemicalReactor` | GregTech | `@ModifyReturnValue` + redirect | returned processing logic and tooltip call |
 | `MixinHealingAxeHunger` | Extra Utilities | `@Inject` + `@WrapOperation` | `ItemHealingAxe.onUpdate`, with item marking and `HungryAxe` food-state handling |
+| `MixinCasingQuestCrafting` | BetterQuesting | `@Inject` | Detect for the exact LV casing task |
+| `MixinCasingQuestInventory` | BetterQuesting | `@WrapOperation` | Existing inventory-change queue, restricted to the exact LV casing task |
 | `MixinMetaTileEntity` | GregTech | `@ModifyConstant(require = 2, allow = 2)` | two literal `2` values in `fill`, replaced by the shared steam conversion |
 | `MixinConfigurationCircuitSupport` | GregTech | cancellable `@Inject(require = 1)` | `CommonWidgets.createCircuitSlot`; physical circuit for every tiered pre-HV machine with configuration-circuit support |
 | `MixinPhysicalCircuitBlockDrop`, `MixinPhysicalCircuitExplosionDrop` | GregTech | 2 `@WrapOperation(require = 1)` | Share `PhysicalCircuitSlots` eligibility with the GUI; include real reserved-slot circuits in native block and explosion drops |
@@ -220,6 +231,7 @@ settings.
 | Industrial and Alloy Blast Smelter recipes | Exact recipe signatures and `AuditScope` cardinalities | `IndustrialRecipeIntegrationTests` and `AlloyBlastSmelterIntegrationTests` query the final initialized machine maps. |
 | Physical circuit drops | `PhysicalCircuitItemStackHandlerTest` covers insertion and extraction | `PhysicalCircuitDropIntegrationTests` checks real machine and input-bus destruction, NBT, explosion drops and HV ghost circuits. |
 | Hungry Axe | `HungryAxeTest` covers marking and hunger bounds | `HealingAxeIntegrationTests` exercises the registered item through actual dedicated-server inventory ticks and checks food state. |
+| LV casing quest | Native BQ quest and task APIs | `CasingQuestScenarios` and `CasingQuestInventoryScenarios` exercise Detect, native Chisel input, item preservation and questbook reload. |
 | Lightning Rod generation | Startup audit checks all three native registrations and output ratings | `LightningRodIntegrationTests` drives real server weather, mast geometry and public post-ticks; stored EU, fence consumption and fixed-seed comparisons verify the behavior. |
 | Void Miner gas costs | Startup audit checks hooks, registrations and native gas ordering | `VoidMinerFluidIntegrationTests` drives formed miners and compares hatch payments, powered output, short/exact supply and batch scaling for every tier/gas pair. |
 | Spatial Assembly Lines | Startup audit verifies both target hooks, controllers and error localization | `SpatialAssemblyIntegrationTests` checks native structures, hidden errors, client serialization and actual processing in AE2-created worlds. |
@@ -232,7 +244,7 @@ full-pack server rather than assertions over production source text.
 ## External dependency ownership
 
 The root directly declares GT5-Unofficial, NewHorizonsCoreMod and
-EnhancedLootBags, plus compile-only Chisel, Extra Utilities, Custom Main Menu
+EnhancedLootBags, plus compile-only BetterQuesting, Chisel, Extra Utilities, Custom Main Menu
 and ChromaticTooltips and a development-only NEI dependency. The GT5 development
 artifact also exposes types from merged addons used by the source. Runtime code
 interacts with BartWorks, Dreamcraft, Good Generator, GT++, GTNH Lanthanides,

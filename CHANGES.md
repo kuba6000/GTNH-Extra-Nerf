@@ -4,6 +4,11 @@ This file is a concise summary of the active ruleset. The complete canonical
 catalog, including exact values, conditions and unchanged fields, is
 [`docs/NERFS.md`](docs/NERFS.md).
 
+## Machine-casing quest
+
+- The LV machine-casing task accepts the finished casing from Chisel without
+  consuming it. Existing quest data and the hull crafting requirement remain.
+
 ## Soybean crops
 
 - HarvestCraft soybean crops yield Blighted Soybean instead of Soybean.

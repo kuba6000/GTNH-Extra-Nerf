@@ -129,6 +129,11 @@ Reduced dev without Everglades does not activate the dimension check.
   requiring the original finished blocks. Existing finished IDs are unchanged.
 - Reduced dev instances without Chisel retain original recipe outputs. In the
   full pack, audits require the groups, all redirected routes and NEI discovery.
+- The LV casing task in “Basic Crafting: Machine Hulls” also accepts a finished
+  LV casing in a participant's inventory, without consuming it. It is detected
+  on BetterQuesting's inventory updates or with Detect. The separate LV hull
+  task still requires crafting. Quest definitions and existing progress retain
+  their native format, including after a questbook reload.
 
 ## Amplifier-only UU-Matter
 

@@ -18,6 +18,16 @@ counts remain a floor for ELB's own counters. No global state is sent to clients
 
 See [`../docs/LOOTBAG_SYSTEM_DESIGN.md`](../docs/LOOTBAG_SYSTEM_DESIGN.md).
 
+## Machine-casing quest compatibility
+
+`MixinCasingQuestCrafting` augments native Detect and
+`MixinCasingQuestInventory` uses BetterQuesting's existing inventory-change
+queue. `CasingQuest` accepts the exact finished LV casing only for quest UUID
+`00000000-0000-0000-0000-000000000049`, task 0, after validating the task's
+required item. The native crafting task records progress and synchronizes it;
+the item is not consumed. The quest database and saved task type are not
+rewritten, so the same check applies to freshly loaded and reloaded questbooks.
+
 ## Purpose and operating model
 
 GTNH Extra Nerf is a compatibility-sensitive balance mod for a specific GTNH
