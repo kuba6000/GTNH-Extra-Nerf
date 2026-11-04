@@ -45,6 +45,7 @@ final class LvRecipeIntegrationTests {
         verifyOreDictionaryMatching();
         verifyMotors();
         verifyMvMotor();
+        verifyFloralFertilizer();
         verifyCasing(Materials.CastIron, ItemList.Casing_ULV);
         verifyCasing(Materials.Steel, ItemList.Casing_LV);
         verifyCasing(Materials.Aluminium, ItemList.Casing_MV);
@@ -57,6 +58,34 @@ final class LvRecipeIntegrationTests {
         verifyCasing(Materials.Neutronium, ItemList.Casing_MAX);
         verifyToolStation();
         verifyHandCraftedComponents();
+    }
+
+    private static void verifyFloralFertilizer() {
+        ItemStack portal = GTModHandler.getModItem(Mods.NewHorizonsCoreMod.ID, "TwilightCrystal", 1, 0);
+        ItemStack alumentum = GTModHandler.getModItem(Mods.Thaumcraft.ID, "ItemResource", 1, 0);
+        ItemStack fertilizer = GTModHandler.getModItem(Mods.CropsNH.ID, "fertilizer", 1, 0);
+        ItemStack floral = GTModHandler.getModItem(Mods.Botania.ID, "fertilizer", 6, 0);
+        check(
+            portal != null && alumentum != null && fertilizer != null && floral != null,
+            "Missing floral fertilizer fixture items");
+        ItemStack[] inputs = { fertilizer, alumentum, fertilizer, fertilizer, portal, fertilizer, fertilizer, alumentum,
+            fertilizer };
+        check(same(floral, craft(inputs)), "LV floral fertilizer crafting is missing or has the wrong output count");
+        ItemStack[] misplaced = inputs.clone();
+        misplaced[0] = alumentum;
+        misplaced[1] = fertilizer;
+        check(!same(floral, craft(misplaced)), "Floral fertilizer accepted the wrong crafting pattern");
+        for (int slot = 0; slot < inputs.length; slot++) {
+            ItemStack[] incomplete = inputs.clone();
+            incomplete[slot] = null;
+            check(!same(floral, craft(incomplete)), "Floral fertilizer accepted a missing ingredient in slot " + slot);
+        }
+        for (ItemStack input : new ItemStack[] { portal, alumentum, fertilizer }) {
+            check(
+                !input.getItem()
+                    .hasContainerItem(input),
+                "Floral fertilizer ingredient would be returned: " + input);
+        }
     }
 
     private static void verifyLvCircuitVariants() {

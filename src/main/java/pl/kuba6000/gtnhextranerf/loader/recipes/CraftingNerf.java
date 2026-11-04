@@ -17,6 +17,7 @@ import pl.kuba6000.gtnhextranerf.audit.AuditScope;
 import pl.kuba6000.gtnhextranerf.items.MagicnetizedManasteelRod;
 import pl.kuba6000.gtnhextranerf.machines.RawMachineCasings;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeContext;
+import pl.kuba6000.gtnhextranerf.recipes.RecipeItems;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeModule;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeRegistry;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeValidationException;
@@ -30,6 +31,7 @@ public final class CraftingNerf implements RecipeModule {
     @Override
     public void register(RecipeRegistry registry) {
         registry.register(AuditScope.MODIFY_MV_MOTOR_HAND_CRAFTING, CraftingNerf::mvMotor);
+        registry.register(AuditScope.ADD_LV_FLORAL_FERTILIZER, CraftingNerf::floralFertilizer);
         registry.register(AuditScope.REDUCE_BRONZE_DUST_HAND_CRAFTING_OUTPUT, CraftingNerf::bronzeDust);
         registry.register(AuditScope.MODIFY_LARGE_CHEMICAL_REACTOR_HAND_CRAFTING, CraftingNerf::largeChemicalReactor);
         registry.register(AuditScope.MODIFY_LV_CIRCUIT_ASSEMBLER_HAND_CRAFTING, CraftingNerf::lvCircuitAssembler);
@@ -40,6 +42,18 @@ public final class CraftingNerf implements RecipeModule {
         registry.register(AuditScope.MODIFY_DIAMOND_SAWBLADE_HAND_CRAFTING, CraftingNerf::diamondSawblade);
         registry
             .register(AuditScope.REMOVE_MV_ENERGY_HATCH_HAND_CRAFTING, CraftingNerf::removeMvEnergyHatchHandCrafting);
+    }
+
+    private static void floralFertilizer(RecipeContext recipes) {
+        recipes.crafting()
+            .addOne(
+                CraftingRecipeBuilder.shaped()
+                    .pattern("FAF", "FPF", "FAF")
+                    .ingredient('P', RecipeItems.requireModItem(Mods.NewHorizonsCoreMod, "TwilightCrystal", 1, 0))
+                    .ingredient('A', RecipeItems.requireModItem(Mods.Thaumcraft, "ItemResource", 1, 0))
+                    .ingredient('F', RecipeItems.requireModItem(Mods.CropsNH, "fertilizer", 1, 0))
+                    .output(RecipeItems.requireModItem(Mods.Botania, "fertilizer", 6, 0))
+                    .build());
     }
 
     private static void mvMotor(RecipeContext recipes) {

@@ -15,6 +15,15 @@ and has no recipe registered by this mod. NEI hides it from its item panel.
 The complete-server startup checks mixin application; the existing integration
 suite does not separately exercise soybean crop drops.
 
+## LV Floral Fertilizer
+
+`CraftingNerf.floralFertilizer` registers a shaped `FAF / FPF / FAF` recipe.
+`P` is one Quick and Dirty Portal Generator, `A` is Alumentum and `F` is
+CropsNH Fertilizer. It consumes every ingredient and produces six Floral
+Fertilizers, providing a pre-MV Botania entry route for GoG and dimension locks.
+`ADD_LV_FLORAL_FERTILIZER` audits the registration. `LvRecipeIntegrationTests`
+checks the output, required ingredients, pattern and container-return behavior.
+
 ## Magicnetized Manasteel Rod
 
 `MagicnetizedManasteelRod` registers an arcane recipe using a Manasteel Rod,

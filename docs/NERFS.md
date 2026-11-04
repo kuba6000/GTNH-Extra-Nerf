@@ -12,6 +12,22 @@ HarvestCraft soybean crops yield Blighted Soybean where they would otherwise
 drop Soybean. It is not edible, has no recipes added by Extra Nerf and is hidden
 from NEI's item list.
 
+## Floral Fertilizer on LV
+
+A shaped crafting recipe combines one Quick and Dirty Portal Generator,
+two Alumentum and six CropsNH Fertilizers into six Floral Fertilizers:
+
+```text
+F A F
+F P F
+F A F
+```
+
+`P` is the Portal Generator, `A` is Alumentum and `F` is CropsNH Fertilizer.
+The consumed Portal Generator supplies the LV Assembler requirement and cost.
+This provides a Botania entry route for GoG and dimension-restricted runs,
+breaking the dependency cycle between MV motors, Manasteel and mystical flowers.
+
 ## Assembly Lines in AE2 Spatial worlds
 
 The native Assembly Line and GigaGramFab Advanced Assembly Line form only in
