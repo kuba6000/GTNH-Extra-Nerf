@@ -249,9 +249,7 @@ public final class TeamTracking implements AutoCloseable {
             leader,
             ServerTelemetry.highestAvailableTier(progression),
             !server.isDedicatedServer(),
-            online,
-            ServerTelemetry.serverRunId(),
-            server.getConfigurationManager().playerEntityList.size());
+            online);
     }
 
     /** The saved leader, or null when the saved team ID, leader UUID or name cannot be used. */
@@ -370,13 +368,9 @@ public final class TeamTracking implements AutoCloseable {
         /** True on an integrated server, that is when the world is played in singleplayer. */
         public final boolean singleplayer;
         public final List<Member> players;
-        public final UUID sessionId;
-        public final int onlinePlayers;
 
-        public Snapshot(UUID teamId, Member leader, String highestTier, boolean singleplayer, List<Member> players,
-            UUID sessionId, int onlinePlayers) {
+        public Snapshot(UUID teamId, Member leader, String highestTier, boolean singleplayer, List<Member> players) {
             if (players.size() > MAXIMUM_PLAYERS) throw new IllegalArgumentException("Too many team players");
-            if (onlinePlayers < players.size()) throw new IllegalArgumentException("Invalid online player count");
             if (highestTier == null || !highestTier.matches("[a-z][a-z0-9_]{0,15}"))
                 throw new IllegalArgumentException("Invalid progression tier");
             Set<UUID> seen = new HashSet<>();
@@ -387,8 +381,6 @@ public final class TeamTracking implements AutoCloseable {
             this.highestTier = highestTier;
             this.singleplayer = singleplayer;
             this.players = Collections.unmodifiableList(new ArrayList<>(players));
-            this.sessionId = Objects.requireNonNull(sessionId);
-            this.onlinePlayers = onlinePlayers;
         }
     }
 

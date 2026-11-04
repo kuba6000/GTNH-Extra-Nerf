@@ -44,9 +44,8 @@ leader is online.
 
 The first report is sent after about 10 minutes and later reports every 15 minutes.
 It contains the team ID, the leader's Minecraft name and UUID, and the names and UUIDs
-of up to 256 online players. It also includes the information described under
-[basic statistics](TELEMETRY.md#report), including the total online player count even
-when the list is capped.
+of up to 256 online players. It also includes the progression tier, world type and an
+optional build proof. Team reports do not include the session ID used for basic statistics.
 
 Team reports can contribute to aggregate server statistics. Teams using recognized
 official releases may appear on the public team list. See the
