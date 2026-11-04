@@ -73,7 +73,7 @@ python .github/scripts/run_horizon_tests.py
 
 The runner creates a scratch world, writes JSON/JUnit reports and closes its own
 client after the selected tests finish.
-The loot-preview and casing-quest scenarios use a separate scratch world:
+The loot-preview and quest-retrieval scenarios use a separate scratch world:
 
 ```text
 python .github/scripts/run_horizon_tests.py --tests gtnhextranerfquesttests,gtnhextranerfloottests

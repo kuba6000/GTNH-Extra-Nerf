@@ -154,19 +154,21 @@ Native player counts continue in YAMCore, with old journal counts retained as a
 floor. Storage handles reset between saves. Existing inventories and other reward
 systems are outside this allowance.
 
-## LV machine-casing quest
+## Questbook crafting tasks
 
-Quest UUID `00000000-0000-0000-0000-000000000049`, task 0, remains a native
-crafting task with its original progress format. For the exact finished LV casing,
-`MixinCasingQuestCrafting` handles Detect and `MixinCasingQuestInventory` uses
-BQ's existing inventory-change queue. `CasingQuest` delegates to the native
-task progress method without consuming the item. Task 1 still requires crafting
-the hull; other quests and item tiers retain their normal behavior. The patch
-does not edit the questbook or require a special reload path.
+Every BQ Standard crafting task additionally accepts its required items from
+the inventory without consuming them. `MixinCraftingTaskRetrieval` adds the
+inventory/observation interfaces while retaining native craft, smelt, anvil and
+statistics behavior. The adapter uses `TaskRetrieval` matching with the original
+items, NBT and OreDictionary flags and stores separate retrieval progress. The
+greater production or retrieval count for each item determines completion.
+`MixinCraftingTaskRetrievalGui` shows combined progress and both methods. Quest
+definitions, factory IDs and existing progress remain unchanged; retrieval
+progress is stored as additional task NBT.
 
 The [questbook snapshot at `81027c5b`](https://github.com/GTNewHorizons/GT-New-Horizons-Modpack/blob/81027c5b455085a55618e3f9498b1fe0dec625c2/config/betterquesting/DefaultQuests/Quests/Tier05Steam-AAAAAAAAAAAAAAAAAAAAAg%3D%3D/BasicCraftingMac-AAAAAAAAAAAAAAAAAAAASQ%3D%3D.json#L94-L130)
-contains 3,814 quests. A search for finished LV–MAX machine casing tasks found
-this one crafting task and nine optional retrieval tasks; hulls are separate items.
+contains 137 crafting tasks in 109 of its 3,814 quests; 19 require multiple
+items, and requirements include OreDictionary alternatives and NBT matching.
 
 ## Fictional component catalog
 

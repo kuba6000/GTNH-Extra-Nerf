@@ -350,3 +350,5 @@ gtnhextranerf.error.supported=Extra Nerf 仅支持 GT New Horizons（GTNH）%s�
 gtnhextranerf.error.explanation=无法验证所需的配方改动。请使用受支持的整合包版本，并保留其原始模组与配置。
 gtnhextranerf.error.logs=完整错误报告见 logs/latest.log。改动安装前请先关闭游戏。
 gtnhextranerf.error.preview=开发预览版 —— 由 JVM 参数强制启用
+
+gtnhextranerf.task.crafting_or_retrieval=合成或持有物品

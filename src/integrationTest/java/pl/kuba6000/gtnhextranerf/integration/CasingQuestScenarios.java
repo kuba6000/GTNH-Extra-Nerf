@@ -43,6 +43,8 @@ public final class CasingQuestScenarios {
 
     @GameTest(template = "gtnhextranerftests:native_fixture", timeoutTicks = 1800)
     public static void chiseledCasingCanBeDetected(GameTestHelper helper) {
+        QuestReloadBarrier barrier = new QuestReloadBarrier();
+        helper.afterTest(barrier::close);
         ClientTarget detect = ClientTarget.of("quest Detect button", window -> {
             GuiQuest screen = window.screen(GuiQuest.class);
             PanelButton button = findButton(screen, QuestTranslation.translate("betterquesting.btn.detect_submit"));
@@ -100,7 +102,7 @@ public final class CasingQuestScenarios {
                 player.inventory.setInventorySlotContents(0, tool);
                 ItemStack raw = new ItemStack(GameRegistry.findBlock("gtnhextranerf", "raw_machine_casing"), 1, 0);
                 player.inventory.setInventorySlotContents(1, raw.copy());
-                player.inventory.setInventorySlotContents(2, ItemList.Hull_LV.get(1));
+                player.inventory.setInventorySlotContents(2, ItemList.Hull_MV.get(1));
                 quest.detect(player);
                 check(
                     !quest.getTasks()
@@ -111,7 +113,7 @@ public final class CasingQuestScenarios {
                     !quest.getTasks()
                         .getValue(1)
                         .isComplete(user),
-                    "A held hull incorrectly satisfied crafting");
+                    "The wrong-tier hull satisfied the task");
 
                 InventoryChiselSelection selection = new InventoryChiselSelection(tool);
                 ContainerChisel chisel = new ContainerChisel(player.inventory, selection);
@@ -139,7 +141,7 @@ public final class CasingQuestScenarios {
                     !quest.getTasks()
                         .getValue(1)
                         .isComplete(user),
-                    "Manual Detect also satisfied hull crafting");
+                    "Manual Detect also accepted the wrong-tier hull");
                 quest.getTasks()
                     .getValue(0)
                     .resetUser(user);
@@ -164,11 +166,11 @@ public final class CasingQuestScenarios {
                     !quest.getTasks()
                         .getValue(1)
                         .isComplete(user),
-                    "The hull crafting task was also satisfied");
+                    "The wrong-tier hull was also accepted");
                 check(
                     ItemList.Casing_LV.isStackEqual(player.inventory.getStackInSlot(1)),
                     "Detect consumed the casing");
-                check(ItemList.Hull_LV.isStackEqual(player.inventory.getStackInSlot(2)), "Detect consumed the hull");
+                check(ItemList.Hull_MV.isStackEqual(player.inventory.getStackInSlot(2)), "Detect consumed the hull");
                 checkCraftingTasks(quest);
             })
             .capture("casing-quest-detected")
@@ -178,11 +180,16 @@ public final class CasingQuestScenarios {
                     .displayGuiScreen(null))
             .capture("returned-to-game")
             .server("reload the native questbook", () -> {
+                barrier.beforeReload();
                 MinecraftServer server = MinecraftServer.getServer();
                 check(
                     server.getCommandManager()
                         .executeCommand(server, "bq_admin default load") > 0,
                     "Quest reload failed");
+            })
+            .client("request the questbook synchronization marker", client -> barrier.request())
+            .awaitClient("questbook reload is synchronized", client -> barrier.await())
+            .server("verify casing progress after synchronization", () -> {
                 IQuest reloaded = quest();
                 UUID user = QuestingAPI.getQuestingUUID(player());
                 checkCraftingTasks(reloaded);

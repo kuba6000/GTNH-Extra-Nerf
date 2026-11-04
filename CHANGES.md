@@ -11,10 +11,11 @@ catalog, including exact values, conditions and unchanged fields, is
   identified as single-draw values before limits and retries, and native player
   counters are marked as potentially stale.
 
-## Machine-casing quest
+## Questbook crafting tasks
 
-- The LV machine-casing task accepts the finished casing from Chisel without
-  consuming it. Existing quest data and the hull crafting requirement remain.
+- BetterQuesting crafting tasks also accept their required items from the
+  inventory without consuming them. Crafting remains valid, and saved task IDs
+  are preserved.
 
 ## Soybean crops
 

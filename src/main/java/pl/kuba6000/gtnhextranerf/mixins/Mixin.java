@@ -103,12 +103,10 @@ public enum Mixin implements IMixins {
         .addRequiredMod(TargetedMod.NOT_ENOUGH_ITEMS)
         .setPhase(LATE)),
 
-    CasingQuest(new MixinBuilder().addCommonMixins("MixinCasingQuestCrafting", "MixinCasingQuestInventory")
+    CraftingTaskRetrieval(new MixinBuilder().addCommonMixins("MixinCraftingTaskRetrieval")
+        .addClientMixins("MixinCraftingTaskRetrievalGui")
         .addRequiredMod(TargetedMod.BETTER_QUESTING)
         .addRequiredMod(TargetedMod.BQ_STANDARD)
-        .addRequiredMod(TargetedMod.CHISEL)
-        .addRequiredMod(GT5U)
-        .addExcludedMod(GT6)
         .setPhase(LATE)),
 
     StartupErrorScreen(new MixinBuilder().addClientMixins("MixinFMLClientHandler")

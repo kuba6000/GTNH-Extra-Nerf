@@ -18,7 +18,6 @@ public enum TargetedMod implements ITargetMod {
     NOT_ENOUGH_ITEMS("NotEnoughItems"),
     BETTER_QUESTING("betterquesting"),
     BQ_STANDARD("bq_standard"),
-    CHISEL("chisel"),
     THAUMCRAFT("Thaumcraft");
 
     private final TargetModBuilder builder;

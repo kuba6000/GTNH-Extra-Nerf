@@ -352,3 +352,5 @@ gtnhextranerf.error.logs=See logs/latest.log for the full error report. Close th
 gtnhextranerf.error.preview=Development preview - forced by JVM flag
 item.gtnhextranerf.blighted_soybean.name=Blighted Soybean
 item.gtnhextranerf.magicnetized_manasteel_rod.name=Magicnetized Manasteel Rod
+
+gtnhextranerf.task.crafting_or_retrieval=Crafting or Retrieval

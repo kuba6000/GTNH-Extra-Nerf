@@ -21,15 +21,17 @@ on display, and explains the meaning of other entries' native weight percentages
 
 See [`../docs/LOOTBAG_SYSTEM_DESIGN.md`](../docs/LOOTBAG_SYSTEM_DESIGN.md).
 
-## Machine-casing quest compatibility
+## Questbook crafting tasks
 
-`MixinCasingQuestCrafting` augments native Detect and
-`MixinCasingQuestInventory` uses BetterQuesting's existing inventory-change
-queue. `CasingQuest` accepts the exact finished LV casing only for quest UUID
-`00000000-0000-0000-0000-000000000049`, task 0, after validating the task's
-required item. The native crafting task records progress and synchronizes it;
-the item is not consumed. The quest database and saved task type are not
-rewritten, so the same check applies to freshly loaded and reloaded questbooks.
+`MixinCraftingTaskRetrieval` adds inventory and observation interfaces to every
+BQ Standard `TaskCrafting` while retaining native craft, smelt, anvil and
+statistics behavior. `CraftingTaskRetrieval` uses the native non-consuming
+retrieval detector with the original requirements and matching flags. Crafting
+and retrieval keep separate per-player progress; the maximum for each required
+item determines completion without counting the same item twice. The client-only
+`MixinCraftingTaskRetrievalGui` displays the combined progress. The original
+factory ID and saved crafting progress remain intact; retrieval progress is
+stored in an additional namespaced task-progress tag.
 
 ## Purpose and operating model
 

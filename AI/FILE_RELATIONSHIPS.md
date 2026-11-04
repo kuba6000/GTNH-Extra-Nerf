@@ -23,14 +23,14 @@ file reloads and blocks inline table edits that would bypass this boundary.
 changes; `LootAllowancePreview` rejects packets from previous connections.
 `MixinLootBagPreview` supplies the live tooltip when ELB appends its cached text.
 
-## Machine-casing quest
+## Questbook crafting tasks
 
-`MixinCasingQuestCrafting` invokes `CasingQuest` on native Detect;
-`MixinCasingQuestInventory` uses the existing BQ inventory-change queue.
-The helper validates quest UUID, task index and the exact finished LV casing
-before invoking the native `TaskCrafting` progress path. It neither changes
-quest definitions nor replaces serialized progress; the neighboring hull task
-and other quests keep their native rules.
+`MixinCraftingTaskRetrieval` adds BQ's inventory and observation interfaces to
+every `TaskCrafting` while preserving native production events. Its adapter,
+`CraftingTaskRetrieval`, keeps separate native retrieval progress;
+`CraftingTaskProgress` exposes the combined per-item view. The client-only GUI
+mixin presents both methods. The original task ID and existing progress remain
+intact, with retrieval progress saved in an additional namespaced NBT tag.
 
 ## Top-level runtime graph
 
@@ -190,8 +190,8 @@ the following together:
 | `MixinMTELargeChemicalReactor` | GregTech | `@ModifyReturnValue` + redirect | returned processing logic and tooltip call |
 | `MixinHealingAxeHunger` | Extra Utilities | `@Inject` + `@WrapOperation` | `ItemHealingAxe.onUpdate`, with item marking and `HungryAxe` food-state handling |
 | `MixinLootBagPreview` | EnhancedLootBags/NEI | `@WrapOperation` | Dynamic controller allowance tooltip and qualification of native percentages/counters |
-| `MixinCasingQuestCrafting` | BetterQuesting | `@Inject` | Detect for the exact LV casing task |
-| `MixinCasingQuestInventory` | BetterQuesting | `@WrapOperation` | Existing inventory-change queue, restricted to the exact LV casing task |
+| `MixinCraftingTaskRetrieval` | BetterQuesting | `@Inject` + interfaces | Adds non-consuming retrieval alongside crafting tasks |
+| `MixinCraftingTaskRetrievalGui` | BetterQuesting | client-only `@Inject` | Combined crafting/retrieval name and task panel |
 | `MixinMetaTileEntity` | GregTech | `@ModifyConstant(require = 2, allow = 2)` | two literal `2` values in `fill`, replaced by the shared steam conversion |
 | `MixinConfigurationCircuitSupport` | GregTech | cancellable `@Inject(require = 1)` | `CommonWidgets.createCircuitSlot`; physical circuit for every tiered pre-HV machine with configuration-circuit support |
 | `MixinPhysicalCircuitBlockDrop`, `MixinPhysicalCircuitExplosionDrop` | GregTech | 2 `@WrapOperation(require = 1)` | Share `PhysicalCircuitSlots` eligibility with the GUI; include real reserved-slot circuits in native block and explosion drops |
@@ -235,7 +235,7 @@ settings.
 | Industrial and Alloy Blast Smelter recipes | Exact recipe signatures and `AuditScope` cardinalities | `IndustrialRecipeIntegrationTests` and `AlloyBlastSmelterIntegrationTests` query the final initialized machine maps. |
 | Physical circuit drops | `PhysicalCircuitItemStackHandlerTest` covers insertion and extraction | `PhysicalCircuitDropIntegrationTests` checks real machine and input-bus destruction, NBT, explosion drops and HV ghost circuits. |
 | Lootbag preview | Native loot/ledger tests | `LootPreviewScenarios` exercises the live NEI tooltip while the server claims and reopens the world allowance. |
-| LV casing quest | Native BQ quest and task APIs | `CasingQuestScenarios` and `CasingQuestInventoryScenarios` exercise Detect, native Chisel input, item preservation and questbook reload. |
+| Questbook crafting tasks | Native BQ quest and task APIs | Quest scenarios exercise inventory retrieval, Detect, hand Chisel, item matching, non-consumption and questbook reload. |
 | Hungry Axe | `HungryAxeTest` covers marking and hunger bounds | `HealingAxeIntegrationTests` exercises the registered item through actual dedicated-server inventory ticks and checks food state. |
 | Lightning Rod generation | Startup audit checks all three native registrations and output ratings | `LightningRodIntegrationTests` drives real server weather, mast geometry and public post-ticks; stored EU, fence consumption and fixed-seed comparisons verify the behavior. |
 | Void Miner gas costs | Startup audit checks hooks, registrations and native gas ordering | `VoidMinerFluidIntegrationTests` drives formed miners and compares hatch payments, powered output, short/exact supply and batch scaling for every tier/gas pair. |

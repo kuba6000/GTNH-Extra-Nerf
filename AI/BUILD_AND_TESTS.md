@@ -81,7 +81,7 @@ python .github/scripts/run_horizon_tests.py --tests gtnhextranerftests:NativeSce
 python .github/scripts/run_horizon_tests.py --tests gtnhextranerftests:ArcaneWorkbenchScenarios
 ```
 
-The loot-preview and casing-quest scenarios need a fresh world independent of
+The loot-preview and quest-retrieval scenarios need a fresh world independent of
 the native loot fixture, which spends the world's only controller allowance:
 
 ```powershell

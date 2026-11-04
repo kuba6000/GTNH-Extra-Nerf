@@ -43,6 +43,8 @@ public final class CasingQuestInventoryScenarios {
 
     @GameTest(template = "gtnhextranerftests:native_fixture", timeoutTicks = 1800)
     public static void chiseledCasingIsDetectedAutomatically(GameTestHelper helper) {
+        QuestReloadBarrier barrier = new QuestReloadBarrier();
+        helper.afterTest(barrier::close);
         ClientTarget rawInput = chiselSlot(
             "raw casing in inventory",
             false,
@@ -95,7 +97,7 @@ public final class CasingQuestInventoryScenarios {
                 player.inventory.currentItem = 0;
                 player.inventory.setInventorySlotContents(0, new ItemStack(ChiselItems.chisel));
                 player.inventory.setInventorySlotContents(1, rawCasing());
-                player.inventory.setInventorySlotContents(2, ItemList.Hull_LV.get(1));
+                player.inventory.setInventorySlotContents(2, ItemList.Hull_MV.get(1));
                 player.inventory.setInventorySlotContents(3, ItemList.Casing_MV.get(1));
                 QuestCache cache = (QuestCache) player.getExtendedProperties(QuestCache.LOC_QUEST_CACHE.toString());
                 check(cache != null, "Missing BetterQuesting player cache");
@@ -114,7 +116,7 @@ public final class CasingQuestInventoryScenarios {
                     !quest.getTasks()
                         .getValue(1)
                         .isComplete(user),
-                    "Held hull satisfied a crafting task");
+                    "Wrong-tier hull satisfied the task");
                 player.sendContainerToPlayer(player.openContainer);
             })
             .awaitClient("player inventory has reached the client", client -> {
@@ -147,19 +149,24 @@ public final class CasingQuestInventoryScenarios {
                     !quest.getTasks()
                         .getValue(1)
                         .isComplete(user),
-                    "Held hull incorrectly satisfied crafting");
+                    "Wrong-tier hull satisfied the task");
                 check(count(player, ItemList.Casing_LV.get(1)) == 1, "Finished casing was consumed or duplicated");
-                check(count(player, ItemList.Hull_LV.get(1)) == 1, "Held hull was consumed or duplicated");
+                check(count(player, ItemList.Hull_MV.get(1)) == 1, "Held hull was consumed or duplicated");
             })
             .capture("automatic-casing-detection")
-            .server("reload questbook and move the casing again", () -> {
-                EntityPlayerMP player = player();
-                UUID user = QuestingAPI.getQuestingUUID(player);
+            .server("reload the questbook", () -> {
+                barrier.beforeReload();
                 MinecraftServer server = MinecraftServer.getServer();
                 check(
                     server.getCommandManager()
                         .executeCommand(server, "bq_admin default load") > 0,
                     "Quest reload failed");
+            })
+            .client("request the questbook synchronization marker", client -> barrier.request())
+            .awaitClient("questbook reload is synchronized", client -> barrier.await())
+            .server("verify reload and move the casing again", () -> {
+                EntityPlayerMP player = player();
+                UUID user = QuestingAPI.getQuestingUUID(player);
                 IQuest reloaded = quest();
                 check(
                     reloaded.getTasks()
