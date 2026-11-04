@@ -13,21 +13,24 @@ Supported pack release: **GT New Horizons 2.9.0** (see
 
 ## Telemetry and team tracking
 
-Telemetry is opt-in and is decided for each world. The first time a world is played, an
+Telemetry is opt-in and is decided for each world. When a world has no existing choice, an
 operator (or the owner of a singleplayer world) is shown a window with three choices: disable
-telemetry, send minimal statistics, or enable full team tracking. The console of a dedicated
-server is told how to answer with `extranerftelemetry on` or `off`. Nothing is sent until
-someone has answered, and the server never waits for it.
-Minimal statistics are a random ID valid for one server run, the online player count, the
+reporting, send basic statistics, or enable team tracking. An earlier team opt-in or telemetry
+opt-out is carried over. The console of a dedicated
+server is told how to answer with `extranerftelemetry on` or `off`. No statistics or team
+reports are sent until someone has answered, and the server never waits for it.
+Basic statistics include a random ID valid for one server run, the online player count, the
 highest available world progression tier, singleplayer status and an optional randomized JAR
-proof, about once per hour. They are used only for community statistics about active
-servers, online players, and world progression.
-The choice can be changed at any time with `/extranerftelemetry on|off`. See the
+proof, about once per hour. They contribute to community statistics about active
+servers, online players and world progression, and help understand mod usage.
+The choice can be changed at any time with `/extranerftelemetry on|off` and
+`/extranerfteam on|off`. See the
 [Privacy & Telemetry Policy](https://extranerf.kuba6000.pl/privacy) and
 [telemetry details and testing](docs/TELEMETRY.md).
 
-Team tracking is a separate feature that is off until an operator runs
-`/extranerfteam on`; see [team tracking](docs/TEAM_TRACKING.md). The mod also checks
+Team tracking is an alternative reporting mode. Enabling either it or basic statistics
+turns the other mode off; team reports also contribute to the server statistics. See
+[team tracking](docs/TEAM_TRACKING.md). The mod also checks
 for newer releases ([update check](docs/UPDATE_CHECK.md)).
 
 ## Documentation

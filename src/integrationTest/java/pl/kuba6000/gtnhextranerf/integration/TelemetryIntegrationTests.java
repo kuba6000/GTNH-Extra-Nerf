@@ -4,6 +4,7 @@ import java.net.URL;
 import java.security.SecureRandom;
 import java.util.UUID;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
@@ -21,6 +22,7 @@ import pl.kuba6000.gtnhextranerf.teams.TeamClient;
 import pl.kuba6000.gtnhextranerf.teams.TeamTracking;
 import pl.kuba6000.gtnhextranerf.telemetry.ServerTelemetry;
 import pl.kuba6000.gtnhextranerf.telemetry.TelemetryClient;
+import pl.kuba6000.gtnhextranerf.telemetry.TelemetryConsent;
 
 /** Real Forge configuration and server lifecycle; never connects to the production endpoint. */
 public final class TelemetryIntegrationTests {
@@ -29,8 +31,14 @@ public final class TelemetryIntegrationTests {
         // Prevent production HTTP during fixture lifecycle restarts.
         ServerTelemetry.stop();
         ServerTelemetry.initialize(null, true);
-        boolean originallyEnabled = Config.telemetryEnabled;
+        TeamTracking.stop();
+        TeamTracking.initialize(null, true);
         WorldServer world = DimensionManager.getWorld(0);
+        TelemetryConsent consent = (TelemetryConsent) world.mapStorage
+            .loadData(TelemetryConsent.class, TelemetryConsent.NAME);
+        check(consent != null, "world consent record is missing");
+        NBTTagCompound savedConsent = new NBTTagCompound();
+        consent.writeToNBT(savedConsent);
         ProgressionData progression = (ProgressionData) world.mapStorage
             .loadData(ProgressionData.class, ProgressionData.NAME);
         if (progression == null) {
@@ -56,6 +64,21 @@ public final class TelemetryIntegrationTests {
             Config.setTelemetryEnabled(true);
             Config.loadWorld();
             check(Config.telemetryEnabled, "telemetry could not be enabled again");
+            EntityPlayerMP leader = (EntityPlayerMP) server.getConfigurationManager().playerEntityList.get(0);
+            check(
+                server.getCommandManager()
+                    .executeCommand(server, "extranerfteam on " + leader.getCommandSenderName()) == 1,
+                "team opt-in command failed");
+            check(
+                Config.teamTrackingEnabled && !Config.telemetryEnabled,
+                "team reporting did not replace minimal reporting");
+            check(
+                server.getCommandManager()
+                    .executeCommand(server, "extranerftelemetry on") == 1,
+                "telemetry opt-in command failed");
+            check(
+                Config.telemetryEnabled && !Config.teamTrackingEnabled,
+                "minimal reporting did not replace team reporting");
 
             // Capture through the actual service, with a loopback-only client that is never scheduled.
             TelemetryClient client = new TelemetryClient(null, new URL("http://127.0.0.1:1"), new SecureRandom());
@@ -108,7 +131,9 @@ public final class TelemetryIntegrationTests {
         } finally {
             progression.readFromNBT(savedProgression);
             progression.markDirty();
-            Config.setTelemetryEnabled(originallyEnabled);
+            consent.readFromNBT(savedConsent);
+            consent.markDirty();
+            Config.loadWorld();
         }
     }
 

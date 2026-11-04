@@ -46,7 +46,6 @@ public final class ServerTelemetry implements AutoCloseable {
     private final long intervalMillis;
     private final AtomicBoolean inFlight = new AtomicBoolean();
     private volatile boolean closed;
-    private volatile String lastStatus = "waiting";
     private volatile TelemetryClient.Response lastResponse;
     private TelemetryClient.Response observedResponse;
     private MinecraftServer server;
@@ -87,6 +86,11 @@ public final class ServerTelemetry implements AutoCloseable {
         serverRunId = null;
     }
 
+    /** Shared by both reporting modes for the lifetime of this logical server. */
+    public static UUID serverRunId() {
+        return Objects.requireNonNull(serverRunId, "Telemetry server run has not started");
+    }
+
     public static void start(MinecraftServer server) {
         stop();
         if (!Config.telemetryAsked) {
@@ -110,12 +114,9 @@ public final class ServerTelemetry implements AutoCloseable {
                 .register(session);
             session.registered = true;
             inactiveReason = "";
+            GTNHExtraNerf.LOG.info("Telemetry enabled. Disable with /extranerftelemetry off");
             GTNHExtraNerf.LOG.info(
-                "Telemetry enabled. Disable with /extranerftelemetry off or telemetry.enabled=false in {}",
-                Config.configurationFile()
-                    .getName());
-            GTNHExtraNerf.LOG.info(
-                "We'd appreciate you keeping telemetry enabled. It is used only for community statistics about active servers, online players, and world progression. "
+                "Basic statistics help us understand mod usage and publish community statistics about active servers, online players, and world progression. "
                     + "Privacy policy: "
                     + PRIVACY_URL);
         } catch (Exception failure) {
@@ -187,11 +188,11 @@ public final class ServerTelemetry implements AutoCloseable {
                     if (closed) return;
                     TelemetryClient.Response delivery = sender.send(captured, () -> closed);
                     if (delivery == null) return;
-                    lastStatus = "HTTP " + delivery.status;
+                    if (delivery.status < 200 || delivery.status >= 300)
+                        GTNHExtraNerf.LOG.warn("Basic statistics request returned HTTP {}", delivery.status);
                     lastResponse = delivery;
                 } catch (Exception failure) {
-                    lastStatus = failure.getClass()
-                        .getSimpleName();
+                    GTNHExtraNerf.LOG.warn("Could not send basic statistics: {}", failure.toString());
                     lastResponse = new TelemetryClient.Response(0, 60);
                 } finally {
                     inFlight.set(false);
@@ -243,15 +244,31 @@ public final class ServerTelemetry implements AutoCloseable {
 
     public static IChatComponent status() {
         ServerTelemetry current = active;
-        if (current == null) return new ChatComponentTranslation(
-            "gtnhextranerf.telemetry.status.inactive",
-            Config.telemetryEnabled,
-            inactiveReason);
-        return new ChatComponentTranslation(
-            "gtnhextranerf.telemetry.status.active",
-            current.lastStatus,
-            current.inFlight.get(),
-            Math.max(0, (Math.max(current.nextDue, current.blockedUntil) - nowMillis()) / 1000));
+        if (!Config.telemetryAsked) return new ChatComponentTranslation("gtnhextranerf.telemetry.status.unanswered");
+        if (!Config.telemetryEnabled) return new ChatComponentTranslation(
+            Config.teamTrackingEnabled ? "gtnhextranerf.telemetry.status.team" : "gtnhextranerf.telemetry.status.off");
+        if (current == null) return new ChatComponentTranslation("gtnhextranerf.telemetry.status.inactive");
+        if (current.inFlight.get()) return new ChatComponentTranslation("gtnhextranerf.telemetry.status.sending");
+        TelemetryClient.Response response = current.lastResponse;
+        if (response == null) return new ChatComponentTranslation("gtnhextranerf.telemetry.status.waiting");
+        if (response.status >= 200 && response.status < 300)
+            return new ChatComponentTranslation("gtnhextranerf.telemetry.status.sent", reportAge(response));
+        return new ChatComponentTranslation("gtnhextranerf.telemetry.status.failed");
+    }
+
+    /** Localized elapsed time shared by the basic and team status messages. */
+    public static IChatComponent reportAge(TelemetryClient.Response response) {
+        long seconds = response.ageSeconds();
+        if (seconds == 0) return new ChatComponentTranslation("gtnhextranerf.telemetry.age.now");
+        if (seconds < 60) return elapsedUnit(seconds, "second");
+        if (seconds < 3600) return elapsedUnit(seconds / 60, "minute");
+        if (seconds < 86400) return elapsedUnit(seconds / 3600, "hour");
+        return elapsedUnit(seconds / 86400, "day");
+    }
+
+    private static IChatComponent elapsedUnit(long amount, String unit) {
+        String key = "gtnhextranerf.telemetry.age." + unit;
+        return amount == 1 ? new ChatComponentTranslation(key) : new ChatComponentTranslation(key + "s", amount);
     }
 
     private void assertOwner() {

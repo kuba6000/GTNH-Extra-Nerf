@@ -50,18 +50,18 @@ To create JARs:
 Artifacts are written to `build/libs`. The non-`-dev` JAR is the reobfuscated
 runtime artifact.
 
-Development environments do not send telemetry. Packaged builds report even if their JAR cannot be read. Tagged release
-JARs report the release version and use the exact published artifact's hash for encryption. Release download notes describe
-the telemetry and how to opt out.
-We'd appreciate you keeping telemetry enabled. It is used only for community
-statistics about active servers, online players, and world progression.
+Development environments do not send telemetry. Packaged builds ask the world owner
+to choose a reporting mode when the world has no existing choice, and a report can be
+sent even if the JAR cannot be read.
+Release notes describe the choices and how to change them. Basic statistics contribute
+to community statistics about active servers, online players, and world progression.
 Read our [Privacy & Telemetry Policy](https://extranerf.kuba6000.pl/privacy).
 
-To generate its release descriptor, run `telemetryReleaseInfo` at a
-clean release tag, or supply `-PtelemetryReleaseTag=YOUR_TEST_TAG` and the matching
-`VERSION` environment override for a local test. The output is
-`build/telemetry/release.json` with `modVersion`, `jarSha256` and `artifact`. See
-[Telemetry](TELEMETRY.md) for commands and end-to-end testing.
+To generate release metadata, run `telemetryReleaseInfo` at a clean release tag,
+or supply `-PtelemetryReleaseTag=YOUR_TEST_TAG` and the matching `VERSION` environment
+override for a local test. The task writes `build/telemetry/release.json`; tagged GitHub
+releases include it alongside the runtime JAR. See [Update check](UPDATE_CHECK.md) for
+publishing the version, and [Telemetry](TELEMETRY.md) for reporting choices and testing.
 
 ## Reduced development client
 

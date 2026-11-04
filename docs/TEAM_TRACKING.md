@@ -1,33 +1,39 @@
 # Team tracking
 
-An opt-in feature that lists a server as a team. It is separate from
-[telemetry](TELEMETRY.md): its own command and report. Turning telemetry off does not affect it, and the other
-way around.
+An opt-in reporting mode that can list a server as a team and contributes to community statistics.
+It is mutually exclusive with [basic statistics](TELEMETRY.md): enabling either mode turns the
+other off. Turning a mode off does not turn the other one on.
 
 ## Opting in
 
 An operator (or the console, or the world owner in singleplayer) runs the command below, or
-chooses **Enable full team tracking** in the window that asks a new world about telemetry (see
+chooses **Enable team tracking** in the window that asks a new world about telemetry (see
 [TELEMETRY.md](TELEMETRY.md#consent)). Either way the world counts as asked.
 
 ```
-/extranerfteam on
+/extranerfteam on [player]
 /extranerfteam status
 /extranerfteam off
 ```
 
-- The team is named after its **leader**: `<leader name>'s team`. The leader is the player
-  who ran the command. From the console it is the first player online; with nobody online the
-  command asks you to join first.
+- The team is named after its **leader**: `<leader name>'s team`. In game, `on` without a
+  player name selects the player running it; an operator may also name an online player.
+  From the console, an online player's name is required: `extranerfteam on <player>`.
 - The first `on` creates a permanent **team ID** (a random UUID), saved in the world. It never changes, also
   across `off` and `on` and restarts of that world.
-- Running `on` again makes the player who ran it the new leader and keeps the ID.
+- Running `on` again selects the specified player, or the in-game sender when no player is
+  specified, as leader and keeps the ID.
 
 ## Telling players and opting out
 
-Every player who joins a server with team tracking on gets a chat message saying so, with a link to the Team Tracking Policy.
+When team tracking is enabled, all connected players receive a chat notice with a link to the
+Team Tracking Policy and a separate notice explaining their right to object. The same notices are
+shown to players who join while tracking is on. Older versions may not notify players who were
+already connected when tracking was enabled and may not mention the right to object.
 
-`/extranerfteam off` stops the reports and prints the team ID with the instruction to email it to the contact address if the stored data should be deleted now.
+`/extranerfteam off` stops the reports. To request deletion of the stored data, email the team ID
+from `gtnhextranerf-team-id.txt` in the world's folder to `extranerf@kuba6000.pl`. The ID is not
+shown in chat, and the file remains available after tracking is turned off.
 
 ## What is saved and sent
 
@@ -36,28 +42,19 @@ leader's UUID and `leaderName`. A team that older versions saved in the configur
 first world that is loaded. The leader's name is refreshed whenever the
 leader is online.
 
-Every 15 minutes (first report after 10 minutes), a daemon worker posts to
-`https://extranerf.kuba6000.pl/teamtracking`:
+The first report is sent after about 10 minutes and later reports every 15 minutes.
+It contains the team ID, the leader's Minecraft name and UUID, and the names and UUIDs
+of up to 256 online players. It also includes the information described under
+[basic statistics](TELEMETRY.md#report), including the total online player count even
+when the list is capped.
 
-```json
-{
-  "teamId": "0f8fad5b-d9cb-469f-a165-70867728950e",
-  "leader": {"id": "<uuid>", "name": "Kuba"},
-  "highestTier": "lv",
-  "singleplayer": false,
-  "players": [{"id": "<uuid>", "name": "Kuba"}],
-  "jarProof": {"salt": "...", "sha256": "..."}
-}
-```
-
-`highestTier` is the highest progression tier the world has unlocked (the same value telemetry uses).
-`singleplayer` is true on an integrated server.
-`players` are the players online when the report is captured on the server thread (at most
-256, names of 1–16 letters, digits or underscores). `jarProof` is the same salted JAR proof
-as in telemetry. Development environments never report.
+Team reports can contribute to aggregate server statistics. Teams using recognized
+official releases may appear on the public team list. See the
+[team tracking policy](https://extranerf.kuba6000.pl/team-tracking) for details.
+Development environments never report.
 
 A world that earned a certificate above Steam before its overworld had run 5 hours never reports, as for
-telemetry (see [TELEMETRY.md](TELEMETRY.md)): team tracking stops with a log line and `/extranerfteam status` shows the reason.
+telemetry (see [TELEMETRY.md](TELEMETRY.md)): team tracking stops with a log line and `/extranerfteam status` reports that it is not sending.
 
 ## Tests
 

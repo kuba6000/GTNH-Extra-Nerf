@@ -139,10 +139,16 @@ public final class TelemetryClient {
 
         public final int status;
         public final long retryAfterSeconds;
+        private final long receivedAtNanos = System.nanoTime();
 
         public Response(int status, long retryAfterSeconds) {
             this.status = status;
             this.retryAfterSeconds = Math.max(0, Math.min(86400, retryAfterSeconds));
+        }
+
+        /** Time since the response was received, unaffected by changes to the system clock. */
+        public long ageSeconds() {
+            return Math.max(0, (System.nanoTime() - receivedAtNanos) / 1_000_000_000L);
         }
     }
 }

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 
@@ -53,6 +54,7 @@ public final class LangFile {
 
     /** What a player reading English would see, for a message made of translation keys and arguments. */
     public static String render(IChatComponent message) throws Exception {
+        if (message instanceof ChatComponentText) return message.getUnformattedText();
         assertTrue(message instanceof ChatComponentTranslation, "Not a translation: " + message);
         ChatComponentTranslation translation = (ChatComponentTranslation) message;
         return text(translation.getKey(), translation.getFormatArgs());

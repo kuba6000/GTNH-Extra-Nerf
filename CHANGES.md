@@ -21,9 +21,15 @@ catalog, including exact values, conditions and unchanged fields, is
 
 - Telemetry is opt-in and decided per world. A new world asks its operators (or the owner of a
   singleplayer world) in a window with three choices, and a dedicated server's console is told
-  how to answer. Nothing is sent until someone has answered. The old `enabled=true` default of
+  how to answer. No statistics or team reports are sent until someone has answered. The old `enabled=true` default of
   the configuration file does not count as an answer; a refusal and a listed team are carried
   into the first world, and the settings now live in the world.
+- Basic statistics and team tracking are mutually exclusive; either mode contributes to
+  community statistics.
+- Reporting choices are written immediately. Team IDs are kept when tracking is off and are available
+  in a text file in the world folder instead of being shown in chat.
+- Enabling team tracking informs connected players about the policy and their right to object.
+  The console must explicitly name an online player as team leader.
 
 ## Soybean crops
 

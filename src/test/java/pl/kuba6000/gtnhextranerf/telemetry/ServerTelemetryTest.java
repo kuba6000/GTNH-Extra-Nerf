@@ -41,12 +41,6 @@ class ServerTelemetryTest {
     }
 
     @Test
-    void theStatusIsATranslatedMessageWithTheStateAsArguments() throws Exception {
-        String status = LangFile.render(ServerTelemetry.status());
-        assertTrue(status.startsWith("enabled=") || status.startsWith("active; last="), status);
-    }
-
-    @Test
     void theCommandUsageIsATranslationKey() throws Exception {
         assertTrue(
             LangFile.text(new TelemetryCommand().getCommandUsage(null))

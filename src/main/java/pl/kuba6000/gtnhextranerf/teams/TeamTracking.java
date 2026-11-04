@@ -17,7 +17,9 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.event.ClickEvent;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
@@ -34,10 +36,11 @@ import pl.kuba6000.gtnhextranerf.GTNHExtraNerf;
 import pl.kuba6000.gtnhextranerf.progression.ProgressionData;
 import pl.kuba6000.gtnhextranerf.telemetry.ServerTelemetry;
 import pl.kuba6000.gtnhextranerf.telemetry.TelemetryClient;
+import pl.kuba6000.gtnhextranerf.telemetry.TelemetryConsent;
 
 /**
- * Opt-in team tracking, independent of telemetry. Every 15 minutes the server reports its permanent team ID, the team
- * leader and the players who are online, so the team can be listed as "<leader>'s team".
+ * Opt-in team reporting, mutually exclusive with minimal telemetry. Every 15 minutes the server reports its permanent
+ * team ID, the team leader and the players online, so the team can be listed as "<leader>'s team".
  */
 public final class TeamTracking implements AutoCloseable {
 
@@ -57,7 +60,6 @@ public final class TeamTracking implements AutoCloseable {
     private final long intervalMillis;
     private final AtomicBoolean inFlight = new AtomicBoolean();
     private volatile boolean closed;
-    private volatile String lastStatus = "waiting";
     private volatile TelemetryClient.Response lastResponse;
     private TelemetryClient.Response observedResponse;
     private MinecraftServer server;
@@ -136,16 +138,32 @@ public final class TeamTracking implements AutoCloseable {
     @SubscribeEvent
     public void playerJoined(PlayerEvent.PlayerLoggedInEvent event) {
         if (closed || active != this || !(event.player instanceof EntityPlayerMP)) return;
-        event.player.addChatMessage(joinNotice().setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)));
+        notifyPlayer((EntityPlayerMP) event.player);
     }
 
     public static ChatComponentTranslation joinNotice() {
-        return new ChatComponentTranslation("gtnhextranerf.team.notice", SITE, POLICY_URL);
+        return new ChatComponentTranslation("gtnhextranerf.team.notice", policyLink(POLICY_URL));
+    }
+
+    public static ChatComponentTranslation objectionNotice() {
+        return new ChatComponentTranslation("gtnhextranerf.team.objection", policyLink(POLICY_URL + "#removal"));
+    }
+
+    private static IChatComponent policyLink(String url) {
+        return new ChatComponentText(url).setChatStyle(
+            new ChatStyle().setColor(EnumChatFormatting.AQUA)
+                .setUnderlined(true)
+                .setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url)));
+    }
+
+    private static void notifyPlayer(EntityPlayerMP player) {
+        player.addChatMessage(joinNotice().setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)));
+        player.addChatMessage(objectionNotice().setChatStyle(new ChatStyle().setColor(EnumChatFormatting.YELLOW)));
     }
 
     /** Shown to the operator who turns team tracking off: the stored data stays until it is requested to be deleted. */
-    public static ChatComponentTranslation removalNotice(String teamId) {
-        return new ChatComponentTranslation("gtnhextranerf.team.removed", CONTACT, teamId);
+    public static ChatComponentTranslation removalNotice() {
+        return new ChatComponentTranslation("gtnhextranerf.team.removed", CONTACT, TelemetryConsent.TEAM_ID_FILE);
     }
 
     @SubscribeEvent
@@ -190,11 +208,11 @@ public final class TeamTracking implements AutoCloseable {
                     if (closed) return;
                     TelemetryClient.Response delivery = sender.send(captured, () -> closed);
                     if (delivery == null) return;
-                    lastStatus = "HTTP " + delivery.status;
+                    if (delivery.status < 200 || delivery.status >= 300)
+                        GTNHExtraNerf.LOG.warn("Team tracking request returned HTTP {}", delivery.status);
                     lastResponse = delivery;
                 } catch (Exception failure) {
-                    lastStatus = failure.getClass()
-                        .getSimpleName();
+                    GTNHExtraNerf.LOG.warn("Could not send the team report: {}", failure.toString());
                     lastResponse = new TelemetryClient.Response(0, 60);
                 } finally {
                     inFlight.set(false);
@@ -231,7 +249,9 @@ public final class TeamTracking implements AutoCloseable {
             leader,
             ServerTelemetry.highestAvailableTier(progression),
             !server.isDedicatedServer(),
-            online);
+            online,
+            ServerTelemetry.serverRunId(),
+            server.getConfigurationManager().playerEntityList.size());
     }
 
     /** The saved leader, or null when the saved team ID, leader UUID or name cannot be used. */
@@ -259,24 +279,25 @@ public final class TeamTracking implements AutoCloseable {
     }
 
     /**
-     * Lists this server as a team, named after {@code sender} or, for the console, the first player online. Shared by
-     * the command and the consent window. False when there is nobody to name the team after.
+     * Lists this server as a team named after the selected player. Shared by the command and the consent window.
+     * Returns false if the selected player cannot be used as a leader.
      */
     public static boolean enable(MinecraftServer server, EntityPlayerMP sender) {
-        Member commandSender = null;
+        Member leader = null;
         if (sender != null) {
             UUID id = sender.getGameProfile()
                 .getId();
             if (id != null && Member.validName(sender.getCommandSenderName()))
-                commandSender = new Member(id, sender.getCommandSenderName());
+                leader = new Member(id, sender.getCommandSenderName());
         }
-        Member leader = chooseLeader(commandSender, onlinePlayers(server));
         if (leader == null) return false;
         // The ID is created once and then kept, also across opting out and in again.
         String teamId = isUuid(Config.teamId) ? Config.teamId
             : UUID.randomUUID()
                 .toString();
         Config.enableTeamTracking(teamId, leader.id.toString(), leader.name);
+        ServerTelemetry.stop();
+        for (Object entry : server.getConfigurationManager().playerEntityList) notifyPlayer((EntityPlayerMP) entry);
         start(server);
         return true;
     }
@@ -290,12 +311,6 @@ public final class TeamTracking implements AutoCloseable {
         }
     }
 
-    /** The player who typed the command, or the first online player when the console did. */
-    public static Member chooseLeader(Member commandSender, List<Member> online) {
-        if (commandSender != null) return commandSender;
-        return online.isEmpty() ? null : online.get(0);
-    }
-
     public static String teamName(String leaderName) {
         return leaderName + "'s team";
     }
@@ -306,17 +321,18 @@ public final class TeamTracking implements AutoCloseable {
 
     public static IChatComponent status() {
         TeamTracking current = active;
-        IChatComponent saved = Config.teamId.isEmpty() ? new ChatComponentTranslation("gtnhextranerf.team.saved.none")
-            : new ChatComponentTranslation("gtnhextranerf.team.saved.team", teamName(), Config.teamId);
-        if (current == null) return "off".equals(inactiveReason) || !Config.teamTrackingEnabled
-            ? new ChatComponentTranslation("gtnhextranerf.team.status.off", saved)
-            : new ChatComponentTranslation("gtnhextranerf.team.status.inactive", inactiveReason, saved);
-        return new ChatComponentTranslation(
-            "gtnhextranerf.team.status.active",
-            saved,
-            current.lastStatus,
-            current.inFlight.get(),
-            Math.max(0, (Math.max(current.nextDue, current.blockedUntil) - nowMillis()) / 1000));
+        if (!Config.telemetryAsked) return new ChatComponentTranslation("gtnhextranerf.telemetry.status.unanswered");
+        if (!Config.teamTrackingEnabled) return new ChatComponentTranslation("gtnhextranerf.team.status.off");
+        if (current == null) return new ChatComponentTranslation("gtnhextranerf.team.status.inactive");
+        if (current.inFlight.get())
+            return new ChatComponentTranslation("gtnhextranerf.team.status.sending", teamName());
+        TelemetryClient.Response response = current.lastResponse;
+        if (response == null) return new ChatComponentTranslation("gtnhextranerf.team.status.waiting", teamName());
+        if (response.status >= 200 && response.status < 300) return new ChatComponentTranslation(
+            "gtnhextranerf.team.status.sent",
+            teamName(),
+            ServerTelemetry.reportAge(response));
+        return new ChatComponentTranslation("gtnhextranerf.team.status.failed", teamName());
     }
 
     private void assertOwner() {
@@ -354,9 +370,13 @@ public final class TeamTracking implements AutoCloseable {
         /** True on an integrated server, that is when the world is played in singleplayer. */
         public final boolean singleplayer;
         public final List<Member> players;
+        public final UUID sessionId;
+        public final int onlinePlayers;
 
-        public Snapshot(UUID teamId, Member leader, String highestTier, boolean singleplayer, List<Member> players) {
+        public Snapshot(UUID teamId, Member leader, String highestTier, boolean singleplayer, List<Member> players,
+            UUID sessionId, int onlinePlayers) {
             if (players.size() > MAXIMUM_PLAYERS) throw new IllegalArgumentException("Too many team players");
+            if (onlinePlayers < players.size()) throw new IllegalArgumentException("Invalid online player count");
             if (highestTier == null || !highestTier.matches("[a-z][a-z0-9_]{0,15}"))
                 throw new IllegalArgumentException("Invalid progression tier");
             Set<UUID> seen = new HashSet<>();
@@ -367,6 +387,8 @@ public final class TeamTracking implements AutoCloseable {
             this.highestTier = highestTier;
             this.singleplayer = singleplayer;
             this.players = Collections.unmodifiableList(new ArrayList<>(players));
+            this.sessionId = Objects.requireNonNull(sessionId);
+            this.onlinePlayers = onlinePlayers;
         }
     }
 

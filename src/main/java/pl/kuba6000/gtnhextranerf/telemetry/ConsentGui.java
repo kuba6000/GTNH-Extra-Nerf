@@ -5,11 +5,13 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import com.cleanroommc.modularui.api.IGuiHolder;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.drawable.IKey;
+import com.cleanroommc.modularui.drawable.UITexture;
 import com.cleanroommc.modularui.factory.GuiData;
 import com.cleanroommc.modularui.factory.SimpleGuiFactory;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widgets.ButtonWidget;
 import com.cleanroommc.modularui.widgets.TextWidget;
 
@@ -22,9 +24,10 @@ public final class ConsentGui implements IGuiHolder<GuiData> {
     public static final String FACTORY_ID = GTNHExtraNerf.MODID + ".telemetry_consent";
     public static final String PRIVACY_URL = ServerTelemetry.PRIVACY_URL;
     static final int WIDTH = 320;
-    static final int HEIGHT = 264;
+    static final int HEIGHT = 280;
     private static final int TEXT_WIDTH = WIDTH - 20;
-    private static final int LINK_COLOR = 0xFF1F5FBF;
+    private static final int LINK_COLOR = 0xFF246AC1;
+    private static final UITexture UFO = UITexture.fullImage(GTNHExtraNerf.MODID, "items/ufo_assembly");
     private static SimpleGuiFactory factory;
 
     private ConsentGui() {}
@@ -52,15 +55,19 @@ public final class ConsentGui implements IGuiHolder<GuiData> {
             IKey.lang("gtnhextranerf.consent.title")
                 .asWidget()
                 .pos(10, 8)
-                .size(TEXT_WIDTH, 12));
-        panel.child(paragraph("gtnhextranerf.consent.minimal", 24, 58));
-        panel.child(paragraph("gtnhextranerf.consent.team", 86, 38));
-        panel.child(paragraph("gtnhextranerf.consent.scope", 128, 38));
-        panel.child(link("gtnhextranerf.consent.link.privacy", PRIVACY_URL, 10, 170));
-        panel.child(link("gtnhextranerf.consent.link.team", TeamTracking.POLICY_URL, 165, 170));
-        panel.child(choice("gtnhextranerf.consent.decline", ConsentPrompt.DECLINE, consent, syncManager, 190));
-        panel.child(choice("gtnhextranerf.consent.send_minimal", ConsentPrompt.MINIMAL, consent, syncManager, 214));
-        panel.child(choice("gtnhextranerf.consent.send_team", ConsentPrompt.TEAM, consent, syncManager, 238));
+                .size(TEXT_WIDTH - 38, 12));
+        panel.child(
+            new Widget<>().pos(WIDTH - 42, 4)
+                .size(32)
+                .background(UFO));
+        panel.child(paragraph("gtnhextranerf.consent.minimal", 40, 58));
+        panel.child(paragraph("gtnhextranerf.consent.team", 102, 38));
+        panel.child(paragraph("gtnhextranerf.consent.scope", 144, 38));
+        panel.child(link("gtnhextranerf.consent.link.privacy", PRIVACY_URL, 10, 186));
+        panel.child(link("gtnhextranerf.consent.link.team", TeamTracking.POLICY_URL, 165, 186));
+        panel.child(choice("gtnhextranerf.consent.decline", ConsentPrompt.DECLINE, consent, syncManager, 206));
+        panel.child(choice("gtnhextranerf.consent.send_minimal", ConsentPrompt.MINIMAL, consent, syncManager, 230));
+        panel.child(choice("gtnhextranerf.consent.send_team", ConsentPrompt.TEAM, consent, syncManager, 254));
         return panel;
     }
 
@@ -79,7 +86,9 @@ public final class ConsentGui implements IGuiHolder<GuiData> {
             .hoverBackground(IDrawable.EMPTY)
             .overlay(
                 IKey.lang(key)
-                    .color(LINK_COLOR))
+                    .style(IKey.UNDERLINE)
+                    .color(LINK_COLOR)
+                    .shadow(false))
             .onMousePressed(button -> {
                 if (button != 0) return false;
                 GTNHExtraNerf.proxy.openUrl(url);

@@ -212,7 +212,8 @@ gtnhextranerf.progression.use=右键点击以为此世界取得认证。首次�
 gtnhextranerf.progression.global=认证由所有玩家与所有维度共享。
 gtnhextranerf.progression.certified=%s已激活。整个世界的认证已解锁。
 gtnhextranerf.progression.already_certified=此世界已取得认证。%s未被消耗。
-gtnhextranerf.telemetry.off=Extra Nerf 遥测已关闭。该选择已保存在服务器配置中。
+gtnhextranerf.telemetry.off=本世界的基础统计已关闭，选择已保存
+gtnhextranerf.telemetry.save_failed=无法读取或保存统计选项，本次会话的报告已停止，请检查世界存储后重试
 gtnhextranerf.structure_error.stinky_coils=这些线圈方块太臭了！换更好的吧。
 gtnhextranerf.structure_error.unfluix_world=我不喜欢这儿。我更想去个更“福鲁伊克斯”的地方！
 gtnhextranerf.recipe.coolant_tower=冷却塔
@@ -329,19 +330,38 @@ gtnhextranerf.exam.steam.q10.c=用更粗的管道，劝锅炉多产一点蒸汽
 gtnhextranerf.exam.steam.q10.d=无视此问题，万一它自己就好了呢
 
 # Chat messages and commands of telemetry, team tracking and the update check
-gtnhextranerf.telemetry.notice=Extra Nerf 遥测已开启：本服务器会上报在线玩家数量与推进阶段，仅用于社区统计，不会上报玩家名或 UUID。可用 /extranerftelemetry off 关闭。隐私政策：%s
+gtnhextranerf.telemetry.notice=本世界已开启基础统计，用于生成匿名汇总统计，不会发送玩家名或 UUID，可用 /extranerftelemetry off 关闭，隐私政策：%s
 gtnhextranerf.telemetry.usage=/extranerftelemetry <status|off|on>
-gtnhextranerf.telemetry.status.inactive=已启用=%s；未激活：%s
-gtnhextranerf.telemetry.status.active=已激活；上次=%s；发送中=%s；下次=%s 秒后
-gtnhextranerf.team.notice=本服务器已开启 Extra Nerf 团队追踪：团队、推进阶段以及队内玩家的 Minecraft 用户名都会公开显示在 %s 上。详情：%s
-gtnhextranerf.team.removed=团队追踪已关闭。已发送的数据会保留在服务器上，一年后过期。如需立即删除，请发送邮件至 %s，并附上此团队 ID：%s
-gtnhextranerf.team.usage=/extranerfteam <status|on|off>
-gtnhextranerf.team.needs_player=团队追踪需要以一名玩家来命名团队。请先加入服务器，然后重新执行该命令
-gtnhextranerf.team.saved.none=尚无团队
-gtnhextranerf.team.saved.team=%s，ID %s
-gtnhextranerf.team.status.off=团队追踪：已关闭（%s）
-gtnhextranerf.team.status.inactive=团队追踪：已开启但未激活：%s（%s）
-gtnhextranerf.team.status.active=团队追踪：已开启（%s）；上次=%s；发送中=%s；下次=%s 秒后
+gtnhextranerf.telemetry.status.unanswered=此世界尚未选择报告方式
+gtnhextranerf.telemetry.status.off=此世界的基础统计已关闭
+gtnhextranerf.telemetry.status.team=基础统计已关闭，目前使用团队追踪
+gtnhextranerf.telemetry.status.inactive=基础统计已启用但没有发送报告，请查看服务器日志
+gtnhextranerf.telemetry.status.waiting=基础统计已开启，正在等待第一份报告
+gtnhextranerf.telemetry.status.sending=基础统计已开启，正在发送报告
+gtnhextranerf.telemetry.status.sent=基础统计已开启，最近一份报告发送时间：%s
+gtnhextranerf.telemetry.status.failed=基础统计已开启，但最近一份报告发送失败，稍后会重试
+gtnhextranerf.telemetry.age.now=刚刚
+gtnhextranerf.telemetry.age.second=1 秒前
+gtnhextranerf.telemetry.age.seconds=%s 秒前
+gtnhextranerf.telemetry.age.minute=1 分钟前
+gtnhextranerf.telemetry.age.minutes=%s 分钟前
+gtnhextranerf.telemetry.age.hour=1 小时前
+gtnhextranerf.telemetry.age.hours=%s 小时前
+gtnhextranerf.telemetry.age.day=1 天前
+gtnhextranerf.telemetry.age.days=%s 天前
+gtnhextranerf.team.notice=本服务器已开启 Extra Nerf 团队追踪，您的 Minecraft 用户名和团队进度可能会公开显示 - 政策：%s
+gtnhextranerf.team.objection=您有权反对处理您的个人数据 - 详情及联系方式：%s
+gtnhextranerf.team.removed=团队追踪已关闭，如需删除已发送的数据，请将世界文件夹中 %2$s 文件内的团队 ID 发送至 %1$s
+gtnhextranerf.team.usage=/extranerfteam <status|on|off> [玩家名]
+gtnhextranerf.team.leader_required=请在控制台使用 /extranerfteam on <玩家名> 指定一名在线队长
+gtnhextranerf.team.player_not_online=玩家 %s 当前不在线 - 请选择在线玩家
+gtnhextranerf.team.needs_player=团队追踪需要以一名玩家来命名团队，请先加入服务器并重试
+gtnhextranerf.team.status.off=此世界的团队追踪已关闭
+gtnhextranerf.team.status.inactive=团队追踪已启用但没有发送报告，请查看服务器日志
+gtnhextranerf.team.status.waiting=%s 的团队追踪已开启，正在等待第一份报告
+gtnhextranerf.team.status.sending=%s 的团队追踪已开启，正在发送报告
+gtnhextranerf.team.status.sent=%s 的团队追踪已开启，最近一份报告发送时间：%s
+gtnhextranerf.team.status.failed=%s 的团队追踪已开启，但最近一份报告发送失败，稍后会重试
 gtnhextranerf.update.available=GTNH Extra Nerf 有新版本可用：%s（当前已安装：%s）。下载：%s
 
 # Startup error screen

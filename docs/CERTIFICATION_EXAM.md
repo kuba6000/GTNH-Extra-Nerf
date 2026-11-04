@@ -41,9 +41,8 @@ The current machine gate continues to apply only to GT basic machines. Energy
 hatches and multiblocks are not gated by this change; later progression rules and
 these provisional fees can be revised independently of the saved certification flags.
 
-The separate `telemetry` branch's server snapshot iterates `ProgressionTier.values()`
-and reports the IDs of unlocked certificates. Once these definitions and telemetry
-are combined, the new tiers are included without a separate telemetry tier list.
+When reporting is enabled, the mod sends only the highest available progression tier,
+not individual certificate records or exam answers. See [telemetry](TELEMETRY.md).
 
 Every reopened Steam/LV attempt requires another payment. Failing or closing a
 paid attempt never refunds its fee. Incomplete answers can be fixed within the

@@ -101,6 +101,12 @@ scenario failures and 2 for infrastructure or incomplete evidence.
 `NativeScenarios` reports the existing recipe, machine, progression, loot and
 telemetry fixtures individually. `ArcaneWorkbenchScenarios` exercises real GUI
 input and verifies both server inventory and the visible client inventory.
+`ConsentScenarios.promptAfterAnotherLogin` closes the consent window and posts a
+second Forge login event for the same player before checking that it reopens. This
+exercises the client/server UI path but does not reconnect a network client.
+`NativeScenarios.teamNotice` and `NativeScenarios.teamLeader` exercise the team
+command on the running server with simulated connected players. They verify player
+notices and explicit leader selection without opening network client connections.
 
 When changing a recipe, add Horizon-QA assertions for its final registered form
 in every machine that offers it, including ordinary, industrial and multiblock

@@ -6,7 +6,6 @@ import java.net.URL;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -30,6 +29,7 @@ import pl.kuba6000.gtnhextranerf.telemetry.TelemetryClient;
 class TeamTrackingTest {
 
     private static final UUID TEAM = UUID.fromString("0f8fad5b-d9cb-469f-a165-70867728950e");
+    private static final UUID SESSION = UUID.fromString("62420a97-276b-4afd-a226-558f247802ac");
     private static final UUID ALEX = UUID.fromString("11111111-1111-4111-8111-111111111111");
     private static final UUID STEVE = UUID.fromString("22222222-2222-4222-8222-222222222222");
     private static final TeamTracking.Member LEADER = new TeamTracking.Member(ALEX, "Alex");
@@ -54,20 +54,12 @@ class TeamTrackingTest {
     }
 
     @Test
-    void theLeaderIsTheCommandSenderOtherwiseTheFirstPlayerOnline() {
-        List<TeamTracking.Member> online = Arrays.asList(FRIEND, LEADER);
-        assertSame(LEADER, TeamTracking.chooseLeader(LEADER, online));
-        assertSame(FRIEND, TeamTracking.chooseLeader(null, online));
-        assertNull(TeamTracking.chooseLeader(null, Collections.<TeamTracking.Member>emptyList()));
-    }
-
-    @Test
     void reportCarriesTeamIdLeaderAndPlayers() throws Exception {
         TeamClient client = new TeamClient(null, new URL("http://127.0.0.1:1"), new SecureRandom());
         JsonObject report = new JsonParser()
             .parse(
                 client.encode(
-                    new TeamTracking.Snapshot(TEAM, LEADER, "lv", false, Arrays.asList(LEADER, FRIEND)),
+                    new TeamTracking.Snapshot(TEAM, LEADER, "lv", false, Arrays.asList(LEADER, FRIEND), SESSION, 2),
                     () -> false))
             .getAsJsonObject();
         JsonObject expected = new JsonParser()
@@ -79,9 +71,34 @@ class TeamTrackingTest {
                     + ALEX
                     + "\",\"name\":\"Alex\"},{\"id\":\""
                     + STEVE
-                    + "\",\"name\":\"Steve_2\"}],\"jarProof\":null}")
+                    + "\",\"name\":\"Steve_2\"}],\"jarProof\":null,\"sessionId\":\""
+                    + SESSION
+                    + "\",\"onlinePlayers\":2}")
             .getAsJsonObject();
         assertEquals(expected, report);
+    }
+
+    @Test
+    void teamReportCarriesTheCurrentRunAndTotalOnlinePlayersForStatistics() throws Exception {
+        TeamClient client = new TeamClient(null, new URL("http://127.0.0.1:1"), new SecureRandom());
+        TeamTracking.Snapshot snapshot = new TeamTracking.Snapshot(
+            TEAM,
+            LEADER,
+            "lv",
+            false,
+            Arrays.asList(LEADER, FRIEND),
+            SESSION,
+            4);
+        JsonObject report = new JsonParser().parse(client.encode(snapshot, () -> false))
+            .getAsJsonObject();
+        assertEquals(
+            SESSION.toString(),
+            report.get("sessionId")
+                .getAsString());
+        assertEquals(
+            4,
+            report.get("onlinePlayers")
+                .getAsInt());
     }
 
     @Test
@@ -89,7 +106,9 @@ class TeamTrackingTest {
         TeamClient client = new TeamClient(null, new URL("http://127.0.0.1:1"), new SecureRandom());
         JsonObject report = new JsonParser()
             .parse(
-                client.encode(new TeamTracking.Snapshot(TEAM, LEADER, "lv", true, Arrays.asList(LEADER)), () -> false))
+                client.encode(
+                    new TeamTracking.Snapshot(TEAM, LEADER, "lv", true, Arrays.asList(LEADER), SESSION, 1),
+                    () -> false))
             .getAsJsonObject();
         assertTrue(
             report.get("singleplayer")
@@ -100,34 +119,11 @@ class TeamTrackingTest {
     void joiningPlayersAreToldAboutTeamTrackingAndWhereToReadMore() throws Exception {
         String notice = LangFile.render(TeamTracking.joinNotice());
         assertTrue(notice.contains("team tracking"));
-        assertTrue(notice.contains("Minecraft names"));
+        assertTrue(notice.contains("Minecraft name"));
         assertTrue(notice.contains("https://extranerf.kuba6000.pl/team-tracking"));
-    }
-
-    @Test
-    void theOptOutNoticeGivesTheTeamIdAndWhereToSendIt() throws Exception {
-        String notice = LangFile.render(TeamTracking.removalNotice(TEAM.toString()));
-        assertTrue(notice.contains(TEAM.toString()));
-        assertTrue(notice.contains("extranerf@kuba6000.pl"));
-    }
-
-    @Test
-    void theStatusNamesTheSavedTeamOrTheLackOfOne() throws Exception {
-        String originalId = Config.teamId;
-        String originalLeader = Config.teamLeaderName;
-        boolean originalEnabled = Config.teamTrackingEnabled;
-        try {
-            Config.teamTrackingEnabled = false;
-            Config.teamId = "";
-            assertEquals("Team tracking: off (no team yet)", LangFile.render(TeamTracking.status()));
-            Config.teamId = TEAM.toString();
-            Config.teamLeaderName = "Kuba";
-            assertEquals("Team tracking: off (Kuba's team, ID " + TEAM + ")", LangFile.render(TeamTracking.status()));
-        } finally {
-            Config.teamId = originalId;
-            Config.teamLeaderName = originalLeader;
-            Config.teamTrackingEnabled = originalEnabled;
-        }
+        String objection = LangFile.render(TeamTracking.objectionNotice());
+        assertTrue(objection.contains("right to object"));
+        assertTrue(objection.contains("https://extranerf.kuba6000.pl/team-tracking#removal"));
     }
 
     @Test
@@ -144,7 +140,7 @@ class TeamTrackingTest {
     void anInvalidTierIsRefused() {
         assertThrows(
             IllegalArgumentException.class,
-            () -> new TeamTracking.Snapshot(TEAM, LEADER, "LV!", false, new ArrayList<>()));
+            () -> new TeamTracking.Snapshot(TEAM, LEADER, "LV!", false, new ArrayList<>(), SESSION, 0));
     }
 
     @Test
@@ -152,7 +148,9 @@ class TeamTrackingTest {
         TeamClient client = new TeamClient(null, new URL("http://127.0.0.1:1"), new SecureRandom());
         JsonObject report = new JsonParser()
             .parse(
-                client.encode(new TeamTracking.Snapshot(TEAM, LEADER, "stone", false, new ArrayList<>()), () -> false))
+                client.encode(
+                    new TeamTracking.Snapshot(TEAM, LEADER, "stone", false, new ArrayList<>(), SESSION, 0),
+                    () -> false))
             .getAsJsonObject();
         assertEquals(
             0,
@@ -172,11 +170,15 @@ class TeamTrackingTest {
                 LEADER,
                 "lv",
                 false,
-                Arrays.asList(LEADER, new TeamTracking.Member(ALEX, "AlexAgain"))));
+                Arrays.asList(LEADER, new TeamTracking.Member(ALEX, "AlexAgain")),
+                SESSION,
+                2));
         List<TeamTracking.Member> crowd = new ArrayList<>();
         for (int i = 0; i <= TeamTracking.Snapshot.MAXIMUM_PLAYERS; i++)
             crowd.add(new TeamTracking.Member(UUID.randomUUID(), "P" + i));
-        assertThrows(IllegalArgumentException.class, () -> new TeamTracking.Snapshot(TEAM, LEADER, "lv", false, crowd));
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> new TeamTracking.Snapshot(TEAM, LEADER, "lv", false, crowd, SESSION, crowd.size()));
     }
 
     @Test
@@ -195,7 +197,7 @@ class TeamTrackingTest {
             java.util.function.Supplier<TeamTracking.Snapshot> snapshot = () -> {
                 assertSame(serverThread, Thread.currentThread());
                 captures.incrementAndGet();
-                return new TeamTracking.Snapshot(TEAM, LEADER, "lv", false, Arrays.asList(LEADER));
+                return new TeamTracking.Snapshot(TEAM, LEADER, "lv", false, Arrays.asList(LEADER), SESSION, 1);
             };
             assertFalse(tracking.request(99, snapshot));
             assertTrue(tracking.request(100, snapshot));

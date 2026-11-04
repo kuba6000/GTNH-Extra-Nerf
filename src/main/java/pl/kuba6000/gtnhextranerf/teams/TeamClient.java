@@ -31,6 +31,8 @@ public final class TeamClient {
         payload.add("leader", member(snapshot.leader));
         payload.addProperty("highestTier", snapshot.highestTier);
         payload.addProperty("singleplayer", snapshot.singleplayer);
+        payload.addProperty("sessionId", snapshot.sessionId.toString());
+        payload.addProperty("onlinePlayers", snapshot.onlinePlayers);
         JsonArray players = new JsonArray();
         for (TeamTracking.Member player : snapshot.players) players.add(member(player));
         payload.add("players", players);

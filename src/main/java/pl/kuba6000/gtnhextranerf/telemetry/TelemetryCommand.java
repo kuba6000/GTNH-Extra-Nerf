@@ -1,5 +1,6 @@
 package pl.kuba6000.gtnhextranerf.telemetry;
 
+import java.io.UncheckedIOException;
 import java.util.List;
 
 import net.minecraft.command.CommandBase;
@@ -10,6 +11,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
 
 import pl.kuba6000.gtnhextranerf.Config;
+import pl.kuba6000.gtnhextranerf.GTNHExtraNerf;
+import pl.kuba6000.gtnhextranerf.teams.TeamTracking;
 
 /** Owner-only diagnostic and opt-out command; no synchronous network operation. */
 // Declare the interface explicitly: RFG must remap its inherited abstract methods in runtime JARs.
@@ -45,6 +48,21 @@ public final class TelemetryCommand extends CommandBase implements ICommand {
 
     @Override
     public void processCommand(ICommandSender sender, String[] arguments) {
+        if (!Config.worldAvailable()) {
+            sender.addChatMessage(new ChatComponentTranslation("gtnhextranerf.telemetry.save_failed"));
+            return;
+        }
+        try {
+            processAction(sender, arguments);
+        } catch (UncheckedIOException failure) {
+            ServerTelemetry.stop();
+            TeamTracking.stop();
+            GTNHExtraNerf.LOG.error("Could not save the reporting choice; reporting is stopped", failure);
+            sender.addChatMessage(new ChatComponentTranslation("gtnhextranerf.telemetry.save_failed"));
+        }
+    }
+
+    private void processAction(ICommandSender sender, String[] arguments) {
         String action = arguments.length == 0 ? "status" : arguments[0];
         if ("status".equals(action)) {
             sender.addChatMessage(ServerTelemetry.status());
@@ -54,6 +72,7 @@ public final class TelemetryCommand extends CommandBase implements ICommand {
             sender.addChatMessage(new ChatComponentTranslation("gtnhextranerf.telemetry.off"));
         } else if ("on".equals(action)) {
             Config.setTelemetryEnabled(true);
+            TeamTracking.stop();
             ServerTelemetry.start(MinecraftServer.getServer());
             sender.addChatMessage(ServerTelemetry.status());
         } else {

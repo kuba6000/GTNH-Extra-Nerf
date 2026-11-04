@@ -207,6 +207,16 @@ public final class NativeScenarios {
         scenario(helper, "telemetry", false, () -> TelemetryIntegrationTests.verify(MinecraftServer.getServer()));
     }
 
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void teamNotice(GameTestHelper helper) {
+        scenario(helper, "teamNotice", false, () -> TeamNoticeIntegrationTests.verify(MinecraftServer.getServer()));
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void teamLeader(GameTestHelper helper) {
+        scenario(helper, "teamLeader", false, () -> TeamLeaderIntegrationTests.verify(MinecraftServer.getServer()));
+    }
+
     static void scenario(GameTestHelper helper, String name, boolean powered, Fixture fixture) {
         ClientTestRuntime.setMobsEnabled(true);
         helper.afterTest(() -> ClientTestRuntime.setMobsEnabled(false));

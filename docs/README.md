@@ -29,7 +29,7 @@ Agent-oriented implementation documentation lives separately in
 - [Certification exams](CERTIFICATION_EXAM.md): exam banks, configuration and the exam flow.
 - [Components](COMPONENTS.md): fictional component tiers and the registry.
 - [AE2 progression](AE2_PROGRESSION.md): Applied Energistics 2 changes tied to progression.
-- [Telemetry](TELEMETRY.md), [team tracking](TEAM_TRACKING.md) and [update check](UPDATE_CHECK.md): what the mod sends, how to opt out and how to test it.
+- [Telemetry](TELEMETRY.md), [team tracking](TEAM_TRACKING.md) and [update check](UPDATE_CHECK.md): what the mod sends, reporting choices and how to test them.
 - [Mixin review](MIXIN_REVIEW.md), [mixin refactor plan](MIXIN_REFACTOR_PLAN.md) and [audit refactor plan](AUDIT_REFACTOR_PLAN.md): design history.
 - [Brainrot materials and multiblock](BRAINROT_MATERIALS.md): material identities, prototype Brainrotter, registration and compatibility.
 - [Next progression nerfs: preliminary research](NEXT_NERFS_RESEARCH.md): historical source findings, implementation status and deferred decisions.

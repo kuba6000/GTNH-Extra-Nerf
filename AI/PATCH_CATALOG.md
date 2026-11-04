@@ -1223,13 +1223,12 @@ telemetry, changes on restart, and does not rotate at midnight. Development mode
 remains disabled. Packaged builds do not require a release manifest or readable JAR.
 
 `ServerTelemetry` owns lifecycle/ticks and one daemon worker. `TelemetryClient`
-handles JSON, optional SHA256(salt || SHA256(JAR)) proof and bounded HTTP. The JAR
-is attempted once in the worker; failure yields null proof. The report has no version
-header, client timestamp or request UUID, and the client refuses plain HTTP outside loopback. Only these two classes plus the existing
-administrative `TelemetryCommand` are needed. Commands implement `ICommand` for
-production remapping. Telemetry is opt-in per world: `TelemetryConsent` (world data) holds whether the world was asked and the answer, `Config` mirrors it for the running world, and nothing starts until the world was asked. `ConsentPrompt` opens `ConsentGui` (MUI2, answered through `ConsentSyncHandler`) for operators and the singleplayer owner and logs the question on dedicated consoles.
+handles outgoing reports and optional build information. An unreadable JAR does not
+prevent reporting, and the client refuses plain HTTP outside loopback.
+Commands implement `ICommand` for
+production remapping. Reporting is opt-in per world: `TelemetryConsent` holds the immediately persisted answer, `Config` mirrors it for the running world, and basic and team reporting are mutually exclusive. Team reports also contribute to community statistics. A readable `gtnhextranerf-team-id.txt` is kept in the world folder for deletion requests; command responses do not expose that ID. `ConsentPrompt` opens `ConsentGui` (MUI2, answered through `ConsentSyncHandler`) for operators and the singleplayer owner and logs the question on dedicated consoles.
 
-See `docs/TELEMETRY.md` for the JSON contract, the join notice, the early-certificate shutdown and
+See `docs/TELEMETRY.md` for the data sent, the join notice, the early-certificate shutdown and
 opt-out, `docs/TEAM_TRACKING.md` for the separate opt-in team report and `docs/UPDATE_CHECK.md` for the
 version check.
 

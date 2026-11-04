@@ -107,7 +107,8 @@ fence structures and generated energy through the public post-tick API.
 
 ## Telemetry, team tracking and update check
 
-All paths start at `src/main/java/pl/kuba6000/gtnhextranerf/`. These features are independent.
+All paths start at `src/main/java/pl/kuba6000/gtnhextranerf/`. The reporting modes are mutually
+exclusive; the update check is independent.
 The mod only sends reports and reads one version file. See `docs/TELEMETRY.md`, `docs/TEAM_TRACKING.md` and
 `docs/UPDATE_CHECK.md`.
 
@@ -115,11 +116,11 @@ The mod only sends reports and reads one version file. See `docs/TELEMETRY.md`, 
 | --- | --- |
 | `net/SecureEndpoint.java` | Outbound traffic is HTTPS only; plain HTTP is accepted solely for a loopback test endpoint. |
 | `telemetry/ServerTelemetry.java` | One logical-server session: captures the snapshot on the server thread, schedules reports, join notice. |
-| `telemetry/TelemetryClient.java` | JSON transport with the optional salted JAR proof; owned by the telemetry worker. |
+| `telemetry/TelemetryClient.java` | Outgoing telemetry transport and optional build information; owned by the telemetry worker. |
 | `telemetry/TelemetryCommand.java` | `/extranerftelemetry on\|off\|status` for the owner. |
-| `telemetry/TelemetryConsent.java` | Per-world record: asked, telemetry answer, team tracking settings; takes over the old configuration once. |
+| `telemetry/TelemetryConsent.java` | Per-world record, immediately persisted atomically; preserves unreadable records, migrates old configuration and keeps a readable team-ID file. |
 | `telemetry/ConsentPrompt.java`, `ConsentGui.java`, `ConsentSyncHandler.java` | The question: operator window (MUI2), console notice, server-side check and application of the answer. |
-| `teams/TeamTracking.java` | Opt-in team report every 15 minutes, leader selection and player list. |
+| `teams/TeamTracking.java` | Opt-in team report every 15 minutes, explicit leader, player list and player notices. |
 | `teams/TeamClient.java` | Encodes and posts one team report. |
 | `teams/TeamCommand.java` | `/extranerfteam on\|off\|status`. |
 | `progression/TelemetryEligibility.java` | Turns reporting off for worlds that earn a certificate above Steam too early. |
@@ -127,7 +128,7 @@ The mod only sends reports and reads one version file. See `docs/TELEMETRY.md`, 
 | `update/ReleaseVersion.java` | Compares dotted release tags; development builds and prereleases never compare. |
 
 Tests: `src/test/java/.../telemetry/` (client packet vector, HTTP headers and redirects, artifact proof,
-lifecycle, command), `.../teams/TeamTrackingTest.java`, `.../update/` and `.../progression/TelemetryEligibilityTest.java`.
+lifecycle, command), `.../teams/TeamTrackingTest.java`, `.../teams/TeamCommandTest.java`, `.../update/` and `.../progression/TelemetryEligibilityTest.java`.
 The opt-in `TelemetryIntegrationTests` run on the full pack.
 
 ## Load-complete recipe layer
@@ -254,7 +255,7 @@ All paths below start at
 | `.github/workflows/release-tags.yml` | Verifies and publishes only the tagged runtime JAR and its final release descriptor. |
 | `.github/scripts/run_full_pack_server.py` | Starts, waits for, stops and validates a full GTNH server. |
 | `.github/scripts/test_run_full_pack_server.py` | Unit tests the server harness with fake Gradle processes. |
-| `.github/scripts/telemetry_release_metadata.py` | Validates the final JAR and writes `release.json` (version, SHA-256, file name) and the release-notes disclosure. |
+| `.github/scripts/telemetry_release_metadata.py` | Validates the final JAR and writes release metadata and the release-notes disclosure. |
 | `.github/scripts/test_telemetry_release_metadata.py` | Unit tests the release descriptor CLI. |
 
 ## Included GTNHGradle fork

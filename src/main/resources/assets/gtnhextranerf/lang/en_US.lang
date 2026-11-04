@@ -212,7 +212,8 @@ gtnhextranerf.progression.use=Right-click to certify this world. Consumed on fir
 gtnhextranerf.progression.global=Certification is shared by all players and dimensions.
 gtnhextranerf.progression.certified=%s activated. Certification unlocked for the entire world.
 gtnhextranerf.progression.already_certified=This world is already certified. %s was not consumed.
-gtnhextranerf.telemetry.off=Extra Nerf telemetry disabled. The choice is saved in the server configuration.
+gtnhextranerf.telemetry.off=Basic statistics are off for this world and your choice is saved
+gtnhextranerf.telemetry.save_failed=Couldn't load or save your choice, so reporting is stopped for this session - check world storage and try again
 gtnhextranerf.structure_error.stinky_coils=These coil blocks are too stinky! Use better ones.
 gtnhextranerf.structure_error.unfluix_world=I don't like this world. I'd prefer somewhere more fluixy!
 gtnhextranerf.recipe.coolant_tower=Coolant Tower
@@ -329,19 +330,38 @@ gtnhextranerf.exam.steam.q10.c=Use wider pipes to persuade the boiler to produce
 gtnhextranerf.exam.steam.q10.d=Ignore the problem, maybe it'll fix itself
 
 # Chat messages and commands of telemetry, team tracking and the update check
-gtnhextranerf.telemetry.notice=Extra Nerf telemetry is on: this server reports how many players are online and its progression tier for community statistics, never names or UUIDs. Turn it off with /extranerftelemetry off. Privacy policy: %s
+gtnhextranerf.telemetry.notice=Basic statistics are on, contributing anonymous stats without player names or UUIDs - turn them off with /extranerftelemetry off - privacy policy: %s
 gtnhextranerf.telemetry.usage=/extranerftelemetry <status|off|on>
-gtnhextranerf.telemetry.status.inactive=enabled=%s; inactive: %s
-gtnhextranerf.telemetry.status.active=active; last=%s; sending=%s; next=%ss
-gtnhextranerf.team.notice=This server has Extra Nerf team tracking enabled: its team, progression tier and the Minecraft names of its players are shown publicly on %s. Details: %s
-gtnhextranerf.team.removed=Team tracking is off. Data already sent stays on the server until it expires after one year. To have it deleted now, email %s with this team ID: %s
-gtnhextranerf.team.usage=/extranerfteam <status|on|off>
-gtnhextranerf.team.needs_player=Team tracking needs a player to name the team after. Join the server and run it again
-gtnhextranerf.team.saved.none=no team yet
-gtnhextranerf.team.saved.team=%s, ID %s
-gtnhextranerf.team.status.off=Team tracking: off (%s)
-gtnhextranerf.team.status.inactive=Team tracking: on but inactive: %s (%s)
-gtnhextranerf.team.status.active=Team tracking: on (%s); last=%s; sending=%s; next=%ss
+gtnhextranerf.telemetry.status.unanswered=No reporting option chosen for this world yet
+gtnhextranerf.telemetry.status.off=Basic statistics are off for this world
+gtnhextranerf.telemetry.status.team=Basic statistics are off while team tracking is on
+gtnhextranerf.telemetry.status.inactive=Basic statistics are enabled but not sending reports - check the server log
+gtnhextranerf.telemetry.status.waiting=Basic statistics are on, waiting for the first report
+gtnhextranerf.telemetry.status.sending=Basic statistics are on, sending a report
+gtnhextranerf.telemetry.status.sent=Basic statistics are on, last report sent %s
+gtnhextranerf.telemetry.status.failed=Basic statistics are on, but the last report failed - retrying later
+gtnhextranerf.telemetry.age.now=just now
+gtnhextranerf.telemetry.age.second=1 second ago
+gtnhextranerf.telemetry.age.seconds=%s seconds ago
+gtnhextranerf.telemetry.age.minute=1 minute ago
+gtnhextranerf.telemetry.age.minutes=%s minutes ago
+gtnhextranerf.telemetry.age.hour=1 hour ago
+gtnhextranerf.telemetry.age.hours=%s hours ago
+gtnhextranerf.telemetry.age.day=1 day ago
+gtnhextranerf.telemetry.age.days=%s days ago
+gtnhextranerf.team.notice=Extra Nerf team tracking is on - your Minecraft name and team progress may be public - policy: %s
+gtnhextranerf.team.objection=You have the right to object to this processing - details and contact: %s
+gtnhextranerf.team.removed=Team tracking is off - to remove previously sent data, email %s with the team ID from %s in your world folder
+gtnhextranerf.team.usage=/extranerfteam <status|on|off> [player]
+gtnhextranerf.team.leader_required=From the console, use /extranerfteam on <player> to choose an online leader
+gtnhextranerf.team.player_not_online=Player %s is not online - choose an online player
+gtnhextranerf.team.needs_player=Team tracking needs a player to name the team after - join the server and try again
+gtnhextranerf.team.status.off=Team tracking is off for this world
+gtnhextranerf.team.status.inactive=Team tracking is enabled but not sending reports - check the server log
+gtnhextranerf.team.status.waiting=Team tracking is on for %s, waiting for the first report
+gtnhextranerf.team.status.sending=Team tracking is on for %s, sending a report
+gtnhextranerf.team.status.sent=Team tracking is on for %s, last report sent %s
+gtnhextranerf.team.status.failed=Team tracking is on for %s, but the last report failed - retrying later
 gtnhextranerf.update.available=A newer GTNH Extra Nerf release is available: %s (installed: %s). Download: %s
 
 # Startup error screen
@@ -357,11 +377,11 @@ gtnhextranerf.task.crafting_or_retrieval=Crafting or Retrieval
 
 # Telemetry consent window
 gtnhextranerf.consent.title=Extra Nerf statistics
-gtnhextranerf.consent.minimal=Minimal statistics are a random ID for this server run, the number of players online, the highest progression tier and whether this is singleplayer. They never include player names, UUIDs, chat or coordinates. They are used only to show community statistics on the Extra Nerf website.
-gtnhextranerf.consent.team=Full team tracking also lists your team publicly on the website, with its progression tier and the Minecraft names of its players.
-gtnhextranerf.consent.scope=Nothing is sent until you choose. The choice applies to this whole world and can be changed later with /extranerftelemetry and /extranerfteam.
+gtnhextranerf.consent.minimal=Basic statistics contribute to anonymous, aggregated stats on our website. Reports include a random server-run ID, player count, progression tier, world type and optional build proof, but no player names or UUIDs.
+gtnhextranerf.consent.team=Team tracking lets your team appear publicly on our website. Reports include a team ID, the leader's and online players' names and UUIDs, plus the basic statistics.
+gtnhextranerf.consent.scope=Choose one mode or disable reporting. The choice applies to this world and can be changed with /extranerftelemetry and /extranerfteam.
 gtnhextranerf.consent.link.privacy=Privacy & Telemetry Policy
 gtnhextranerf.consent.link.team=Team tracking policy
-gtnhextranerf.consent.decline=Disable telemetry
-gtnhextranerf.consent.send_minimal=Send minimal statistics
-gtnhextranerf.consent.send_team=Enable full team tracking
+gtnhextranerf.consent.decline=Disable reporting
+gtnhextranerf.consent.send_minimal=Send basic statistics
+gtnhextranerf.consent.send_team=Enable team tracking

@@ -1,8 +1,11 @@
 package pl.kuba6000.gtnhextranerf;
 
 import java.io.File;
+import java.io.UncheckedIOException;
 
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.MapStorage;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.Configuration;
 
@@ -68,17 +71,33 @@ public class Config {
     public static void loadWorld() {
         WorldServer overworld = DimensionManager.getWorld(0);
         if (overworld == null) throw new IllegalStateException("The consent overworld is unavailable");
-        TelemetryConsent data = TelemetryConsent.load(
-            overworld,
+        loadWorld(
+            overworld.getSaveHandler(),
+            overworld.mapStorage,
             new TelemetryConsent.Legacy(
                 legacyTelemetryOptedOut,
                 legacyTeamEnabled,
                 legacyTeamId,
                 legacyTeamLeaderId,
                 legacyTeamLeaderName));
-        if (data.carriedTeam()) clearLegacyTeam();
-        consent = data;
-        apply();
+    }
+
+    public static void loadWorld(ISaveHandler saveHandler, MapStorage storage, TelemetryConsent.Legacy legacy) {
+        try {
+            TelemetryConsent data = TelemetryConsent.load(saveHandler, storage, legacy);
+            if (data.carriedTeam() || (!legacyTeamId.isEmpty() && legacyTeamId.equals(data.teamId())))
+                clearLegacyTeam();
+            consent = data;
+            apply();
+        } catch (UncheckedIOException failure) {
+            unloadWorld();
+            GTNHExtraNerf.LOG
+                .error("Could not load or save the world's reporting choice; reporting is disabled", failure);
+        }
+    }
+
+    public static boolean worldAvailable() {
+        return consent != null;
     }
 
     /** Called when the server stops, so that the next world starts from nothing. */
@@ -108,25 +127,41 @@ public class Config {
 
     /** Owner command or answer, called on the server thread. Whichever way it goes, the world has been asked. */
     public static void setTelemetryEnabled(boolean enabled) {
-        world().answerTelemetry(enabled);
-        apply();
+        TelemetryConsent data = world();
+        try {
+            data.answerTelemetry(enabled);
+        } finally {
+            apply();
+        }
     }
 
     /** Opt-in command, called on the server thread. The team ID is created once and then kept forever. */
     public static void enableTeamTracking(String newTeamId, String leaderId, String leaderName) {
-        world().enableTeam(newTeamId, leaderId, leaderName);
-        apply();
+        TelemetryConsent data = world();
+        try {
+            data.enableTeam(newTeamId, leaderId, leaderName);
+        } finally {
+            apply();
+        }
     }
 
     public static void disableTeamTracking() {
-        world().disableTeam();
-        apply();
+        TelemetryConsent data = world();
+        try {
+            data.disableTeam();
+        } finally {
+            apply();
+        }
     }
 
     /** Keeps the team name current when the leader changes their Minecraft name. */
     public static void updateTeamLeaderName(String leaderName) {
-        world().renameLeader(leaderName);
-        apply();
+        TelemetryConsent data = world();
+        try {
+            data.renameLeader(leaderName);
+        } finally {
+            apply();
+        }
     }
 
     /** The team has moved into a world; another world must not list itself under the same ID. */

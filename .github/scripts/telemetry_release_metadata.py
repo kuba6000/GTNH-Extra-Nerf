@@ -11,17 +11,20 @@ NOTICE_MARKER = "<!-- extra-nerf-telemetry -->"
 NOTICE = """<!-- extra-nerf-telemetry -->
 ### Telemetry
 
-Extra Nerf telemetry is opt-in and nothing is sent until a world has been asked. The first time
-a world is played, an operator (or the owner of a singleplayer world) chooses in a window
-whether to send nothing, minimal statistics or full team tracking; a dedicated server's
-console is told how to answer with `extranerftelemetry on` or `off`. The choice is saved in
-the world and can be changed at any time with `/extranerftelemetry on|off`.
+Extra Nerf telemetry is opt-in. An undecided world sends no statistics or team reports until an
+operator (or the owner of a singleplayer world) chooses in a window whether to send nothing,
+basic statistics or team tracking; an existing team opt-in or telemetry refusal is carried over.
+A dedicated server's console is told how to answer with `extranerftelemetry on` or `off`. The choice is saved in
+the world and can be changed at any time with `/extranerftelemetry on|off` or
+`/extranerfteam on|off`. Basic statistics and team tracking are mutually exclusive.
 
-Minimal statistics are a random ID valid for one server run, the online player count, the
+Basic statistics include a random ID valid for one server run, the online player count, the
 highest available world progression tier, singleplayer status and an optional randomized JAR
 proof, about once per hour. No player names, player UUIDs or world coordinates are included.
-Reports go to `extranerf.kuba6000.pl`, and are used only for community statistics about
-active servers, online players, and world progression.
+Reports go to `extranerf.kuba6000.pl`, and contribute to community statistics about
+active servers, online players and world progression, and help us understand mod usage.
+Team reports also provide those statistics and include a persistent team ID plus the leader's
+and online players' Minecraft names and UUIDs. Eligible teams may be listed publicly.
 Read our [Privacy & Telemetry Policy](https://extranerf.kuba6000.pl/privacy).
 
 Development environments do not send production reports. See the repository's `docs/TELEMETRY.md`.

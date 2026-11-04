@@ -1,14 +1,13 @@
 package pl.kuba6000.gtnhextranerf.telemetry;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentTranslation;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -20,8 +19,8 @@ import pl.kuba6000.gtnhextranerf.teams.TeamTracking;
 
 /**
  * Asks a world that has not answered yet whether it may send statistics: operators (and the owner of a singleplayer
- * world) are shown a window shortly after they join, and a dedicated server's console is told how to answer. Nothing
- * is sent, and nothing waits, until someone answers.
+ * world) are shown a window shortly after they join, and a dedicated server's console is told how to answer. No
+ * statistics or team reports are sent, and nothing waits, until someone answers.
  */
 public final class ConsentPrompt {
 
@@ -44,7 +43,6 @@ public final class ConsentPrompt {
 
     private final MinecraftServer server;
     private final Map<UUID, Integer> pending = new LinkedHashMap<>();
-    private final Set<UUID> shown = new HashSet<>();
     private int consoleTicks;
 
     private ConsentPrompt(MinecraftServer server) {
@@ -54,7 +52,8 @@ public final class ConsentPrompt {
     /** Starts watching a world that has just been loaded; does nothing when it has already been asked. */
     public static void start(MinecraftServer server, boolean development) {
         stop();
-        if (Config.telemetryAsked || (development && !Boolean.getBoolean(PREVIEW_PROPERTY))) return;
+        if (!Config.worldAvailable() || Config.telemetryAsked || (development && !Boolean.getBoolean(PREVIEW_PROPERTY)))
+            return;
         ConsentPrompt prompt = new ConsentPrompt(server);
         active = prompt;
         FMLCommonHandler.instance()
@@ -80,7 +79,7 @@ public final class ConsentPrompt {
         if (active != this || Config.telemetryAsked || !(event.player instanceof EntityPlayerMP)) return;
         EntityPlayerMP player = (EntityPlayerMP) event.player;
         UUID id = player.getUniqueID();
-        if (!shown.contains(id) && mayAnswer(player)) pending.put(id, OPEN_DELAY_TICKS);
+        if (mayAnswer(player)) pending.put(id, OPEN_DELAY_TICKS);
     }
 
     @SubscribeEvent
@@ -102,7 +101,6 @@ public final class ConsentPrompt {
             EntityPlayerMP player = online(entry.getKey());
             // A player who is busy with another window is not interrupted; they are asked after the next login.
             if (player == null || player.openContainer != player.inventoryContainer) continue;
-            shown.add(entry.getKey());
             ConsentGui.factory()
                 .open(player);
         }
@@ -124,37 +122,44 @@ public final class ConsentPrompt {
     /** Applies the choice made in the window. Runs on the server thread; a late or unauthorized click does nothing. */
     public static void answer(MinecraftServer server, EntityPlayerMP player, int choice) {
         if (Config.telemetryAsked || choice < DECLINE || choice > TEAM || !mayAnswer(player)) return;
-        Config.setTelemetryEnabled(choice != DECLINE);
-        ServerTelemetry.start(server);
-        player.addChatMessage(ServerTelemetry.status());
         if (choice == TEAM) {
-            if (TeamTracking.enable(server, player)) player.addChatMessage(TeamTracking.status());
+            if (!TeamTracking.enable(server, player)) {
+                player.addChatMessage(new ChatComponentTranslation("gtnhextranerf.team.needs_player"));
+                return;
+            }
+            player.addChatMessage(TeamTracking.status());
+        } else {
+            Config.setTelemetryEnabled(choice == MINIMAL);
+            TeamTracking.stop();
+            ServerTelemetry.start(server);
+            player.addChatMessage(ServerTelemetry.status());
         }
         GTNHExtraNerf.LOG.info(
             "{} answered the telemetry question: {}",
             player.getCommandSenderName(),
-            choice == DECLINE ? "disable telemetry" : choice == MINIMAL ? "minimal statistics" : "full team tracking");
+            choice == DECLINE ? "disable reporting" : choice == MINIMAL ? "basic statistics" : "team tracking");
         stop();
     }
 
     private static void logQuestion() {
-        GTNHExtraNerf.LOG.info("GTNH Extra Nerf asks whether this world may send anonymous statistics.");
+        GTNHExtraNerf.LOG.info("GTNH Extra Nerf asks how this world may contribute to the Extra Nerf website.");
         GTNHExtraNerf.LOG.info(
-            "Minimal statistics are a random ID for this server run, the number of players online, the highest progression tier and whether this is singleplayer. "
-                + "They never include player names, UUIDs, chat or coordinates, and are used only to show community statistics on the Extra Nerf website. Privacy policy: "
+            "Basic statistics contribute to anonymous, aggregated statistics on the Extra Nerf website. Reports include a random ID for this server run, the number of players online, the highest progression tier, whether this is singleplayer and an optional randomized build proof. "
+                + "They never include player names, UUIDs, chat or coordinates. Privacy policy: "
                 + ServerTelemetry.PRIVACY_URL);
-        GTNHExtraNerf.LOG
-            .info("Nothing is sent until you answer. Type one of these here, or run it as an operator in game:");
-        GTNHExtraNerf.LOG.info("  extranerftelemetry on    send minimal statistics");
+        GTNHExtraNerf.LOG.info(
+            "No statistics or team reports are sent until you answer. Type one of these here, or run it as an operator in game:");
+        GTNHExtraNerf.LOG.info("  extranerftelemetry on    send basic statistics");
         GTNHExtraNerf.LOG.info("  extranerftelemetry off   disable telemetry");
         GTNHExtraNerf.LOG.info(
-            "An operator who joins is also shown a window with the same choices and full team tracking, "
-                + "which lists the team and its players publicly.");
+            "An operator who joins can instead select team tracking, which lets the team appear publicly on the website. "
+                + "It sends a team ID, the leader's and online players' names and UUIDs, plus basic statistics. "
+                + "Team and basic reports are mutually exclusive.");
     }
 
     private static void logReminder() {
         GTNHExtraNerf.LOG.info(
-            "No answer about telemetry yet. The server carries on and sends nothing; you will be asked again at the next start. "
+            "No answer about telemetry yet. The server carries on without statistics or team reports; you will be asked again at the next start. "
                 + "Answer any time with extranerftelemetry on or extranerftelemetry off.");
     }
 }
