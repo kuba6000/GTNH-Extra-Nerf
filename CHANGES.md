@@ -100,6 +100,11 @@ catalog, including exact values, conditions and unchanged fields, is
 
 ## Power and machines
 
+- Standard GT singleblock recipes, including Steam machines, lose their
+  current batch if they cannot draw enough energy. Existing output and queued
+  input stay; machines can start a new batch automatically. A missing machine
+  certificate still pauses an in-flight batch without destroying it.
+
 - All Void Miner tiers accept Neon, Krypton, Xenon and Oganesson with tiered
   consumption costs. MK1 favors Neon, MK2 Krypton and MK3 Xenon/Oganesson.
   Native boosts stay; insufficient gas is retained and the miner runs unboosted.

@@ -278,6 +278,14 @@ The same mixin redirects every `ItemRadioactiveCellIC` construction:
 
 ## Late machine and power mixins
 
+`MixinSingleblockPowerFailure` observes the shared `MTEBasicMachine` processing
+tick's failed energy drain, then discards its pending outputs and resets the
+batch after GT finishes that tick. It applies to electric and Steam machines
+using this path, while independent processing loops are outside its scope.
+The certificate gate surrounds the machine tick and retains work while locked.
+Both injection sites require exactly one match; this runtime behavior does not
+change or count registered recipes.
+
 `MixinSteamInputHatch` changes the Steam Input Hatch capacity from 64,000 L to
 640,000 L in `GregtechCustomHatches.run1`. The larger buffer reduces power
 failures on steam multiblocks with high per-tick demand.

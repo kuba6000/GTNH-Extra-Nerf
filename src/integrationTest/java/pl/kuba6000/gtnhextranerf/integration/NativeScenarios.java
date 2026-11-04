@@ -61,6 +61,42 @@ public final class NativeScenarios {
     }
 
     @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void singleblockPowerFailure(GameTestHelper helper) {
+        scenario(
+            helper,
+            "singleblockPowerFailure",
+            true,
+            () -> SingleblockPowerFailureIntegrationTests.verifyElectrical(helper.getWorld()));
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void steamPowerFailure(GameTestHelper helper) {
+        scenario(
+            helper,
+            "steamPowerFailure",
+            true,
+            () -> SingleblockPowerFailureIntegrationTests.verifySteam(helper.getWorld()));
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void certifiedPowerFailure(GameTestHelper helper) {
+        scenario(
+            helper,
+            "certifiedPowerFailure",
+            true,
+            () -> SingleblockPowerFailureIntegrationTests.verifyCertification(helper.getWorld()));
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void fluidPowerFailure(GameTestHelper helper) {
+        scenario(
+            helper,
+            "fluidPowerFailure",
+            true,
+            () -> SingleblockPowerFailureIntegrationTests.verifyFluidAndReload(helper.getWorld()));
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
     public static void steamPump(GameTestHelper helper) {
         scenario(helper, "steamPump", false, () -> SteamConsumptionIntegrationTests.verifyPump(helper.getWorld()));
     }

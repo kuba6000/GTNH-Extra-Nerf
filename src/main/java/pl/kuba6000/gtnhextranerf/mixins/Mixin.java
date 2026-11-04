@@ -90,6 +90,11 @@ public enum Mixin implements IMixins {
         .addExcludedMod(GT6)
         .setPhase(LATE)),
 
+    SingleblockPowerFailure(new MixinBuilder().addCommonMixins("MixinSingleblockPowerFailure")
+        .addRequiredMod(GT5U)
+        .addExcludedMod(GT6)
+        .setPhase(LATE)),
+
     HungryAxe(new MixinBuilder().addCommonMixins("MixinHealingAxeHunger")
         .addRequiredMod(TargetedMod.EXTRA_UTILITIES)
         .setPhase(LATE)),

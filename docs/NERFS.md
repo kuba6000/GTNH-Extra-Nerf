@@ -80,6 +80,20 @@ Startup auditing verifies all three registrations, the generation hook, reduced
 capacity and retained output ratings. Native server tests exercise weather,
 mast validity, altitude independence, chance saturation and actual stored EU.
 
+## Singleblock power failures
+
+When a standard GT singleblock cannot draw the EU or steam needed to continue
+a recipe, the current batch is discarded. Its consumed items and fluids are
+lost, and its pending item and fluid outputs are discarded. Queued inputs,
+reusable ingredients and previously completed output remain. The machine stays enabled
+and can start another batch after power returns, subject to GT's normal recipe
+checks. The rule also applies to addon machines using the same GT processing
+tick; special machines with independent processing are outside this rule.
+
+A missing machine certificate instead pauses an active batch, including when
+the machine has no stored energy. After certification is restored, the batch
+resumes if sufficient power is present; an actual failed power draw discards it.
+
 ## Singleblock transformer operation
 
 All GT singleblock voltage transformers and buck converters have closed energy
