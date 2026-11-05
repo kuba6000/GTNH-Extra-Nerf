@@ -50,6 +50,13 @@ catalog, including exact values, conditions and unchanged fields, is
 - An electric Forge Hammer can make one Livingrock Plate from one Livingrock
   and 22 L of Lubricant in 150 seconds at 30 EU/t.
 
+## Metal transmutation
+
+- GT metals in Witching Gadgets' Metallurgic Perfection research turn one
+  nugget into two Tiny Piles of Dust, using four times the original aspects.
+- Steel Transmutation turns one Iron Ingot and 4 Ordo into one Tiny Pile of
+  Steel Dust.
+
 ## Hungry Axe
 
 - Fixed a dedicated-server crash when holding Extra Utilities' Healing Axe.

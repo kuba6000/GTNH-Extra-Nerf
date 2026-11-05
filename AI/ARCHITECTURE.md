@@ -125,6 +125,9 @@ The generator mixins delegate their tier-relative percentage policy to
 the inverse consumption value expected by its upstream `getEfficiency()`
 contract.
 
+Metal transmutation mixins adapt the original registrations before Thaumcraft
+research pages and NEI consume the resulting recipes.
+
 Mixins that own audited behavior open a typed `AuditScope` and record semantic
 recipe/value changes only after their target is confirmed. Missing injector
 targets still fail through Mixin's own required-injection checks.

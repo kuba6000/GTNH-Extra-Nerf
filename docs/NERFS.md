@@ -34,6 +34,16 @@ An electric Forge Hammer converts one Livingrock and 22 L of Lubricant into
 one Livingrock Plate in 150 seconds at 30 EU/t. This provides an LV route to
 the Diluted Mana Pool without requiring a Cutting Machine.
 
+## Metal transmutation
+
+Witching Gadgets' Metallurgic Perfection transmutation recipes generated for
+GregTech materials consume one nugget and four times their original aspect
+cost, producing two Tiny Piles of that material's Dust. For example, one Steel
+Nugget with 8 Metallum and 4 Ordo produces two Tiny Piles of Steel Dust.
+
+GregTech's separate Steel Transmutation consumes one Iron Ingot and 4 Ordo to
+produce one Tiny Pile of Steel Dust. Other transmutation research is unchanged.
+
 ## Assembly Lines in AE2 Spatial worlds
 
 The native Assembly Line and GigaGramFab Advanced Assembly Line form only in

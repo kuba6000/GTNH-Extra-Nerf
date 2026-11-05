@@ -32,6 +32,17 @@ seconds at 30 EU/t. `ADD_LIVINGROCK_PLATE` audits the addition. The electric
 Forge Hammer has a fluid input; the Steam Forge Hammer does not use recipe
 fluid inputs.
 
+## Metal transmutation
+
+`MixinMetalTransmutation` changes each GT-generated Witching Gadgets Metallurgic
+Perfection recipe during registration: its nugget catalyst stays, the output is
+two tiny dusts of the same material, and every aspect amount is multiplied by
+four. `MixinMetalResearchText` updates the research description.
+`MixinIronToSteelTransmutation` changes the GT Steel Transmutation to an Iron
+Ingot, 4 Ordo and one tiny Steel dust output. Both changes happen before the
+research pages and NEI read the registered recipes and are audited by
+`MODIFY_METAL_TRANSMUTATION` and `MODIFY_IRON_TO_STEEL_TRANSMUTATION`.
+
 ## Magicnetized Manasteel Rod
 
 `MagicnetizedRods` registers an arcane recipe using a Manasteel Rod,

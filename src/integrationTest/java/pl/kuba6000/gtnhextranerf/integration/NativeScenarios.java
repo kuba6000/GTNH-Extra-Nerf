@@ -29,6 +29,31 @@ public final class NativeScenarios {
     }
 
     @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void metalTransmutation(GameTestHelper helper) {
+        scenario(
+            helper,
+            "metalTransmutation",
+            false,
+            () -> MetalTransmutationIntegrationTests
+                .verifySteelDuplication(helper.getWorld(), helper.absolute("workbench")));
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void allMetalTransmutations(GameTestHelper helper) {
+        scenario(helper, "allMetalTransmutations", false, MetalTransmutationIntegrationTests::verifyAllGeneratedMetals);
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void ironToSteelTransmutation(GameTestHelper helper) {
+        scenario(
+            helper,
+            "ironToSteelTransmutation",
+            false,
+            () -> MetalTransmutationIntegrationTests
+                .verifyIronToSteel(helper.getWorld(), helper.absolute("workbench")));
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
     public static void magicnetizedRods(GameTestHelper helper) {
         scenario(helper, "magicnetizedRods", false, () -> MagicnetizedRodIntegrationTests.verify(helper.getWorld()));
     }

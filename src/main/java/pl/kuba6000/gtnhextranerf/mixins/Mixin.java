@@ -21,6 +21,19 @@ public enum Mixin implements IMixins {
         .addRequiredMod(TargetedMod.THAUMCRAFT)
         .setPhase(LATE)),
 
+    MetalTransmutation(new MixinBuilder().addCommonMixins("MixinMetalTransmutation", "MixinMetalResearchText")
+        .addRequiredMod(GT5U)
+        .addRequiredMod(TargetedMod.THAUMCRAFT)
+        .addRequiredMod(TargetedMod.WITCHING_GADGETS)
+        .addExcludedMod(GT6)
+        .setPhase(LATE)),
+
+    IronToSteelTransmutation(new MixinBuilder().addCommonMixins("MixinIronToSteelTransmutation")
+        .addRequiredMod(GT5U)
+        .addRequiredMod(TargetedMod.THAUMCRAFT)
+        .addExcludedMod(GT6)
+        .setPhase(LATE)),
+
     SoybeanCrop(new MixinBuilder().addCommonMixins("MixinSoybeanCrop")
         .addRequiredMod(TargetedMod.HARVESTCRAFT)
         .setPhase(LATE)),

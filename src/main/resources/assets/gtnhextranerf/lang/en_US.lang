@@ -1,5 +1,6 @@
 gtnhextranerf.component.name=%s (%s)
 Material.tungstensteel=TungTungTungstensteel
+gtnhextranerf.research.metal_transmutation=By combining metal nuggets with aspects, you can create tiny piles of the corresponding metal dust.
 Material.rawtungstensteel=Tungstensteel
 gt.blockmachines.multimachine.gtnhextranerf.brainrotter.name=Industrial Brainrotter
 gtnhextranerf.recipe.brainrotter=Industrial Brainrotter

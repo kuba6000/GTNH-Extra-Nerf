@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import gregtech.api.enums.Mods;
 import gregtech.common.tileentities.machines.basic.MTEMassfabricator;
+import thaumcraft.api.research.ResearchCategories;
 
 /** Catalog of audit definitions; contains no session state or global result lookups. */
 public enum AuditScope implements AuditDefinition {
@@ -29,6 +30,11 @@ public enum AuditScope implements AuditDefinition {
     ADD_LIVINGROCK_PLATE(AuditExpectation.exact()
         .added(1)
         .build()),
+    MODIFY_METAL_TRANSMUTATION(
+        () -> Mods.Thaumcraft.isModLoaded() && Mods.WitchingGadgets.isModLoaded()
+            && ResearchCategories.getResearch("METALLURGICPERFECTION_TRANSMUTATION") != null,
+        AuditExpectation.atLeastModified(1)),
+    MODIFY_IRON_TO_STEEL_TRANSMUTATION(Mods.Thaumcraft::isModLoaded, modified(1)),
 
     VERIFY_ASSEMBLY_LINE_SPATIAL_DIMENSION(Mods.AppliedEnergistics2::isModLoaded, AuditExpectation.exact()
         .build()),

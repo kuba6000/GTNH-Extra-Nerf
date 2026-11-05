@@ -205,6 +205,9 @@ All paths below start at
 | `mixins/late/MixinHealingAxeHunger.java` | Extra Utilities `ItemHealingAxe` | Marks the carried axe, changes its displayed name and replaces hunger gain with drain. |
 | `mixins/late/MixinSoybeanCrop.java` | HarvestCraft `BlockPamCrop` | Replaces soybean item returns from crop and seed methods. |
 | `mixins/late/MixinArcaneCraftingRemainders.java` | Thaumcraft `SlotCraftingArcaneWorkbench` | Returns the flower and demagnetized rods when crafting the MV ingredient. |
+| `mixins/late/MixinMetalTransmutation.java` | Witching Gadgets `WG_alchemic_clusters` | Modifies GT-generated metal transmutation recipes during registration. |
+| `mixins/late/MixinMetalResearchText.java` | Witching Gadgets `WGResearch` | Uses text describing the resulting metal dusts. |
+| `mixins/late/MixinIronToSteelTransmutation.java` | GregTech `ThaumcraftRecipes` | Changes the iron-to-steel crucible recipe during registration. |
 | `recipes/crafting/ArcaneWorkbenchSync.java` | Server tick event | Sends final workbench inventories after the crafting transaction. |
 | `mixins/late/MixinMetaTileEntity.java` | `MetaTileEntity` | Steam fill conversion. |
 | `mixins/late/MixinConfigurationCircuitSupport.java` | `CommonWidgets.createCircuitSlot` | Physical Integrated Circuit slot below HV for every tiered machine with configuration-circuit support. |
@@ -243,6 +246,8 @@ All paths below start at
 | `src/integrationTest/java/.../IndustrialRecipeIntegrationTests.java` | Final machine lookup and parity across the affected ordinary and industrial maps. |
 | `src/integrationTest/java/.../AlloyBlastSmelterIntegrationTests.java` | Steel and Aluminium EBF/Alloy Blast Smelter lookup and removed gas routes. |
 | `src/integrationTest/java/.../PhysicalCircuitDropIntegrationTests.java` | Physical circuit and ordinary inventory drops from real machines and input buses. |
+| `src/integrationTest/java/.../MetalTransmutationIntegrationTests.java` | Crucible behavior and generated metal research recipes. |
+| `src/integrationTest/java/.../MetalTransmutationNeiScenarios.java` | Metal transmutation outputs, inputs and aspects in NEI. |
 | `src/integrationTest/java/.../HealingAxeIntegrationTests.java` | Server-side player inventory ticks with the Extra Utilities axe, run by `NativeScenarios.healingAxe`. |
 | `src/test/java/.../mixins/support/GeneratorEfficiencyTest.java` | Standard and EV-relative generator efficiency curves. |
 

@@ -173,6 +173,9 @@ the following together:
 | `MixinAssemblerOutputs` | GregTech machine builder | `@ModifyVariable` | Two Assembling Machine item outputs |
 | `MixinAssemblerRecipeMap` | GregTech recipe maps | `@ModifyArg` | Two Assembler recipe outputs and NEI slots |
 | `MixinArcaneCraftingRemainders` | Thaumcraft | `@WrapMethod` + `@WrapOperation` | Magicnetized Manasteel Rod crafting remainders and scheduling inventory synchronization |
+| `MixinMetalTransmutation` | Witching Gadgets | `@WrapOperation` | GT-generated `METALLURGICPERFECTION_TRANSMUTATION` crucible recipes |
+| `MixinMetalResearchText` | Witching Gadgets | `@ModifyConstant` | Metal transmutation research page text |
+| `MixinIronToSteelTransmutation` | GregTech | `@WrapOperation` | `IRON_TO_STEEL` crucible recipe |
 | `MixinAe2Crafting` | NHCore | 3 `@WrapOperation` handlers | shared AE2-output/Titanium ingredient selection across crafting registration APIs |
 | `MixinWirelessConnectionPower` | AE2 | 1 `@WrapMethod` replacing power recalculation | distance^4 EU/t capped at 10,000,000 per link, split across endpoints; hubs sum their shares |
 | `MixinMeP2PChannelCapacity` | AE2 | 1 `@Inject` at constructor return | standard eight-channel external node capacity, shared across output branches |
@@ -235,6 +238,7 @@ settings.
 | Recipe port behavior | None at root | Full-pack server. |
 | Mixin targeting/content | Mixin annotation processor during compilation | Full-pack server. |
 | Industrial and Alloy Blast Smelter recipes | Exact recipe signatures and `AuditScope` cardinalities | `IndustrialRecipeIntegrationTests` and `AlloyBlastSmelterIntegrationTests` query the final initialized machine maps. |
+| Metal transmutation | Startup audit verifies registration hooks | `MetalTransmutationIntegrationTests` exercises crucibles and research pages; `MetalTransmutationNeiScenarios` queries the NEI alchemy handler. |
 | Physical circuit drops | `PhysicalCircuitItemStackHandlerTest` covers insertion and extraction | `PhysicalCircuitDropIntegrationTests` checks real machine and input-bus destruction, NBT, explosion drops and HV ghost circuits. |
 | Lootbag preview | Native loot/ledger tests | `LootPreviewScenarios` exercises the live NEI tooltip while the server claims and reopens the world allowance. |
 | Questbook crafting tasks | Native BQ quest and task APIs | Quest scenarios exercise inventory retrieval, Detect, hand Chisel, item matching, non-consumption and questbook reload. |
@@ -255,7 +259,8 @@ EnhancedLootBags, plus compile-only BetterQuesting, Chisel, Extra Utilities, Cus
 and ChromaticTooltips and a development-only NEI dependency. The GT5 development
 artifact also exposes types from merged addons used by the source. Runtime code
 interacts with BartWorks, Dreamcraft, Good Generator, GT++, GTNH Lanthanides,
-TConstruct, Thaumcraft, Botania and optionally Forestry and HarvestCraft.
+TConstruct, Thaumcraft, Botania and optionally Forestry, HarvestCraft and
+Witching Gadgets.
 
 Before changing dependency declarations, distinguish:
 
