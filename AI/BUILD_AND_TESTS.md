@@ -144,6 +144,11 @@ server configuration for the dedicated-server smoke check.
 The root build sets `cleanServerRuntime` only for that CI path, so a local server run
 keeps its accepted `eula.txt`, its world and its configuration.
 
+The current GTNHGradle fork allocates client and server runtimes in short-code
+directories under the full-pack cache. Runtimes created by the older layout are
+not automatically migrated: their saves and server worlds remain at the old
+paths and must be copied explicitly if they are needed in a new runtime.
+
 ## Root test suite
 
 The Java test suite covers:
@@ -200,10 +205,10 @@ cd gradle\GTNHGradle
 .\gradlew.bat check
 ```
 
-At the documented snapshot, its reports contain:
+At GTNHGradle commit `cc98b41`, its reports contain:
 
-- 45 successful unit tests;
-- 20 successful functional tests.
+- 63 successful unit tests;
+- 25 successful functional tests.
 
 ## GitHub Actions
 
