@@ -44,6 +44,38 @@ public final class NativeScenarios {
     }
 
     @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void independentMetalTransmutation(GameTestHelper helper) {
+        scenario(
+            helper,
+            "independentMetalTransmutation",
+            false,
+            () -> MetalTransmutationIntegrationTests.verifyAluminium(helper.getWorld(), helper.absolute("workbench")));
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void noUnnerfedMetalDuplication(GameTestHelper helper) {
+        scenario(
+            helper,
+            "noUnnerfedMetalDuplication",
+            false,
+            MetalTransmutationIntegrationTests::verifyNoNuggetDuplication);
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void independentMetalResearchPages(GameTestHelper helper) {
+        scenario(
+            helper,
+            "independentMetalResearchPages",
+            false,
+            MetalTransmutationIntegrationTests::verifyIndependentResearchPages);
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void emeraldTransmutation(GameTestHelper helper) {
+        scenario(helper, "emeraldTransmutation", false, MetalTransmutationIntegrationTests::verifyEmerald);
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
     public static void ironToSteelTransmutation(GameTestHelper helper) {
         scenario(
             helper,

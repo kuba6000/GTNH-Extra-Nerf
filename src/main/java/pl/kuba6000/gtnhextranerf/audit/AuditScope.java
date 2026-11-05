@@ -35,6 +35,8 @@ public enum AuditScope implements AuditDefinition {
             && ResearchCategories.getResearch("METALLURGICPERFECTION_TRANSMUTATION") != null,
         AuditExpectation.atLeastModified(1)),
     MODIFY_IRON_TO_STEEL_TRANSMUTATION(Mods.Thaumcraft::isModLoaded, modified(1)),
+    MODIFY_OTHER_METAL_TRANSMUTATIONS(() -> Mods.Thaumcraft.isModLoaded() && Mods.GregTech.isModLoaded(),
+        AuditExpectation.atLeastModified(1)),
 
     VERIFY_ASSEMBLY_LINE_SPATIAL_DIMENSION(Mods.AppliedEnergistics2::isModLoaded, AuditExpectation.exact()
         .build()),

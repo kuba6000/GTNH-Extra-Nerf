@@ -21,6 +21,12 @@ public enum Mixin implements IMixins {
         .addRequiredMod(TargetedMod.THAUMCRAFT)
         .setPhase(LATE)),
 
+    CrucibleMetalDuplication(new MixinBuilder().addCommonMixins("MixinCrucibleMetalDuplication")
+        .addRequiredMod(GT5U)
+        .addRequiredMod(TargetedMod.THAUMCRAFT)
+        .addExcludedMod(GT6)
+        .setPhase(LATE)),
+
     MetalTransmutation(new MixinBuilder().addCommonMixins("MixinMetalTransmutation", "MixinMetalResearchText")
         .addRequiredMod(GT5U)
         .addRequiredMod(TargetedMod.THAUMCRAFT)

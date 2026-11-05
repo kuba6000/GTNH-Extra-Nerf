@@ -38,10 +38,15 @@ fluid inputs.
 Perfection recipe during registration: its nugget catalyst stays, the output is
 two tiny dusts of the same material, and every aspect amount is multiplied by
 four. `MixinMetalResearchText` updates the research description.
+`MixinCrucibleMetalDuplication` applies the same rule at the shared crucible
+registration boundary to matching metal-nugget multiplication recipes from
+other researches. Non-metal nuggets and recipes with different catalysts are
+excluded. The registered recipe is returned to its original research and NEI.
 `MixinIronToSteelTransmutation` changes the GT Steel Transmutation to an Iron
 Ingot, 4 Ordo and one tiny Steel dust output. Both changes happen before the
 research pages and NEI read the registered recipes and are audited by
-`MODIFY_METAL_TRANSMUTATION` and `MODIFY_IRON_TO_STEEL_TRANSMUTATION`.
+`MODIFY_METAL_TRANSMUTATION`, `MODIFY_OTHER_METAL_TRANSMUTATIONS` and
+`MODIFY_IRON_TO_STEEL_TRANSMUTATION`.
 
 ## Magicnetized Manasteel Rod
 

@@ -36,6 +36,7 @@ import pl.kuba6000.gtnhextranerf.progression.ProgressionTier;
 import pl.kuba6000.gtnhextranerf.progression.SteamSafety;
 import pl.kuba6000.gtnhextranerf.progression.exam.CertificationExams;
 import pl.kuba6000.gtnhextranerf.progression.exam.ExamSyncHandler;
+import pl.kuba6000.gtnhextranerf.recipes.MetalDuplication;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeValidationException;
 import pl.kuba6000.gtnhextranerf.recipes.crafting.ArcaneWorkbenchSync;
 import pl.kuba6000.gtnhextranerf.teams.TeamCommand;
@@ -106,6 +107,7 @@ public class CommonProxy {
             runStartupStep(CertificationExams::verify);
             runStartupStep(CertificationCost::verify);
             runStartupStep(MagicnetizedRods::registerArcaneRecipe);
+            if (AuditScope.MODIFY_OTHER_METAL_TRANSMUTATIONS.isActive()) runStartupStep(MetalDuplication::verify);
             runStartupStep(RecipeLoader::run);
             runStartupStep(RawMachineCasings::verify);
             runStartupStep(ProgressionMachineNerf::verifyFusion);

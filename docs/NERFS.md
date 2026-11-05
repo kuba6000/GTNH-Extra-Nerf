@@ -36,13 +36,16 @@ the Diluted Mana Pool without requiring a Cutting Machine.
 
 ## Metal transmutation
 
-Witching Gadgets' Metallurgic Perfection transmutation recipes generated for
-GregTech materials consume one nugget and four times their original aspect
-cost, producing two Tiny Piles of that material's Dust. For example, one Steel
-Nugget with 8 Metallum and 4 Ordo produces two Tiny Piles of Steel Dust.
+Crucible recipes that duplicate a GregTech metal nugget consume one nugget and
+four times their original aspect cost, producing two Tiny Piles of that metal's
+Dust. This applies to the separate Thaumcraft and GregTech metal researches as
+well as Witching Gadgets' Metallurgic Perfection. For example, Aluminium
+Transmutation uses one Aluminium Nugget, 8 Metallum, 4 Volatus, 4 Ordo and
+4 Ignis to produce two Tiny Piles of Aluminium Dust.
 
 GregTech's separate Steel Transmutation consumes one Iron Ingot and 4 Ordo to
-produce one Tiny Pile of Steel Dust. Other transmutation research is unchanged.
+produce one Tiny Pile of Steel Dust. Recipes for non-metal materials remain
+unchanged.
 
 ## Assembly Lines in AE2 Spatial worlds
 

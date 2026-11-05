@@ -20,6 +20,7 @@ import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GTOreDictUnificator;
 import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
 import thaumcraft.common.lib.research.ResearchManager;
 
 /** Queries the registered NEI alchemy handler with the player's completed research. */
@@ -38,6 +39,7 @@ public final class MetalTransmutationNeiScenarios {
                 String name = player.getCommandSenderName();
                 ResearchManager.completeResearchUnsaved(name, "METALLURGICPERFECTION_TRANSMUTATION");
                 ResearchManager.completeResearchUnsaved(name, "GT_IRON_TO_STEEL");
+                ResearchManager.completeResearchUnsaved(name, "GT_TRANSALUMINIUM");
             })
             .awaitClient("NEI displays the current alchemy recipes", client -> verifyNei());
         // Let first-world rendering finish before HQA's short client teardown budget starts.
@@ -51,9 +53,11 @@ public final class MetalTransmutationNeiScenarios {
         String name = Minecraft.getMinecraft().thePlayer.getCommandSenderName();
         ResearchManager.completeResearchUnsaved(name, "METALLURGICPERFECTION_TRANSMUTATION");
         ResearchManager.completeResearchUnsaved(name, "GT_IRON_TO_STEEL");
+        ResearchManager.completeResearchUnsaved(name, "GT_TRANSALUMINIUM");
         ICraftingHandler alchemy = null;
-        for (ICraftingHandler handler : GuiCraftingRecipe.craftinghandlers) {
-            if ("thaumcraft.alchemy".equals(handler.getOverlayIdentifier())) {
+        // NEI registers handlers asynchronously while the first world opens.
+        for (ICraftingHandler handler : GuiCraftingRecipe.craftinghandlers.toArray(new ICraftingHandler[0])) {
+            if (handler != null && "thaumcraft.alchemy".equals(handler.getOverlayIdentifier())) {
                 alchemy = handler;
                 break;
             }
@@ -62,15 +66,42 @@ public final class MetalTransmutationNeiScenarios {
         ItemStack dust = item(OrePrefixes.dustTiny, Materials.Steel);
         ICraftingHandler results = alchemy.getRecipeHandler("item", dust);
         check(
-            hasRecipe(results, item(OrePrefixes.nugget, Materials.Steel), dust, 2, 8, 4),
+            hasRecipe(
+                results,
+                item(OrePrefixes.nugget, Materials.Steel),
+                dust,
+                2,
+                new AspectList().add(Aspect.METAL, 8)
+                    .add(Aspect.ORDER, 4)),
             "NEI does not show the updated steel nugget transmutation");
         check(
-            hasRecipe(results, item(OrePrefixes.ingot, Materials.Iron), dust, 1, 0, 4),
+            hasRecipe(results, item(OrePrefixes.ingot, Materials.Iron), dust, 1, new AspectList().add(Aspect.ORDER, 4)),
             "NEI does not show the updated iron-to-steel transmutation");
+        ItemStack aluminiumDust = item(OrePrefixes.dustTiny, Materials.Aluminium);
+        ItemStack aluminiumNugget = item(OrePrefixes.nugget, Materials.Aluminium);
+        AspectList aluminiumCost = new AspectList().add(Aspect.METAL, 8)
+            .add(Aspect.FLIGHT, 4)
+            .add(Aspect.ORDER, 4)
+            .add(Aspect.FIRE, 4);
+        check(
+            hasRecipe(
+                alchemy.getRecipeHandler("item", aluminiumDust),
+                aluminiumNugget,
+                aluminiumDust,
+                2,
+                aluminiumCost),
+            "NEI does not show the updated aluminium transmutation");
+        AspectList oldCost = new AspectList().add(Aspect.METAL, 2)
+            .add(Aspect.FLIGHT, 1)
+            .add(Aspect.ORDER, 1)
+            .add(Aspect.FIRE, 1);
+        check(
+            !hasRecipe(alchemy.getRecipeHandler("item", aluminiumNugget), aluminiumNugget, aluminiumNugget, 3, oldCost),
+            "NEI still shows the old aluminium duplication");
     }
 
     private static boolean hasRecipe(ICraftingHandler handler, ItemStack catalyst, ItemStack output, int amount,
-        int metal, int order) {
+        AspectList expected) {
         for (int index = 0; index < handler.numRecipes(); index++) {
             PositionedStack result = handler.getResultStack(index);
             if (result == null || result.item == null
@@ -78,19 +109,20 @@ public final class MetalTransmutationNeiScenarios {
                 || result.item.stackSize != amount) continue;
             List<PositionedStack> inputs = handler.getIngredientStacks(index);
             boolean hasCatalyst = false;
-            int shownMetal = 0, shownOrder = 0;
+            AspectList shown = new AspectList();
             for (PositionedStack input : inputs) {
                 if (input.contains(catalyst)) hasCatalyst = true;
                 ItemStack stack = input.item;
                 if (stack == null || !stack.hasTagCompound()) continue;
                 String aspect = stack.getTagCompound()
                     .getString("Aspect");
-                if (Aspect.METAL.getTag()
-                    .equals(aspect)) shownMetal = stack.stackSize;
-                if (Aspect.ORDER.getTag()
-                    .equals(aspect)) shownOrder = stack.stackSize;
+                Aspect found = Aspect.getAspect(aspect);
+                if (found != null) shown.add(found, stack.stackSize);
             }
-            if (hasCatalyst && shownMetal == metal && shownOrder == order) return true;
+            boolean matchesAspects = shown.size() == expected.size();
+            for (Aspect aspect : expected.getAspects())
+                matchesAspects &= shown.getAmount(aspect) == expected.getAmount(aspect);
+            if (hasCatalyst && matchesAspects) return true;
         }
         return false;
     }
