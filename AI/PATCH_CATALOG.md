@@ -914,7 +914,9 @@ selected Steam first, regardless of activation order.
 
 `MixinProgressionTickGate` wraps exactly one `MetaTileEntity.onPostTick` call in
 `BaseMetaTileEntity.doPostTick`. It gates electric `MTEBasicMachine` instances
-from LV upwards plus basic Steam machines, and retains in-flight work. `MixinProgressionMachineStatus` replaces
+from LV upwards, basic Steam machines and `MTESteamMultiBlockBase` controllers,
+and retains in-flight work. The unpowered `MTEIceCreamMachine` is exempt.
+`MixinProgressionMachineStatus` replaces
 the error widget's construction with a clickable subclass, adds a lock syncer,
 and prepends the certification message to normal/shift tooltips. Missing
 certification selects the custom certificate-warning texture; ordinary errors

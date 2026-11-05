@@ -9,17 +9,21 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEBasicMachine;
 import gregtech.api.metatileentity.implementations.MTEHatch;
+import gregtech.common.tileentities.machines.basic.MTEIceCreamMachine;
+import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.base.MTESteamMultiBlockBase;
 import pl.kuba6000.gtnhextranerf.GTNHExtraNerf;
 
-/** Server-authoritative gate. Clients receive the missing certificate through ModularUI. */
+/** Server-authoritative processing gate. Basic-machine GUIs sync the missing certificate. */
 public final class MachineProgression {
 
     private MachineProgression() {}
 
     public static ProgressionTier requiredTier(MetaTileEntity machine) {
+        if (machine instanceof MTESteamMultiBlockBase) return ProgressionTier.STEAM;
         if (EnergyHatchCertification.isEnergyHatch(machine))
             return ProgressionTier.forMachine(((MTEHatch) machine).mTier, false);
         if (!(machine instanceof MTEBasicMachine)) return null;
+        if (machine instanceof MTEIceCreamMachine) return null;
         if (isIndustrialApiary(machine)) return ProgressionTier.HV;
         return ProgressionTier.forMachine(((MTEBasicMachine) machine).mTier, machine.isSteampowered());
     }

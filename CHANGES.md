@@ -75,6 +75,9 @@ catalog, including exact values, conditions and unchanged fields, is
 
 ## Machine certification
 
+- Steam multiblocks pause while Steam certification is missing and resume their
+  active batch after certification is restored.
+- The unpowered Ice Cream Machine no longer requires certification.
 - The Industrial Apiary requires certificates only up to HV instead of UV, which is the
   tier GregTech registers it at.
 

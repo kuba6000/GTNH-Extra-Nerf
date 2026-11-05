@@ -52,6 +52,24 @@ public final class NativeScenarios {
     }
 
     @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void steamMultiCertification(GameTestHelper helper) {
+        scenario(
+            helper,
+            "steamMultiCertification",
+            true,
+            () -> SteamMultiCertificationIntegrationTests.verify(helper.getWorld()));
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void iceCreamWithoutCertification(GameTestHelper helper) {
+        scenario(
+            helper,
+            "iceCreamWithoutCertification",
+            false,
+            () -> IceCreamCertificationIntegrationTests.verify(helper.getWorld()));
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
     public static void steamBoilers(GameTestHelper helper) {
         scenario(helper, "steamBoilers", false, () -> SteamConsumptionIntegrationTests.verifyBoiler(helper.getWorld()));
     }

@@ -2,27 +2,31 @@
 
 Steam and electrical exams award two activation items: `gtnhextranerf:steam_certificate` (High Pressure
 Operator Certificate) and `gtnhextranerf:lv_certificate` (Electrical Safety
-Certificate). Basic Bronze/Steel Steam machines require Steam certification.
+Certificate). Basic Bronze/Steel Steam machines and Steam multiblock controllers
+require Steam certification. This includes the Steam Water Pump.
 Basic electric GregTech machines from LV upwards require both certifications.
 From MV upwards they also require every paid certification up to their tier:
 MV through MAX. Each is earned by payment without an exam. Higher-tier
 basic machines require all registered gates up to their tier. LuV through MAX
 currently use provisional item fees; MAX remains available with its MHDCSM fee.
-The Industrial Apiary is the one exception: GregTech registers it as a UV
-machine, but it requires only the certificates up to HV.
+The Industrial Apiary has a special tier: GregTech registers it as a UV
+machine, but it requires only the certificates up to HV. The unpowered Ice
+Cream Machine does not require a certificate. The Vending Machine's controller
+and optional ME uplink hatch are outside the certificate gate as well.
 Energy and dynamo hatches from LV upwards require the same chain of certificates
 up to their own voltage tier, including multi-amp, laser and wireless variants.
 Multiblock overclocking and parallel rules remain native; certification does not
 impose a separate recipe-voltage cap.
-ULV electric machines, generators, boilers and multiblock controllers are outside
-the current gate. The legacy electrical item/tier IDs stay `lv_certificate`/`lv`
-for save compatibility; its player-facing category is Electricity Gate.
+ULV electric machines, generators, boilers and other multiblock controllers are
+outside the direct processing gate. The legacy electrical item/tier IDs stay
+`lv_certificate`/`lv` for save compatibility; its player-facing category is
+Electricity Gate.
 Existing saves retain all earned certifications. New tiers default locked when
 absent from the save.
 
-An uncertified machine displays a certificate with an exclamation mark in its
-normal error-status area. Hovering shows the exact message requested for this
-feature:
+An uncertified basic machine displays a certificate with an exclamation mark in
+its normal error-status area. Steam multiblock controllers do not currently
+display this icon. Hovering the basic-machine icon shows:
 
 > You are not OSHA certified to handle electricity, click here to get your license
 
@@ -178,6 +182,9 @@ The hatch gate is independent of controller GUI and recipe implementations.
 Controllers may report their ordinary power failure when a hatch stops supplying
 EU. Existing controller-owned buffers can continue supplying their stored energy;
 machines using wireless power directly without any hatch require separate rules.
+Steam multiblock controllers use the direct processing gate instead: a missing
+Steam certificate pauses an active batch without draining its hatch. Processing
+resumes after recertification. Their normal steam-use rules remain unchanged.
 
 ## Verification
 

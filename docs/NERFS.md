@@ -346,15 +346,20 @@ disposed of as before.
 ## Electricity Gate
 
 Basic electric GregTech machines from LV upwards require global electrical safety certification.
-Uncertified machines pause processing and show a clickable certificate-warning
+Uncertified basic machines pause processing and show a clickable certificate-warning
 icon, linking to the missing certificate's NEI information page. Basic Bronze/Steel
-Steam machines require the separate High Pressure Operator Certificate. LV and
+Steam machines and Steam multiblock controllers require the separate High Pressure
+Operator Certificate. Steam multiblocks pause their active batch until the
+certificate is restored, including the Steam Water Pump; their controllers do
+not currently show a certificate-warning icon. LV and
 higher basic electric machines require both. From MV onwards they also require
 the paid certificates up to their tier, from MV through MAX. Energy and dynamo
 hatches from LV upwards require the same prerequisite chain, including multi-amp,
-laser and wireless variants. ULV electric machines, generators, boilers and
-multiblock controllers are outside the direct processing gate. Right-clicking the certificate unlocks gated machines for all
-players and dimensions in the save, consuming it once in survival. Its NEI page
+laser and wireless variants. ULV electric machines, generators, boilers and other
+multiblock controllers are outside the direct processing gate. The unpowered Ice
+Cream Machine is also exempt from certification. Right-clicking the certificate
+unlocks gated machines for all players and dimensions in the save, consuming it
+once in survival. Its NEI page
 opens a drawing-based ABCD examination in ModularUI 2. Passing at least eight
 of the ten preliminary questions awards the item.
 Admission costs 1000 GT Bronze ingots for each Steam attempt and 1000 single Tin
