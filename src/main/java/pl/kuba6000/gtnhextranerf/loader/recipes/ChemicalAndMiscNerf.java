@@ -10,6 +10,7 @@ import static gregtech.api.recipe.RecipeMaps.distilleryRecipes;
 import static gregtech.api.recipe.RecipeMaps.electrolyzerNonCellRecipes;
 import static gregtech.api.recipe.RecipeMaps.electrolyzerRecipes;
 import static gregtech.api.recipe.RecipeMaps.fusionRecipes;
+import static gregtech.api.recipe.RecipeMaps.hammerRecipes;
 import static gregtech.api.recipe.RecipeMaps.mixerNonCellRecipes;
 import static gregtech.api.recipe.RecipeMaps.mixerRecipes;
 import static gregtech.api.recipe.RecipeMaps.multiblockChemicalReactorRecipes;
@@ -56,6 +57,7 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
         registry.register(AuditScope.MODIFY_INDIUM_CONCENTRATE_RECIPES, ChemicalAndMiscNerf::modifyIndiumConcentrate);
         registry.register(AuditScope.MODIFY_PLUTONIUM_DECAY_RECIPES, ChemicalAndMiscNerf::modifyPlutoniumDecay);
         registry.register(AuditScope.MODIFY_SILICON_LINE_RECIPES, ChemicalAndMiscNerf::modifySiliconLine);
+        registry.register(AuditScope.ADD_LIVINGROCK_PLATE, ChemicalAndMiscNerf::addLivingrockPlate);
         registry.register(
             AuditScope.REMOVE_SILICON_WAFER_WATER_CUTTER_RECIPES,
             ChemicalAndMiscNerf::removeSiliconWaferWaterCutterRecipes);
@@ -76,6 +78,31 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
         registry.register(
             AuditScope.MODIFY_EXTREME_HEAT_EXCHANGER_HAND_CRAFTING,
             ChemicalAndMiscNerf::modifyExtremeHeatExchanger);
+    }
+
+    private static void addLivingrockPlate(RecipeContext recipes) {
+        ItemStack livingrock = GTOreDictUnificator.get(OrePrefixes.block, Materials.Livingrock, 1);
+        ItemStack plate = GTOreDictUnificator.get(OrePrefixes.plate, Materials.Livingrock, 1);
+        FluidStack lubricant = Materials.Lubricant.getFluid(22);
+        if (!GTUtility.isStackValid(livingrock) || !GTUtility.isStackValid(plate) || lubricant == null)
+            throw new RecipeValidationException("Missing Livingrock, Livingrock Plate, or Lubricant");
+
+        recipes.machine(hammerRecipes)
+            .addOne(
+                GTValues.RA.stdBuilder()
+                    .itemInputs(livingrock)
+                    .fluidInputs(lubricant)
+                    .itemOutputs(plate)
+                    .duration(150 * SECONDS)
+                    .eut(30),
+                RecipeMatch.builder()
+                    .itemInputs(livingrock)
+                    .fluidInputs(lubricant)
+                    .itemOutputs(plate)
+                    .fluidOutputs()
+                    .duration(150 * SECONDS)
+                    .eut(30)
+                    .build());
     }
 
     private static void reduceTpvMixerOutput(RecipeContext recipes) {

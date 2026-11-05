@@ -26,6 +26,9 @@ public enum AuditScope implements AuditDefinition {
     ADD_LV_FLORAL_FERTILIZER(AuditExpectation.exact()
         .added(1)
         .build()),
+    ADD_LIVINGROCK_PLATE(AuditExpectation.exact()
+        .added(1)
+        .build()),
 
     VERIFY_ASSEMBLY_LINE_SPATIAL_DIMENSION(Mods.AppliedEnergistics2::isModLoaded, AuditExpectation.exact()
         .build()),

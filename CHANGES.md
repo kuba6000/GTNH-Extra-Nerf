@@ -47,6 +47,8 @@ catalog, including exact values, conditions and unchanged fields, is
 
 - The crafting and Assembler recipes require a Magicnetized Manasteel Rod made
   in an Arcane Workbench or an HV Assembler.
+- An electric Forge Hammer can make one Livingrock Plate from one Livingrock
+  and 22 L of Lubricant in 150 seconds at 30 EU/t.
 
 ## Hungry Axe
 

@@ -24,6 +24,14 @@ Fertilizers, providing a pre-MV Botania entry route for GoG and dimension locks.
 `ADD_LV_FLORAL_FERTILIZER` audits the registration. `LvRecipeIntegrationTests`
 checks the output, required ingredients, pattern and container-return behavior.
 
+## Livingrock Plate in the Forge Hammer
+
+`ChemicalAndMiscNerf.addLivingrockPlate` adds one recipe to `hammerRecipes`:
+one Livingrock block and 22 L Lubricant produce one Livingrock Plate in 150
+seconds at 30 EU/t. `ADD_LIVINGROCK_PLATE` audits the addition. The electric
+Forge Hammer has a fluid input; the Steam Forge Hammer does not use recipe
+fluid inputs.
+
 ## Magicnetized Manasteel Rod
 
 `MagicnetizedRods` registers an arcane recipe using a Manasteel Rod,

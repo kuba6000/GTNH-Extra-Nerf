@@ -28,6 +28,12 @@ The consumed Portal Generator supplies the LV Assembler requirement and cost.
 This provides a Botania entry route for GoG and dimension-restricted runs,
 breaking the dependency cycle between MV motors, Manasteel and mystical flowers.
 
+## Livingrock Plate
+
+An electric Forge Hammer converts one Livingrock and 22 L of Lubricant into
+one Livingrock Plate in 150 seconds at 30 EU/t. This provides an LV route to
+the Diluted Mana Pool without requiring a Cutting Machine.
+
 ## Assembly Lines in AE2 Spatial worlds
 
 The native Assembly Line and GigaGramFab Advanced Assembly Line form only in
