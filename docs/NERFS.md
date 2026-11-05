@@ -921,13 +921,12 @@ In both chemical-reactor maps:
 - the secondary BartWorks dust output is reduced from 6 to 5;
 - Silicon SG output remains one dust.
 
-### Silicon boule cutting
+### Cutter coolants
 
-- The Water route using 37 L Water is removed.
-- The Distilled Water route using 28 L Distilled Water is removed.
-- Both removed routes cut one Monocrystalline Silicon Boule into 16 Silicon
-  Wafers and 4 Silicon SG dust over 40 seconds at LV recipe voltage.
-- The Lubricant cutting route remains.
+Cutting Machine recipes do not accept ordinary Water or Distilled Water.
+Lubricant and Dimensionally Shifted Superfluid remain available. Special
+recipes using other fluids, including purified water grades and UU-Matter,
+are unchanged. The industrial Cutting Machine uses the same recipes.
 
 ### LV Lubricant distillation
 

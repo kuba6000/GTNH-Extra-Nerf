@@ -154,7 +154,7 @@ All paths below start at
 | `recipes/CraftingNerf.java` | Bronze Dust, Large Chemical Reactor, LV Circuit Assembler, Good Circuit, flint-and-steel and Tool Station crafting recipes. |
 | `recipes/AluminiumNerf.java` | Ilmenite chemical baths, Ruby Juice chain and Ilmenite Slag centrifuge. |
 | `recipes/BlastFurnaceNerf.java` | Primitive and electric Steel, Aluminium, TConstruct aluminium, ilmenite and titanium EBF recipes, plus corresponding Alloy Blast Smelter routes. |
-| `recipes/ChemicalAndMiscNerf.java` | Chemical, silicon cutting, Lubricant, platinum, samarium and miscellaneous processing changes. |
+| `recipes/ChemicalAndMiscNerf.java` | Chemical, silicon processing, Lubricant, platinum, samarium and miscellaneous processing changes. |
 | `recipes/CoreModRecipeNerf.java` | NHCore/GT recipe changes for low-tier circuits, Cupronickel Coils, MV Energy Hatches, casings, indium, endgame and components. |
 | `recipes/IntergalacticRecipeNerf.java` | Audited UQV Sensor replacement in the Crafting Input Proxy's Space Assembler recipe. |
 | `recipes/SlimeRecipeNerf.java` | Removes slime processing and replaces selected slime crafting/assembler routes with EMT Glue. |
@@ -205,6 +205,7 @@ All paths below start at
 | `mixins/late/MixinHealingAxeHunger.java` | Extra Utilities `ItemHealingAxe` | Marks the carried axe, changes its displayed name and replaces hunger gain with drain. |
 | `mixins/late/MixinSoybeanCrop.java` | HarvestCraft `BlockPamCrop` | Replaces soybean item returns from crop and seed methods. |
 | `mixins/late/MixinArcaneCraftingRemainders.java` | Thaumcraft `SlotCraftingArcaneWorkbench` | Returns the flower and demagnetized rods when crafting the MV ingredient. |
+| `mixins/late/MixinCutterRecipeRegistration.java` | GregTech `RecipeMapBackend` | Filters ordinary and distilled water cutter variants before registration. |
 | `mixins/late/MixinMetalTransmutation.java` | Witching Gadgets `WG_alchemic_clusters` | Modifies GT-generated metal transmutation recipes during registration. |
 | `mixins/late/MixinMetalResearchText.java` | Witching Gadgets `WGResearch` | Uses text describing the resulting metal dusts. |
 | `mixins/late/MixinIronToSteelTransmutation.java` | GregTech `ThaumcraftRecipes` | Changes the iron-to-steel crucible recipe during registration. |
@@ -246,6 +247,8 @@ All paths below start at
 | `src/integrationTest/java/.../IndustrialRecipeIntegrationTests.java` | Final machine lookup and parity across the affected ordinary and industrial maps. |
 | `src/integrationTest/java/.../AlloyBlastSmelterIntegrationTests.java` | Steel and Aluminium EBF/Alloy Blast Smelter lookup and removed gas routes. |
 | `src/integrationTest/java/.../PhysicalCircuitDropIntegrationTests.java` | Physical circuit and ordinary inventory drops from real machines and input buses. |
+| `src/integrationTest/java/.../CutterCoolantScenarios.java` | Cutter coolant selection, NEI and LV Lubricant production. |
+| `src/integrationTest/java/.../CutterCoolantFixture.java` | Test-only separately registered and generated cutter recipes. |
 | `src/integrationTest/java/.../MetalTransmutationIntegrationTests.java` | Crucible behavior and generated metal research recipes. |
 | `src/integrationTest/java/.../MetalTransmutationNeiScenarios.java` | Metal transmutation outputs, inputs and aspects in NEI. |
 | `src/integrationTest/java/.../HealingAxeIntegrationTests.java` | Server-side player inventory ticks with the Extra Utilities axe, run by `NativeScenarios.healingAxe`. |

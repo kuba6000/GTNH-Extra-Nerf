@@ -782,15 +782,14 @@ exist, then:
 
 Silicon SG output and all other explicitly matched values remain unchanged.
 
-### Silicon boule cutting
+### Cutter coolants
 
-- Removes the 37 L Water and 28 L Distilled Water Cutter recipes for one
-  Monocrystalline Silicon Boule.
-- Each removed recipe outputs 16 Silicon Wafers and 4 Silicon SG dust in 40
-  seconds at LV recipe voltage.
-- The Lubricant route remains unchanged.
-- Audit scope: `REMOVE_SILICON_WAFER_WATER_CUTTER_RECIPES`, exactly two
-  removed recipes.
+`MixinCutterRecipeRegistration` wraps the cutter map's recipe emitter through
+`RecipeMapBackend.doAdd` and omits emitted Water and Distilled Water variants
+before registration. A recipe that mixes ordinary water and another input fluid
+fails startup rather than silently losing the other fluid. Other fluids remain
+unchanged. GT builds its grouped NEI map from the resulting recipes. Audit
+scope: `FILTER_WATER_CUTTER_VARIANTS`.
 
 ### LV Lubricant distillation
 

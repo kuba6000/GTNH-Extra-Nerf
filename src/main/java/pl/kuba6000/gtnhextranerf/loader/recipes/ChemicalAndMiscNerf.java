@@ -5,7 +5,6 @@ import static gregtech.api.recipe.RecipeMaps.centrifugeNonCellRecipes;
 import static gregtech.api.recipe.RecipeMaps.centrifugeRecipes;
 import static gregtech.api.recipe.RecipeMaps.chemicalBathRecipes;
 import static gregtech.api.recipe.RecipeMaps.chemicalReactorRecipes;
-import static gregtech.api.recipe.RecipeMaps.cutterRecipes;
 import static gregtech.api.recipe.RecipeMaps.distilleryRecipes;
 import static gregtech.api.recipe.RecipeMaps.electrolyzerNonCellRecipes;
 import static gregtech.api.recipe.RecipeMaps.electrolyzerRecipes;
@@ -58,9 +57,6 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
         registry.register(AuditScope.MODIFY_PLUTONIUM_DECAY_RECIPES, ChemicalAndMiscNerf::modifyPlutoniumDecay);
         registry.register(AuditScope.MODIFY_SILICON_LINE_RECIPES, ChemicalAndMiscNerf::modifySiliconLine);
         registry.register(AuditScope.ADD_LIVINGROCK_PLATE, ChemicalAndMiscNerf::addLivingrockPlate);
-        registry.register(
-            AuditScope.REMOVE_SILICON_WAFER_WATER_CUTTER_RECIPES,
-            ChemicalAndMiscNerf::removeSiliconWaferWaterCutterRecipes);
         registry
             .register(AuditScope.MODIFY_LV_OIL_DISTILLERY_RECIPES, ChemicalAndMiscNerf::modifyLvOilDistilleryRecipes);
         registry.register(AuditScope.MODIFY_ENDSTONE_CENTRIFUGE_RECIPE, ChemicalAndMiscNerf::modifyEndstoneCentrifuge);
@@ -201,31 +197,6 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
         modifyMultiblockHydrogenSiliconRoute(recipes);
         modifyTrichlorosilaneCellRoute(recipes);
         modifyBartWorksZincSiliconRoute(recipes);
-    }
-
-    private static void removeSiliconWaferWaterCutterRecipes(RecipeContext recipes) {
-        RecipeMatch waterRecipe = RecipeMatch.builder()
-            .itemInputs(ItemList.Circuit_Silicon_Ingot.get(1))
-            .itemOutputs(
-                ItemList.Circuit_Silicon_Wafer.get(16),
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.SiliconSG, 4))
-            .fluidInputs(Materials.Water.getFluid(37))
-            .fluidOutputs()
-            .duration(40 * SECONDS)
-            .eut(TierEU.RECIPE_LV)
-            .build();
-        RecipeMatch distilledWaterRecipe = RecipeMatch.builder()
-            .itemInputs(ItemList.Circuit_Silicon_Ingot.get(1))
-            .itemOutputs(
-                ItemList.Circuit_Silicon_Wafer.get(16),
-                GTOreDictUnificator.get(OrePrefixes.dust, Materials.SiliconSG, 4))
-            .fluidInputs(GTModHandler.getDistilledWater(28))
-            .fluidOutputs()
-            .duration(40 * SECONDS)
-            .eut(TierEU.RECIPE_LV)
-            .build();
-        recipes.machine(cutterRecipes)
-            .removeExactly(RecipeMatch.anyOf(waterRecipe, distilledWaterRecipe), 2);
     }
 
     private static void modifyLvOilDistilleryRecipes(RecipeContext recipes) {

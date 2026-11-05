@@ -165,7 +165,7 @@ public enum AuditScope implements AuditDefinition {
         .added(1)
         .build()),
     MODIFY_SILICON_LINE_RECIPES(modified(7)),
-    REMOVE_SILICON_WAFER_WATER_CUTTER_RECIPES(removed(2)),
+    FILTER_WATER_CUTTER_VARIANTS(AuditExpectation.atLeastModified(1)),
     MODIFY_LV_OIL_DISTILLERY_RECIPES(modified(3)),
     MODIFY_ENDSTONE_CENTRIFUGE_RECIPE(modified(2)),
     MODIFY_STABALLOY_CENTRIFUGE_RECIPES(Mods.GTPlusPlus::isModLoaded, modified(2)),

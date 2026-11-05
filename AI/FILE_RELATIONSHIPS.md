@@ -117,7 +117,7 @@ The CI harness searches logs for the exact prefix
 | `CraftingNerf` | `CraftingRecipes` | Minecraft `CraftingManager`, Dreamcraft universal recipes, `GTShapedRecipe` | One typed scope per logical crafting nerf |
 | `AluminiumNerf` | `MachineRecipes` | chemical bath, mixer, centrifuge maps | Typed scopes |
 | `BlastFurnaceNerf` | `MachineRecipes` | primitive blast furnace and EBF maps, Railcraft Coke, BartWorks gases, optional TConstruct item | Typed scopes |
-| `ChemicalAndMiscNerf` | `MachineRecipes` and `CraftingRecipes` | chemical reactor, LCR, cutter, distillery, centrifuge, electrolyzer, chemical bath, blast furnace | Typed scopes |
+| `ChemicalAndMiscNerf` | `MachineRecipes` and `CraftingRecipes` | chemical reactor, LCR, Forge Hammer, distillery, centrifuge, electrolyzer, chemical bath, blast furnace | Typed scopes |
 | `CoreModRecipeNerf` | `MachineRecipes` | assembler, circuit assembler, chemical maps, mixer, centrifuge, vacuum furnace | Typed scopes |
 | `Ae2RecipeNerf` | `MachineRecipes`, `CraftingRecipes`, `Ae2RecipeIngredients` | AE2-owned outputs in GT maps; Controller and Blank Pattern crafting | Load-complete scopes; shared crafting material rule audited during registration |
 | `Ae2AssemblyLineRecipes` | Native GT Assembly Line builder | Controller production, 64k cell research, Scanner and NEI entries | One audited addition after recipe modifications |
@@ -173,6 +173,7 @@ the following together:
 | `MixinAssemblerOutputs` | GregTech machine builder | `@ModifyVariable` | Two Assembling Machine item outputs |
 | `MixinAssemblerRecipeMap` | GregTech recipe maps | `@ModifyArg` | Two Assembler recipe outputs and NEI slots |
 | `MixinArcaneCraftingRemainders` | Thaumcraft | `@WrapMethod` + `@WrapOperation` | Magicnetized Manasteel Rod crafting remainders and scheduling inventory synchronization |
+| `MixinCutterRecipeRegistration` | GregTech | `@WrapOperation` | Cutter variants with ordinary or distilled water, before recipe-map insertion |
 | `MixinMetalTransmutation` | Witching Gadgets | `@WrapOperation` | GT-generated `METALLURGICPERFECTION_TRANSMUTATION` crucible recipes |
 | `MixinMetalResearchText` | Witching Gadgets | `@ModifyConstant` | Metal transmutation research page text |
 | `MixinIronToSteelTransmutation` | GregTech | `@WrapOperation` | `IRON_TO_STEEL` crucible recipe |
@@ -238,6 +239,7 @@ settings.
 | Recipe port behavior | None at root | Full-pack server. |
 | Mixin targeting/content | Mixin annotation processor during compilation | Full-pack server. |
 | Industrial and Alloy Blast Smelter recipes | Exact recipe signatures and `AuditScope` cardinalities | `IndustrialRecipeIntegrationTests` and `AlloyBlastSmelterIntegrationTests` query the final initialized machine maps. |
+| Cutter coolants | Startup audit verifies filtered registrations | `CutterCoolantScenarios` exercises an LV Cutter, its NEI handler and LV Lubricant production. |
 | Metal transmutation | Startup audit verifies registration hooks | `MetalTransmutationIntegrationTests` exercises crucibles and research pages; `MetalTransmutationNeiScenarios` queries the NEI alchemy handler. |
 | Physical circuit drops | `PhysicalCircuitItemStackHandlerTest` covers insertion and extraction | `PhysicalCircuitDropIntegrationTests` checks real machine and input-bus destruction, NBT, explosion drops and HV ghost circuits. |
 | Lootbag preview | Native loot/ledger tests | `LootPreviewScenarios` exercises the live NEI tooltip while the server claims and reopens the world allowance. |

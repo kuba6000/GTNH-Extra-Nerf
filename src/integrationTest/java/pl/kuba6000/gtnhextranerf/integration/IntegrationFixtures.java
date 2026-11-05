@@ -1,6 +1,7 @@
 package pl.kuba6000.gtnhextranerf.integration;
 
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 /** Registers recipe alternatives before GregTech finishes loading. */
@@ -13,5 +14,10 @@ public final class IntegrationFixtures {
     @Mod.EventHandler
     public void prepare(FMLPreInitializationEvent event) {
         MaterialIntegrationTests.prepareAlternatives();
+    }
+
+    @Mod.EventHandler
+    public void prepareCutterRecipes(FMLPostInitializationEvent event) {
+        CutterCoolantFixture.register();
     }
 }

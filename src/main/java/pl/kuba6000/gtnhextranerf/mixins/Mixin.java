@@ -34,6 +34,11 @@ public enum Mixin implements IMixins {
         .addExcludedMod(GT6)
         .setPhase(LATE)),
 
+    CutterCoolants(new MixinBuilder().addCommonMixins("MixinCutterRecipeRegistration")
+        .addRequiredMod(GT5U)
+        .addExcludedMod(GT6)
+        .setPhase(LATE)),
+
     SoybeanCrop(new MixinBuilder().addCommonMixins("MixinSoybeanCrop")
         .addRequiredMod(TargetedMod.HARVESTCRAFT)
         .setPhase(LATE)),

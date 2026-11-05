@@ -296,7 +296,8 @@ catalog, including exact values, conditions and unchanged fields, is
 - Indium concentrate requires twice as much Aluminium.
 - Plutonium decay loses one Plutonium and gains a circuit-10 Helium route.
 - Silicon routes return less Salt, Hydrochloric Acid or BartWorks byproduct.
-- Silicon boule cutting loses its Water and Distilled Water routes.
+- Cutter recipes no longer accept ordinary Water or Distilled Water. Other
+  fluids, including Purified Water and UU-Matter, remain available.
 - LV Lubricant distillation consumes twice as much Light, Medium or Heavy Oil
   for the same output.
 - Endstone centrifuging returns less Tungstate and Helium.
