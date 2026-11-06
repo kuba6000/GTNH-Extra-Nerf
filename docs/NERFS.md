@@ -181,6 +181,12 @@ Reduced dev without Everglades does not activate the dimension check.
 
 ## Questbook crafting tasks
 
+Quest rewards are claimed once per BetterQuesting party. The claiming player
+receives the reward; all current party members, including absent players, are
+marked as having claimed it. Extra Nerf forces `syncQuestRewards=true` in memory
+after each Quest Book configuration initialization, without rewriting the file.
+This uses BQ's existing claim semantics, not a new permanent team-wide ledger.
+
 All BetterQuesting Standard crafting tasks also accept their required items
 from the inventory without consuming them. Detection runs on inventory changes
 or with Detect and uses each task's existing quantity, OreDictionary and NBT

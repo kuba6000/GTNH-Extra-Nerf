@@ -214,6 +214,16 @@ systems are outside this allowance.
 
 ## Questbook crafting tasks
 
+`MixinQuestBookConfig` injects at the single return of `QBConfig.init`, setting
+the native `syncQuestRewards` field to true after its file read/save. Repeating
+initialization reapplies the rule; there is no other writer or separate reload
+path for this field in BetterQuesting 3.8.92-GTNH. The file and unrelated settings
+remain unchanged. `VERIFY_PARTY_REWARDS` checks the effective value at load-complete
+when BetterQuesting is present. Native claim logic gives rewards only to the
+claimant and marks all current party members claimed, including absent members.
+`NativeScenarios.partyRewards` exercises native parties, item delivery, claim
+eligibility and repeated configuration loading from a false setting.
+
 Every BQ Standard crafting task additionally accepts its required items from
 the inventory without consuming them. `MixinCraftingTaskRetrieval` adds the
 inventory/observation interfaces while retaining native craft, smelt, anvil and

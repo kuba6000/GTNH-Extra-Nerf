@@ -3,12 +3,16 @@ package pl.kuba6000.gtnhextranerf.audit;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import cpw.mods.fml.common.Loader;
 import gregtech.api.enums.Mods;
 import gregtech.common.tileentities.machines.basic.MTEMassfabricator;
 import thaumcraft.api.research.ResearchCategories;
 
 /** Catalog of audit definitions; contains no session state or global result lookups. */
 public enum AuditScope implements AuditDefinition {
+
+    VERIFY_PARTY_REWARDS(() -> Loader.isModLoaded("betterquesting"), AuditExpectation.exact()
+        .build()),
 
     ADD_MAGICNETIZED_MANASTEEL_ROD(AuditExpectation.exact()
         .added(1)

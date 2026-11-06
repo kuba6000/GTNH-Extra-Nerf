@@ -12,6 +12,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import drethic.questbook.config.QBConfig;
 import gregtech.api.GregTechAPI;
 import pl.kuba6000.gtnhextranerf.audit.AuditManager;
 import pl.kuba6000.gtnhextranerf.audit.AuditReport;
@@ -99,6 +100,12 @@ public class CommonProxy {
     private void finishRecipeLoading() {
         Throwable startupFailure = null;
         try {
+            if (AuditScope.VERIFY_PARTY_REWARDS.isActive()) runStartupStep(() -> {
+                AuditManager.run(AuditScope.VERIFY_PARTY_REWARDS, audit -> {
+                    if (!QBConfig.syncQuestRewards) throw new IllegalStateException("Party reward sharing is disabled");
+                    audit.success();
+                });
+            });
             runStartupStep(NerfMaterials::verify);
             runStartupStep(ProgressionCertificates::verify);
             runStartupStep(EnergyHatchCertification::verify);

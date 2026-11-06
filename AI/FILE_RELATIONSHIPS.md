@@ -25,6 +25,10 @@ changes; `LootAllowancePreview` rejects packets from previous connections.
 
 ## Questbook crafting tasks
 
+`MixinQuestBookConfig` forces the native party-reward setting after `QBConfig.init`.
+`CommonProxy` verifies it through `VERIFY_PARTY_REWARDS` at load-complete.
+BetterQuesting retains ownership of claim checks, delivery and per-member progress.
+
 `MixinCraftingTaskRetrieval` adds BQ's inventory and observation interfaces to
 every `TaskCrafting` while preserving native production events. Its adapter,
 `CraftingTaskRetrieval`, keeps separate native retrieval progress;

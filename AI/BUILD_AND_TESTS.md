@@ -78,6 +78,7 @@ Select a fixture or GUI scenario:
 
 ```powershell
 python .github/scripts/run_horizon_tests.py --tests gtnhextranerftests:NativeScenarios.spatialAssembly
+python .github/scripts/run_horizon_tests.py --tests gtnhextranerftests:NativeScenarios.partyRewards
 python .github/scripts/run_horizon_tests.py --tests gtnhextranerftests:ArcaneWorkbenchScenarios
 ```
 

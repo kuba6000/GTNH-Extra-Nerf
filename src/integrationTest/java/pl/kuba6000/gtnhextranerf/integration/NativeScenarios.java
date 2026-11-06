@@ -297,6 +297,11 @@ public final class NativeScenarios {
         scenario(helper, "teamLeader", false, () -> TeamLeaderIntegrationTests.verify(MinecraftServer.getServer()));
     }
 
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void partyRewards(GameTestHelper helper) {
+        scenario(helper, "partyRewards", false, () -> PartyRewardIntegrationTests.verify(helper.getWorld()));
+    }
+
     static void scenario(GameTestHelper helper, String name, boolean powered, Fixture fixture) {
         ClientTestRuntime.setMobsEnabled(true);
         helper.afterTest(() -> ClientTestRuntime.setMobsEnabled(false));
