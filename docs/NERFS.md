@@ -451,14 +451,19 @@ player limits and opening. The XML files are not rewritten.
 inherited Basic pool. Basic stays at one unit; Good changes from four to one.
 Selection weights are unchanged. A server-wide allowance permits at most
 one controller from lootbags per save, across players, dimensions, Fortune and
-restarts. There is no guaranteed first drop. Crafting, other reward systems and
+restarts. The first opening of a bag containing the controller guarantees one,
+using one of its normal reward slots. Unrelated bags do not spend the guarantee;
+saves with an already spent allowance do not receive another controller.
+After successful delivery and recording its outcome, only the opening player
+receives the chat message "One controller to connect them all."
+Crafting, other reward systems and
 existing inventories are not affected.
 
 Both server and client apply the quantity patch to their native tables. NEI keeps
 the controller listed and shows the last allowance received from the server, or
 an unknown state if none is available. Once exhausted, it displays a 0% effective
-chance. An available allowance is not a guarantee: ELB's random draws and separate
-player limits still apply. The displayed snapshot can become stale if another
+chance. An available allowance guarantees the first eligible opening, including
+when legacy per-player counts are already exhausted. The snapshot can become stale if another
 player claims the reward concurrently. Controller tooltips replace the native
 base percentages and player counter; other lootbag percentages are identified as
 single-draw weights before limits and retries, with a warning that native player

@@ -35,7 +35,7 @@ import pl.kuba6000.gtnhextranerf.loot.NativeLootTables;
 import pl.kuba6000.gtnhextranerf.loot.modules.MeControllerLootModule;
 import pl.kuba6000.gtnhextranerf.loot.storage.FileLootLedger;
 
-/** Save-scoped limits around ELB's native opening. No changes to tables, random selection or native counts. */
+/** Save-scoped guarantees and limits around ELB's native opening and delivery. */
 public final class ServerLootRuntime {
 
     private static ServerLootRuntime active;
@@ -129,8 +129,11 @@ public final class ServerLootRuntime {
             return bag;
         } finally {
             try {
-                for (Issued issued : runtime.opening.issued)
+                for (Issued issued : runtime.opening.issued) {
                     runtime.limits.outcome(issued.id, issued.delivered == issued.amount);
+                    if (issued.delivered == issued.amount && issued.item.equals(MeControllerLootModule.ITEM))
+                        player.addChatMessage(new ChatComponentTranslation("gtnhextranerf.loot.controller_received"));
+                }
             } catch (IOException | RuntimeException failure) {
                 runtime.failed = true;
                 LootAllowanceSync.broadcast();
@@ -144,6 +147,24 @@ public final class ServerLootRuntime {
     public static boolean allowed(Drop drop) {
         ServerLootRuntime runtime = current();
         return runtime.limits.available(NativeLootTables.item(drop), drop.getIsRandomAmount() ? 1 : drop.getAmount());
+    }
+
+    /** Uses one native draw slot, and the same durable allowance as randomly selected controllers. */
+    public static ItemStack guaranteedController(EntityPlayer player, LootGroup group) {
+        ServerLootRuntime runtime = current();
+        if (!runtime.limits.available(MeControllerLootModule.ITEM, 1)) return null;
+        for (Drop drop : group.getDrops()) {
+            if (drop.getChance() <= 0 || !NativeLootTables.item(drop)
+                .equals(MeControllerLootModule.ITEM)) continue;
+            ItemStack stack = drop.getItemStack(1);
+            if (stack == null) throw new IllegalStateException("Guaranteed controller cannot be materialized");
+            ItemStack claimed = claim(drop, stack);
+            // The world-wide first controller takes precedence over legacy per-player counts.
+            if (claimed != null && drop.getLimitedDropCount() > 0)
+                EnhancedLootBags.LootGroupHandler.updateDropCount(player, group, drop);
+            return claimed;
+        }
+        return null;
     }
 
     /** Called only after ELB has materialized an actual stack, before ELB can spawn it. */

@@ -51,11 +51,12 @@ item.gtnhextranerf.undefined_field_boundary.tooltip=位置无从确定的力场�
 
 gtnhextranerf.loot.unavailable=战利品袋不可用。请在重试前检查服务器日志。
 gtnhextranerf.loot.edit_file=请编辑战利品袋配置文件，并使用 /lootbags reload 以校验所有改动。
+gtnhextranerf.loot.controller_received=一个控制器，连接万物。
 gtnhextranerf.loot.preview.amount=掉落时数量：%s
 gtnhextranerf.loot.preview.unknown=世界战利品袋限额：未知（服务器状态不可用）
 gtnhextranerf.loot.preview.remaining=世界战利品袋剩余额度：%s / %s
 gtnhextranerf.loot.preview.exhausted=实际概率：0%%（世界限额已用尽）
-gtnhextranerf.loot.preview.conditions=仍受随机抽取和 ELB 玩家限额约束。
+gtnhextranerf.loot.preview.conditions=世界掉落额度尚未耗尽时，首次打开可掉落此物品的战利品袋必定获得它。
 gtnhextranerf.loot.preview.last_update=世界限额为最近一次服务器更新的状态。
 gtnhextranerf.loot.preview.base_chance=单次抽取权重的近似值；限额和重试会影响掉落。
 gtnhextranerf.loot.preview.native_limit=ELB 玩家限额计数可能不是最新状态。

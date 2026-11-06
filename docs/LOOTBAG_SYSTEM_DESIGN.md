@@ -1,6 +1,6 @@
 # Lootbags: native ELB tables and global allowances
 
-Current architecture, 2026-10-04. This replaces the earlier standalone importer/planner
+Current architecture, updated 2026-11-06. This replaces the earlier standalone importer/planner
 proposal committed as `ea76683`; Git history retains that proposal. ELB 1.3.5 owns
 XML parsing, table objects, weighted selection, Fortune/trash merging, native player
 limits, stack splitting, delivery, sounds and bag consumption.
@@ -57,15 +57,20 @@ mutate already-live tables outside the load transaction; edit XML and reload ins
 `ServerLootRuntime` surrounds the native right-click to establish a server-thread
 context. Narrow mixins:
 
-1. Reject exhausted global rewards before ELB updates its own per-player counters.
-2. After ELB materializes a selected stack, durably claim its allowance before it
+1. Before a native draw, guarantee one controller if the merged pool contains it
+   and the global allowance remains. Claim it durably and use one normal draw slot.
+2. Reject exhausted global rewards before ELB updates its own per-player counters.
+3. After ELB materializes a selected stack, durably claim its allowance before it
    can be spawned. This second check also covers repeated/bundled sources.
-3. Observe ELB's spawn result and record delivered/failed outcomes afterwards.
+4. Observe ELB's spawn result and record delivered/failed outcomes afterwards.
 
 `GlobalLootLimits` owns only allowance checks and durable claims. The built-in
 `gtnhextranerf:me_controller` allowance permits one controller per save, shared by
-all players, bag types, Fortune variants and dimensions. It is random, not guaranteed.
-Native ELB reroll/exhaustion behavior remains intact, including its ten attempts
+all players, bag types, Fortune variants and dimensions. The first eligible bag
+guarantees it; unrelated bags do not spend it. The guarantee takes precedence over
+legacy per-player controller limits, but still updates ELB's limited-drop counter.
+Already-spent journals remain exhausted without any reset or additional award.
+Other native draws retain ELB reroll/exhaustion behavior, including its ten attempts
 and not consuming a bag when a draw produces no available reward.
 
 The allowance does not remove entries from preview tables. Once spent, the item
@@ -107,7 +112,7 @@ clears it on disconnect; before a valid snapshot it displays an unknown state.
 `MixinLootBagPreview` replaces the controller's cached native tooltip at display
 time. This keeps an already-open screen current and prevents ELB's base percentages
 and per-player counter from being mistaken for the global chance. An unspent
-allowance is subject to random selection and separate native limits; a spent
+allowance guarantees the next eligible opening; a spent
 allowance has 0% effective chance. The snapshot is the last received update and
 does not reserve the reward. Other reward tooltips identify their native
 percentages as single-draw weights before limits and retries, and warn that ELB's
@@ -122,9 +127,10 @@ scope, exact target expectations, mutation counts and a verification method. Kee
 global rules separately in `GlobalLootLimits` definitions at runtime startup.
 
 The former standalone percentage-per-opening and first-opening-guarantee APIs were
-removed with their custom planner. They are not active features of this native
-adapter. If requested for a concrete item later, implement them as explicit server
-extensions; do not restore a duplicate implementation of ELB's normal selection.
+removed with their custom planner. The concrete ME Controller guarantee now uses
+the native draw hook and existing allowance; it needs no separate persisted flag.
+Other such rules should remain explicit server extensions rather than duplicate
+ELB's normal selection engine.
 
 ## Upstream references
 

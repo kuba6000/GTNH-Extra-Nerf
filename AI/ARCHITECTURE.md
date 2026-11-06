@@ -12,7 +12,9 @@ use fresh audit sessions with the same scopes.
 `MixinItemLootBag` wraps native opening only to enforce global claims via
 `ServerLootRuntime`/`GlobalLootLimits`. `FileLootLedger` retains its v1 format and
 force-before-spawn behavior. Only limited rewards append new claims. The controller
-key remains `gtnhextranerf:me_controller`, with one unit per save and no guarantee.
+key remains `gtnhextranerf:me_controller`, with one unit per save. While unspent,
+the first opening whose merged pool contains the controller guarantees it in one
+native draw slot; subsequent openings retain the global exclusion.
 Native storage handles and our runtime reset between saves; old journal player
 counts remain a floor for ELB's own counters. `LootAllowanceSync` sends the
 controller allowance on login and changes; `LootAllowancePreview` ties it to the

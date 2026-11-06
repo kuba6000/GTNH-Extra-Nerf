@@ -203,7 +203,9 @@ merged caches and owns all normal selection/delivery and NEI table data.
 
 `MeControllerLootModule` preserves the two controller sources, their weights and
 Fortune inheritance. Global allowance `gtnhextranerf:me_controller` permits one
-unit per save, without a guarantee. Narrow opening hooks claim it durably before
+unit per save, guaranteed in the first native draw of the first eligible bag.
+Unrelated bags do not spend it; existing spent saves stay exhausted.
+Narrow opening hooks claim it durably before
 ELB spawns the stack. It never alters preview tables. The server synchronizes the
 remaining allowance; the NEI tooltip uses the latest connection-scoped snapshot,
 including an unknown state and 0% when exhausted. Other native percentages are

@@ -10,7 +10,8 @@ The native-table refactor was completed on 2026-10-04. See the
 - Separate audit session for every successful full-file reload, using the same scopes.
 - Recomputed native weight totals; ELB clears and rebuilds merged/Fortune caches.
 - Original ELB weighted selection, native limits, stack generation and delivery.
-- Global controller allowance; durable claim before native spawn.
+- Global controller allowance; first eligible opening guarantees one in a native
+  draw slot, with a durable claim before native spawn.
 - Existing v1 global journal retained, including previous player-count history.
 - Native YAMCore DB handle and global runtime reset between server/save sessions.
 - Native NEI's table data contains one controller. Its tooltip shows the latest
@@ -26,9 +27,9 @@ patch and global allowance boundary. Value objects needed to read v1 claims rema
 `LootPlan` is now only a proposed ledger transition, not a random selection plan.
 
 The original design commit `ea76683` and Git history preserve the larger proposal.
-Standalone first-opening guarantees and independent percentage bonuses are not
-wired into this simpler adapter. The requested real gameplay rule is a random
-ME Controller reward with a one-unit global cap.
+The controller's first-opening guarantee uses the native draw hook and existing
+one-unit global cap. There is no separate guarantee ledger or generic random planner.
+Independent percentage bonuses remain outside this adapter.
 
 ## Verification
 
@@ -39,7 +40,8 @@ ME Controller reward with a one-unit global cap.
 - Journal tests: corruption/truncation, missing files, exclusive ownership and a
   binary v1 fixture written by the previous engine (no reset of existing counters).
 - Opt-in full-pack fixture uses the real ELB right-click with deterministic native
-  RNG. It verifies one controller, subsequent rejection for another player/bag,
+  RNG. It opens an unrelated bag first, then verifies a guaranteed controller even
+  when RNG selects a different item, subsequent rejection for another player/bag,
   ledger reopen, an unrelated reward still dropping, unchanged XML, audited reload,
   rebuilt pre-warmed caches and controller entries remaining visible after the cap.
 - The live NEI fixture exercises a real client tooltip across a server-side claim.

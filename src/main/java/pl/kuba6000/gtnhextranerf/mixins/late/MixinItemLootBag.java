@@ -1,5 +1,8 @@
 package pl.kuba6000.gtnhextranerf.mixins.late;
 
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -8,6 +11,8 @@ import net.minecraft.world.World;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -21,6 +26,13 @@ import pl.kuba6000.gtnhextranerf.loot.runtime.ServerLootRuntime;
 
 @Mixin(value = ItemLootBag.class, remap = false)
 public abstract class MixinItemLootBag {
+
+    @Inject(method = "getRandomLootItems", at = @At("HEAD"), cancellable = true, require = 1, allow = 1)
+    private void gtnhextranerf$firstController(EntityPlayer player, LootGroup group,
+        CallbackInfoReturnable<List<ItemStack>> callback) {
+        ItemStack guaranteed = ServerLootRuntime.guaranteedController(player, group);
+        if (guaranteed != null) callback.setReturnValue(Collections.singletonList(guaranteed));
+    }
 
     @WrapMethod(method = "onItemRightClick", remap = true, require = 1)
     private ItemStack gtnhextranerf$opening(ItemStack stack, World world, EntityPlayer player,

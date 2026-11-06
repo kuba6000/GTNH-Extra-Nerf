@@ -61,7 +61,9 @@ public final class LootOpeningIntegrationTests {
                 .maybeStack(1)
                 .get();
             WorldServer world = DimensionManager.getWorld(0);
-            open(world, 38, 3, true, 1, controller);
+            open(world, 1, 0, false, 0, controller);
+            // RNG deliberately chooses another item: the first eligible opening must still issue the controller.
+            open(world, 38, 3, false, 1, controller);
             open(world, 37, 0, true, 0, controller);
             ServerLootRuntime.stop();
             ServerLootRuntime.start(server);
