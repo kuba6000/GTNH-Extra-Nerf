@@ -1,5 +1,12 @@
 # File relationships
 
+`MixinProgressionTickGate` and `MixinMultiblockCertification` both consult
+`MachineProgression`. Electric controller requirements come from the native
+normal/exotic energy and dynamo hatch lists. The second gate runs after those
+lists are rebuilt during structure validation and before `runMachine` can drain
+a locked buffer. `HatchCertificationIntegrationTests` checks the controller's
+hatch-derived requirements in the game runtime.
+
 This document maps runtime calls, shared data and upstream coupling. It is
 intended for impact analysis before editing a file.
 

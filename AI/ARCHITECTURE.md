@@ -37,6 +37,12 @@ stored in an additional namespaced task-progress tag.
 
 ## Purpose and operating model
 
+Machine certification is owned by `MachineProgression`. The shared tile tick gate
+pauses basic machines, Steam controllers and electric multiblocks with gated
+energy/dynamo hatches. `MixinMultiblockCertification` checks again after native
+structure validation, before recipe processing, so newly loaded controllers cannot
+lose a batch through a locked hatch. Native recipe fields remain the saved state.
+
 GTNH Extra Nerf is a compatibility-sensitive balance mod for a specific GTNH
 snapshot. It changes
 upstream behavior through mixins during class/recipe registration and through

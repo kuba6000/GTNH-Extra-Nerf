@@ -380,8 +380,10 @@ not currently show a certificate-warning icon. LV and
 higher basic electric machines require both. From MV onwards they also require
 the paid certificates up to their tier, from MV through MAX. Energy and dynamo
 hatches from LV upwards require the same prerequisite chain, including multi-amp,
-laser and wireless variants. ULV electric machines, generators, boilers and other
-multiblock controllers are outside the direct processing gate. The unpowered Ice
+laser and wireless variants. Electric multiblock controllers pause intact when a
+connected energy or dynamo hatch lacks certification, including after a world
+reload. Recertification resumes the batch without a certificate-induced power failure.
+ULV machines and controllers without gated hatches remain outside the gate. The unpowered Ice
 Cream Machine is also exempt from certification. Right-clicking the certificate
 unlocks gated machines for all players and dimensions in the save, consuming it
 once in survival. Its NEI page

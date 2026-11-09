@@ -17,7 +17,9 @@ Energy and dynamo hatches from LV upwards require the same chain of certificates
 up to their own voltage tier, including multi-amp, laser and wireless variants.
 Multiblock overclocking and parallel rules remain native; certification does not
 impose a separate recipe-voltage cap.
-ULV electric machines, generators, boilers and other multiblock controllers are
+Electric multiblock controllers require the highest tier among their connected
+normal/exotic energy and dynamo hatches. They pause intact while certification
+is missing. ULV electric machines and controllers without gated hatches remain
 outside the direct processing gate. The legacy electrical item/tier IDs stay
 `lv_certificate`/`lv` for save compatibility; its player-facing category is
 Electricity Gate.
@@ -179,9 +181,10 @@ synchronized per open machine window, so other players' open windows update afte
 certification without requiring a reconnect.
 
 The hatch gate is independent of controller GUI and recipe implementations.
-Controllers may report their ordinary power failure when a hatch stops supplying
-EU. Existing controller-owned buffers can continue supplying their stored energy;
-machines using wireless power directly without any hatch require separate rules.
+Electric controllers preserve progress and pending outputs before trying to drain
+a locked hatch. A second check after structure validation covers the first
+processing tick after a world reload. Recertification resumes the batch.
+Machines using wireless power directly without any hatch require separate rules.
 Steam multiblock controllers use the direct processing gate instead: a missing
 Steam certificate pauses an active batch without draining its hatch. Processing
 resumes after recertification. Their normal steam-use rules remain unchanged.

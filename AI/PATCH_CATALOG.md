@@ -950,7 +950,12 @@ selected Steam first, regardless of activation order.
 `MixinProgressionTickGate` wraps exactly one `MetaTileEntity.onPostTick` call in
 `BaseMetaTileEntity.doPostTick`. It gates electric `MTEBasicMachine` instances
 from LV upwards, basic Steam machines and `MTESteamMultiBlockBase` controllers,
-and retains in-flight work. The unpowered `MTEIceCreamMachine` is exempt.
+and retains in-flight work. Electric `MTEMultiBlockBase` controllers also require
+the highest tier among their normal/exotic energy and dynamo hatches.
+`MixinMultiblockCertification` checks again immediately before `runMachine` in
+`onPostTick` (exactly one injection), after structure validation has discovered
+hatches on a freshly loaded controller. Locked batches retain their progress and
+pending outputs. The unpowered `MTEIceCreamMachine` is exempt.
 `MixinProgressionMachineStatus` replaces
 the error widget's construction with a clickable subclass, adds a lock syncer,
 and prepends the certification message to normal/shift tooltips. Missing

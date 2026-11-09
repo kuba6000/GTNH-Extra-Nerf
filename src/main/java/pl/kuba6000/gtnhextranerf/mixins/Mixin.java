@@ -108,6 +108,7 @@ public enum Mixin implements IMixins {
     ProgressionCertification(new MixinBuilder()
         .addCommonMixins(
             "MixinProgressionTickGate",
+            "MixinMultiblockCertification",
             "MixinWirelessHatchCertification",
             "MixinProgressionMachineStatus",
             "MixinProgressionMachineGui",

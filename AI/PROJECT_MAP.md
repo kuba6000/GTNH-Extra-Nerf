@@ -172,6 +172,7 @@ All paths below start at
 | `TargetedMod.java` | Mod identity model used by `Mixin`; some declared entries are currently unused. |
 | `support/GeneratorEfficiency.java` | Shared tier-relative efficiency curve for generator mixins. |
 | `support/SteamConsumption.java` | Shared fivefold steam multiplier and single-block conversion. |
+| `late/MixinMultiblockCertification.java` | Checks certification after a controller discovers its energy hatches, before processing. |
 | `support/PhysicalCircuitItemStackHandler.java` | One real Integrated Circuit mapped to a machine's reserved circuit slot. |
 | `support/PhysicalCircuitSlots.java` | Shared tier and reserved-slot eligibility for physical circuits and their drops. |
 | `support/ProcessingWireRecipeTransformer.java` | Semantic transformer shared by the Processing Wire receiver mixin. |

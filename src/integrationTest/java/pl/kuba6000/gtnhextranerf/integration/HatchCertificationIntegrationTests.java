@@ -17,6 +17,7 @@ import gregtech.api.metatileentity.implementations.MTEHatchDynamo;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.metatileentity.implementations.MTEWirelessEnergy;
 import gregtech.common.misc.WirelessNetworkManager;
+import gregtech.common.tileentities.machines.multi.MTEElectricBlastFurnace;
 import pl.kuba6000.gtnhextranerf.GTNHExtraNerf;
 import pl.kuba6000.gtnhextranerf.progression.MachineProgression;
 import pl.kuba6000.gtnhextranerf.progression.ProgressionTier;
@@ -70,6 +71,27 @@ final class HatchCertificationIntegrationTests {
         verifyNetworkOutput(world, true);
         verifyWirelessOutput(world);
         verifyMaxGate(world);
+        verifyControllerRequirements();
+    }
+
+    private static void verifyControllerRequirements() {
+        MTEElectricBlastFurnace controller = new MTEElectricBlastFurnace("test.controller");
+        check(MachineProgression.requiredTier(controller) == null, "Controller without energy hatches is gated");
+        controller.mEnergyHatches.add(new MTEHatchEnergy("test.lv", 1, new String[0], null));
+        controller.mEnergyHatches.add(new MTEHatchEnergy("test.hv", 3, new String[0], null));
+        check(MachineProgression.requiredTier(controller) == ProgressionTier.HV, "Controller ignored its HV hatch");
+        controller.mEnergyHatches.clear();
+        controller.mDynamoHatches.add(new MTEHatchDynamo("test.mv", 2, new String[0], null));
+        check(MachineProgression.requiredTier(controller) == ProgressionTier.MV, "Controller ignored its dynamo");
+        controller.mDynamoHatches.clear();
+        controller.getExoticEnergyHatches()
+            .add(new MTEHatchEnergy("test.ev", 4, new String[0], null));
+        check(MachineProgression.requiredTier(controller) == ProgressionTier.EV, "Controller ignored exotic input");
+        controller.getExoticEnergyHatches()
+            .clear();
+        controller.getExoticDynamoHatches()
+            .add(new MTEHatchDynamo("test.iv", 5, new String[0], null));
+        check(MachineProgression.requiredTier(controller) == ProgressionTier.IV, "Controller ignored exotic output");
     }
 
     private static void verifyWirelessReceivers(WorldServer world) {

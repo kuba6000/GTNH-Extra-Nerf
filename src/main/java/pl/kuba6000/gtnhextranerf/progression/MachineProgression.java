@@ -4,11 +4,14 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
+import com.google.common.collect.Iterables;
+
 import gregtech.api.enums.MetaTileEntityIDs;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEBasicMachine;
 import gregtech.api.metatileentity.implementations.MTEHatch;
+import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
 import gregtech.common.tileentities.machines.basic.MTEIceCreamMachine;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.base.MTESteamMultiBlockBase;
 import pl.kuba6000.gtnhextranerf.GTNHExtraNerf;
@@ -20,6 +23,18 @@ public final class MachineProgression {
 
     public static ProgressionTier requiredTier(MetaTileEntity machine) {
         if (machine instanceof MTESteamMultiBlockBase) return ProgressionTier.STEAM;
+        if (machine instanceof MTEMultiBlockBase) {
+            MTEMultiBlockBase controller = (MTEMultiBlockBase) machine;
+            int tier = 0;
+            for (MTEHatch hatch : Iterables.concat(
+                controller.mEnergyHatches,
+                controller.mDynamoHatches,
+                controller.getExoticEnergyHatches(),
+                controller.getExoticDynamoHatches())) {
+                if (EnergyHatchCertification.isEnergyHatch(hatch)) tier = Math.max(tier, hatch.mTier);
+            }
+            return ProgressionTier.forMachine(tier, false);
+        }
         if (EnergyHatchCertification.isEnergyHatch(machine))
             return ProgressionTier.forMachine(((MTEHatch) machine).mTier, false);
         if (!(machine instanceof MTEBasicMachine)) return null;
@@ -37,7 +52,7 @@ public final class MachineProgression {
         return tile != null && tile.getMetaTileID() == MetaTileEntityIDs.INDUSTRIAL_APIARY.ID;
     }
 
-    /** Runs every tick for every machine, so it only compares masks and never names the missing certificate. */
+    /** Checks the required tier against saved certificate masks without resolving the missing certificate's name. */
     public static boolean isLocked(MetaTileEntity machine) {
         ProgressionTier required = requiredTier(machine);
         if (required == null) return false;
