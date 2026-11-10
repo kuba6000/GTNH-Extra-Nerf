@@ -18,13 +18,14 @@ if (providers.gradleProperty('horizonQaIntegration').map { it.toBoolean() }.getO
     sourceSets.main.java.srcDir('src/integrationTest/java')
     sourceSets.main.resources.srcDir('src/integrationTest/resources')
 
-    def report = providers.gradleProperty('horizonQaClientReportDir').orNull
+    def server = providers.gradleProperty('horizonQaServerReportDir').isPresent()
+    def report = providers.gradleProperty(server ? 'horizonQaServerReportDir' : 'horizonQaClientReportDir').orNull
     if (report != null) {
         def game = new File(report, 'game')
-        def runtimePath = layout.buildDirectory.file('fullpack/client-runtime.path').get().asFile
+        def runtimePath = layout.buildDirectory.file("fullpack/${server ? 'server' : 'client'}-runtime.path").get().asFile
         def runtimeJar = new File(framework, 'horizonqa.jar')
         def operations = objects.newInstance(HorizonTestFiles)
-        tasks.named('prepareFullPackClient') {
+        tasks.named(server ? 'prepareFullPackServer' : 'prepareFullPackClient') {
             inputs.file(runtimeJar)
             doLast {
                 def prepared = new File(runtimePath.getText('UTF-8').trim())

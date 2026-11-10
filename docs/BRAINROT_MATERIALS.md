@@ -161,7 +161,14 @@ does not encode a material or store a selected recipe. Future brainrots can use
 the same compilation with different consumed ingredients and ordinary GT recipes.
 The compilation has a custom pixel-art vinyl icon with a paper label, drawn
 at 16 pixels and exported at 32×32 pixels using nearest-neighbor scaling.
-The controller and compilation crafting recipes remain prototype recipes.
+The controller assembly recipe remains a prototype recipe.
+One Brainrot Compilation requires 1 Data Stick, 64 Zombie Brains, 1 Note Block,
+1 Clock, 16 Sugar, 16 Redstone and 144 mB Glue in an EV Assembler for 20 seconds.
+
+The compilation's item tooltip has two localized flavor-text lines, available
+in inventories and recipe views. The Brainrotter frontend omits the redundant
+non-consumption tooltip and NEI badge for this input. The native recipe still
+requires the compilation without consuming it.
 
 | Input, together with the compilation | Output | Time | Power |
 | --- | --- | --- | --- |
@@ -233,11 +240,13 @@ metadata 11316. Native casing checks exercise IV crafting and assembly with the 
 material and reject raw plates. English resources define the material names.
 
 `ADD_BRAINROTTER_RECIPES` accounts for the two Brainrotter processing recipes,
-raw hot-ingot cooling, controller assembly and compilation crafting. The cooling
+raw hot-ingot cooling, controller assembly and compilation assembly. The cooling
 addition requires exactly one existing finished-material cooling recipe as its
 cost reference and is published through the audited GT backend with rebuilt
 lookup indexes. `VERIFY_BRAINROTTER` checks the published
-machine, item and processing map. Native server tests construct real GT tiles,
+machine, item and processing map. A dedicated-server HQA case checks the exact
+compilation assembly recipe and rejects any remaining hand-crafting route.
+Native server tests construct real GT tiles,
 check a complete and damaged shell, reject hot ingots, then process cooled ingots
 and molten material through real hatch inventories and server ticks. They check
 input and energy consumption, output, the reusable compilation and processing

@@ -1,10 +1,18 @@
 package pl.kuba6000.gtnhextranerf.machines;
 
+import java.util.List;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
@@ -29,9 +37,9 @@ import pl.kuba6000.gtnhextranerf.materials.TungstenSteelProduction;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeContext;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeModule;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeRegistry;
-import pl.kuba6000.gtnhextranerf.recipes.crafting.CraftingRecipeBuilder;
 import pl.kuba6000.gtnhextranerf.recipes.machine.MachineRecipeStore;
 import pl.kuba6000.gtnhextranerf.recipes.machine.RecipeMatch;
+import thaumcraft.common.config.ConfigItems;
 
 /** One machine's item catalog, recipe map and audited registration. */
 public final class Brainrotter implements RecipeModule {
@@ -52,7 +60,19 @@ public final class Brainrotter implements RecipeModule {
                 .setHeight(166))
         .frontend(BrainrotterFrontend::new)
         .build();
-    private static final Item COMPILATION = new Item().setUnlocalizedName("gtnhextranerf.brainrot_compilation")
+    private static final Item COMPILATION = new Item() {
+
+        @Override
+        @SideOnly(Side.CLIENT)
+        public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
+            tooltip.add(
+                EnumChatFormatting.GRAY
+                    + StatCollector.translateToLocal("item.gtnhextranerf.brainrot_compilation.tooltip.0"));
+            tooltip.add(
+                EnumChatFormatting.GRAY
+                    + StatCollector.translateToLocal("item.gtnhextranerf.brainrot_compilation.tooltip.1"));
+        }
+    }.setUnlocalizedName("gtnhextranerf.brainrot_compilation")
         .setTextureName(GTNHExtraNerf.MODID + ":brainrot_compilation")
         .setCreativeTab(GregTechAPI.TAB_GREGTECH_MATERIALS);
     private static ItemStack controller;
@@ -161,11 +181,22 @@ public final class Brainrotter implements RecipeModule {
                 RecipeMatch.builder()
                     .itemOutputs(controller())
                     .build());
-        recipes.crafting()
+        recipes.machine(RecipeMaps.assemblerRecipes)
             .addOne(
-                CraftingRecipeBuilder.shapeless()
-                    .inputs(ItemList.Tool_DataStick.get(1), new ItemStack(Items.book))
-                    .output(compilation(1))
+                GTRecipeBuilder.builder()
+                    .itemInputs(
+                        ItemList.Tool_DataStick.get(1),
+                        new ItemStack(ConfigItems.itemZombieBrain, 64),
+                        new ItemStack(Blocks.noteblock),
+                        new ItemStack(Items.clock),
+                        new ItemStack(Items.sugar, 16),
+                        new ItemStack(Items.redstone, 16))
+                    .fluidInputs(Materials.Glue.getFluid(144))
+                    .itemOutputs(compilation(1))
+                    .duration(400)
+                    .eut(TierEU.RECIPE_EV),
+                RecipeMatch.builder()
+                    .itemOutputs(compilation(1))
                     .build());
     }
 

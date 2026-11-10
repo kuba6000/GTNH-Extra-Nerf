@@ -10,6 +10,7 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySkull;
@@ -21,6 +22,9 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.gtnewhorizon.structurelib.structure.IItemSource;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
+import com.gtnewhorizons.horizonqa.api.GameTestHelper;
+import com.gtnewhorizons.horizonqa.api.annotation.GameTest;
+import com.gtnewhorizons.horizonqa.api.annotation.GameTestHolder;
 import com.mojang.authlib.GameProfile;
 
 import bartworks.MainMod;
@@ -28,6 +32,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
+import gregtech.api.enums.TierEU;
 import gregtech.api.enums.VoltageIndex;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchInput;
@@ -44,15 +49,54 @@ import gregtech.api.util.shutdown.ShutDownReasonRegistry;
 import pl.kuba6000.gtnhextranerf.machines.Brainrotter;
 import pl.kuba6000.gtnhextranerf.machines.MTEIndustrialBrainrotter;
 import pl.kuba6000.gtnhextranerf.materials.NerfMaterials;
+import pl.kuba6000.gtnhextranerf.mixins.early.MixinCraftingManagerAccessor;
+import pl.kuba6000.gtnhextranerf.mixins.early.MixinRecipeAccessor;
+import pl.kuba6000.gtnhextranerf.recipes.machine.RecipeMatch;
 import tectech.recipe.TecTechRecipeMaps;
 import tectech.thing.CustomItemList;
 import thaumcraft.common.config.ConfigBlocks;
 import thaumcraft.common.tiles.TilePedestal;
 
 /** Native construction, hatch inventories and real server ticks in the disposable world. */
-final class BrainrotterIntegrationTests {
+@GameTestHolder("gtnhextranerfrecipes")
+public final class BrainrotterIntegrationTests {
 
     private BrainrotterIntegrationTests() {}
+
+    @GameTest(timeoutTicks = 100)
+    public static void compilation(GameTestHelper helper) {
+        verifyCompilation();
+        helper.succeed();
+    }
+
+    static void verifyCompilation() {
+        RecipeMatch expected = RecipeMatch.builder()
+            .itemInputs(
+                ItemList.Tool_DataStick.get(1),
+                GameRegistry.findItemStack("Thaumcraft", "ItemZombieBrain", 64),
+                new ItemStack(Blocks.noteblock),
+                new ItemStack(Items.clock),
+                new ItemStack(Items.sugar, 16),
+                new ItemStack(Items.redstone, 16))
+            .fluidInputs(Materials.Glue.getFluid(144))
+            .itemOutputs(Brainrotter.compilation(1))
+            .fluidOutputs()
+            .duration(400)
+            .eut(TierEU.RECIPE_EV)
+            .build();
+        long matches = RecipeMaps.assemblerRecipes.getAllRecipes()
+            .stream()
+            .filter(expected)
+            .count();
+        check(matches == 1, "Expected one EV compilation recipe with 64 Zombie Brains and Glue");
+        for (Object recipe : ((MixinCraftingManagerAccessor) CraftingManager.getInstance())
+            .gtnhextranerf$getRecipes()) {
+            ItemStack output = ((MixinRecipeAccessor) recipe).gtnhextranerf$getRecipeOutput();
+            check(
+                output == null || !output.isItemEqual(Brainrotter.compilation(1)),
+                "Brainrot Compilation still has a hand-crafting recipe");
+        }
+    }
 
     static void verifyDevelopment(WorldServer world) {
         check(
@@ -136,6 +180,7 @@ final class BrainrotterIntegrationTests {
     }
 
     static void verify(WorldServer world) {
+        verifyCompilation();
         // The public world-entry callback rebuilds GT indexes and derives FoTG's molten recipes.
         MainMod.runOnPlayerJoined(false, false);
         verifyProduction();

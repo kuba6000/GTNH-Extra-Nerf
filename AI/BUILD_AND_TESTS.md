@@ -133,6 +133,12 @@ production mod. `runFullPack` remains the command for manual gameplay.
 For automated full-pack runs, preparation copies the assembled pack into the
 supervisor-owned game directory before launching it. Test saves, options,
 logs and the overlaid mod JAR belong to that invocation.
+The integration isolates both `runFullPack` and `runFullPackServer` launches.
+The recipe-only selector
+`gtnhextranerfrecipes:BrainrotterIntegrationTests.compilation` can run through
+the Horizon-QA `runServerTests` supervisor with `--server-task :runFullPackServer`,
+the existing `horizonQaIntegration` and `horizonQaHome` properties, and
+`--accept-eula` after the operator accepts the Minecraft EULA.
 
 ## Full-pack tasks
 

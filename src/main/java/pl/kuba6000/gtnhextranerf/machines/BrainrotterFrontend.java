@@ -113,8 +113,10 @@ public final class BrainrotterFrontend extends RecipeMapFrontend {
         for (PositionedStack input : recipe.mInputs) {
             FixedPositionedStack stack = (FixedPositionedStack) input;
             Pos2d position;
-            if (stack.isNotConsumed()) position = RECORD;
-            else if (stack.isFluid() || solidInput) {
+            if (stack.isNotConsumed()) {
+                position = RECORD;
+                stack.customBadge = Collections.emptyList();
+            } else if (stack.isFluid() || solidInput) {
                 position = SOURCE;
                 solidInput = false;
             } else position = DIRECTION;
@@ -148,9 +150,9 @@ public final class BrainrotterFrontend extends RecipeMapFrontend {
     @SideOnly(Side.CLIENT)
     protected List<String> handleNEIItemInputTooltip(List<String> tooltip, FixedPositionedStack stack) {
         super.handleNEIItemInputTooltip(tooltip, stack);
+        if (stack.isNotConsumed()) return tooltip;
         String key;
-        if (stack.isNotConsumed()) key = "reusable_hint";
-        else if (stack.relx - stack.recipe.mOutputs.get(0).relx == DIRECTION.x - OUTPUT.x) key = "direction_hint";
+        if (stack.relx - stack.recipe.mOutputs.get(0).relx == DIRECTION.x - OUTPUT.x) key = "direction_hint";
         else key = "source_hint";
         Minecraft client = Minecraft.getMinecraft();
         int width = Math.max(
