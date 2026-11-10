@@ -294,7 +294,7 @@ catalog, including exact values, conditions and unchanged fields, is
 ## Chemistry and ore processing
 
 - Indium concentrate requires twice as much Aluminium.
-- Plutonium decay loses one Plutonium and gains a circuit-10 Helium route.
+- Both Plutonium decay batch sizes lose one Plutonium, with a circuit-10 Helium route available.
 - Silicon routes return less Salt, Hydrochloric Acid or BartWorks byproduct.
 - Cutter recipes no longer accept ordinary Water or Distilled Water. Other
   fluids, including Purified Water and UU-Matter, remain available.

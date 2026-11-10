@@ -957,10 +957,15 @@ For integrated circuit 24 Distillery recipes, oil input doubles from 12 L to
 
 ## Plutonium decay
 
+### Small batch
+
+Chemical Reactors and Large Chemical Reactors consume 8 Plutonium ingots,
+1 tiny Uranium dust and 1,000 L Air to produce 7 Plutonium dust and 100 L Radon.
+The recipe takes 10 minutes at ULV.
+
 ### Circuit 8 route
 
-- 64 Plutonium ingots plus one Uranium dust produce 63 Plutonium dust instead
-  of 64.
+- 64 Plutonium ingots plus one Uranium dust produce 63 Plutonium dust.
 - The recipe still consumes 8,000 L Air and produces 800 L Radon in 75 seconds
   at HV.
 
@@ -1326,5 +1331,4 @@ For clarity, the active source does not contain:
 
 - a shears crafting nerf;
 - removal of the TConstruct no-gas Aluminium route;
-- a small-batch circuit-9 Plutonium decay recipe;
 - configuration switches for individual changes.

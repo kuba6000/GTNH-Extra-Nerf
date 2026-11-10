@@ -146,6 +146,24 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
     }
 
     private static void modifyPlutoniumDecay(RecipeContext recipes) {
+        RecipeMatch smallBatch = RecipeMatch.builder()
+            .itemInputs(
+                GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Plutonium, 8),
+                GTOreDictUnificator.get(OrePrefixes.dustTiny, Materials.Uranium, 1))
+            .itemOutputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Plutonium, 8))
+            .fluidInputs(Materials.Air.getGas(1_000))
+            .fluidOutputs(Materials.Radon.getGas(100))
+            .duration(10 * MINUTES)
+            .eut(TierEU.RECIPE_ULV)
+            .build();
+        RecipeChange smallBatchLoss = RecipeChange.builder()
+            .itemOutputAmount(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Plutonium, 8), 7)
+            .build();
+        recipes.machine(chemicalReactorRecipes)
+            .modifyOne(smallBatch, smallBatchLoss);
+        recipes.machine(multiblockChemicalReactorRecipes)
+            .modifyOne(smallBatch, smallBatchLoss);
+
         recipes.machine(multiblockChemicalReactorRecipes)
             .modifyOne(
                 RecipeMatch.builder()

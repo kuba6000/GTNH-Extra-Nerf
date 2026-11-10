@@ -167,7 +167,7 @@ public enum AuditScope implements AuditDefinition {
     MODIFY_INDIUM_CONCENTRATE_RECIPES(modified(2)),
     REDUCE_TPV_MIXER_OUTPUT(modified(2)),
     MODIFY_PLUTONIUM_DECAY_RECIPES(AuditExpectation.exact()
-        .modified(1)
+        .modified(3)
         .added(1)
         .build()),
     MODIFY_SILICON_LINE_RECIPES(modified(7)),

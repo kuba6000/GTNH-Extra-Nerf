@@ -773,10 +773,15 @@ chemical reactor maps.
 
 ### Plutonium decay
 
+The small batch in both `chemicalReactorRecipes` and
+`multiblockChemicalReactorRecipes` consumes 8 Plutonium ingots, 1 tiny Uranium
+dust and 1,000 L Air. It produces 7 Plutonium dust and 100 L Radon in 10 minutes
+at ULV. Each batch consumes one Plutonium net.
+
 `chemical.plutonium-decay.circuit-8`:
 
 - consumes 64 Plutonium ingots, 1 Uranium dust, circuit 8 and 8,000 L Air;
-- Plutonium dust output changes from 64 to 63;
+- outputs 63 Plutonium dust;
 - 800 L Radon, 75 seconds and HV voltage remain unchanged.
 
 The circuit-10 route first asserts that the exact replacement does not already
