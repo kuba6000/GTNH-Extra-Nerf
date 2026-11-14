@@ -104,3 +104,8 @@ The declared supported pack release is **GTNH 2.9.0**, configured by
 `GTNHExtraNerf.SUPPORTED_GTNH_VERSION` and displayed on the startup error screen.
 The audit validates recipe contracts; it does not infer the pack version from
 the individually installed mods.
+
+Kevlar bee integration targets GT5 `RecipeItemInput`, `SingleRecipeCheck` and
+Forestry `Mutation.requireResource(Block,int)`. All three mixins require GT5
+and Forestry and exclude GT6. Saved bee genomes and the native lock format
+are unchanged.

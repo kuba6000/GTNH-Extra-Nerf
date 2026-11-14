@@ -1,5 +1,13 @@
 # Architecture
 
+## Bee recipe inputs
+
+`ChemicalAndMiscNerf` owns the Liquid Crystal Kevlar ingredient changes through
+the transactional editor. `MixinKevlarBeeInput` adapts the native input matcher
+for required Kevlar drones. Forestry owns active species resolution. GregTech
+retains lookup, counting and consumption. `MixinKevlarBeeMutation` changes the
+resource before Forestry constructs the condition and description.
+
 ## Native lootbag integration
 
 `MixinLootGroupsHandler` patches ELB's newly deserialized local tables before
@@ -255,3 +263,5 @@ after normal server startup. GUI operations use its client-thread queue and
 native input, while machine assertions run on the server thread. Reported
 completion drives JSON/JUnit output and client shutdown through the pinned
 portable supervisor. Manual `runFullPack` launches retain their normal lifecycle.
+
+The Kevlar lock adapter delegates input counting and consumption to the same native recipe owner. RecipeChange normalizes guaranteed input chances with the GT helper so native lock serialization compares equivalent representations.

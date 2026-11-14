@@ -307,3 +307,7 @@ templates. `NativeScenarios` reports native checks individually.
 `.github/scripts/run_horizon_tests.py` prepares the pinned PR dependency and uses
 its portable supervisor to launch, verify reports and finish the owned client.
 See `BUILD_AND_TESTS.md` for selectors and commands.
+
+`mixins/late/MixinKevlarBeeInput.java` owns active-species matching for required Kevlar drones. `MixinKevlarBeeMutation.java` changes their mutation resource to the ZPM Replicator.
+
+`mixins/late/MixinKevlarRecipeLock.java` delegates locked Liquid Crystal Kevlar input checks and consumption to the native recipe matcher.

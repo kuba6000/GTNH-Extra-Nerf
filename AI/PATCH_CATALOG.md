@@ -4,6 +4,32 @@ This is the exhaustive technical catalog for the current source snapshot. It
 records implemented behavior, not historical intent. Player-facing wording is
 in [`../docs/NERFS.md`](../docs/NERFS.md).
 
+## Kevlar bee requirement
+
+`ChemicalAndMiscNerf.requireKevlarDrones` adds consumed drones to both exact
+Liquid Crystal Kevlar LCR recipes. Circuit 1 consumes one for 9000 mB and
+circuit 9 consumes seven for 63000 mB.
+`ADD_KEVLAR_DRONE_TO_LIQUID_CRYSTAL_KEVLAR` requires two modifications.
+
+`MixinKevlarBeeInput` preserves required Kevlar drones' NBT in native
+`RecipeItemInput` and matches drone type and active species through Forestry.
+Both `matchesType` and `matchesRecipe` use the rule for counting and consumption.
+Other ingredients retain native matching.
+
+`MixinKevlarBeeMutation` changes resource metadata 11003 to 11001 only for
+GregTech's machine block and the Kevlar mutation, before Forestry constructs
+the condition and description. `MODIFY_KEVLAR_BEE_MUTATION_RESOURCE` requires
+one modification. All three mixins require GT5 and Forestry and exclude GT6.
+Each injector requires one target.
+
+`MixinKevlarRecipeLock` adapts `SingleRecipeCheck.checkRecipeInputs` only for
+Liquid Crystal Kevlar recipes in the LCR map. Counting and consumption use
+`GTRecipe.maxParallelCalculatedByInputs` and `consumeInput`, including the
+active-species matcher. Other recipe locks retain their native NBT rules.
+Saved lock records keep the native format. `RecipeChange.addItemInput` uses
+GregTech's `ArrayExt.fixChancesArray` so guaranteed consumption has the same
+canonical representation during registration and lock loading.
+
 ## Blighted Soybean
 
 When HarvestCraft is loaded, `MixinSoybeanCrop` modifies the crop and seed

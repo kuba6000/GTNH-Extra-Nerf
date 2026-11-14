@@ -2,6 +2,10 @@
 
 GTNH Extra Nerf is packaged as both a normal Forge mod and an FML coremod.
 
+Kevlar drone ingredients use Forestry active species within the native
+GregTech input matcher. Their ZPM Replicator mutation resource is applied
+during registration.
+
 ## Startup phases
 
 1. The coremod loader selects three early crafting accessors and two early
@@ -46,3 +50,5 @@ machines and GUI input, verifies JSON/JUnit reports and shuts down its own game.
 
 For implementation-level class maps and contracts, see the separate
 [`AI` documentation](../AI/README.md).
+
+Locked Liquid Crystal Kevlar recipes use the native recipe matcher for input checks and consumption. Other locked recipes retain their existing full-NBT matching.

@@ -11,6 +11,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import gregtech.api.recipe.RecipeMetadataKey;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.extensions.ArrayExt;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeValidationException;
 
 /** Ordered, reusable changes applied by MachineRecipes to a detached recipe. */
@@ -235,7 +236,11 @@ public final class RecipeChange implements Consumer<GTRecipe> {
             return this;
         }
 
-        /** Adds a consumed ingredient without replacing existing OreDict alternatives or input chances. */
+        /**
+         * Adds a consumed ingredient without replacing existing OreDict alternatives or input chances.
+         *
+         * @throws IllegalArgumentException if the added count is not positive
+         */
         public Builder addItemInput(ItemStack input) {
             ItemStack value = Objects.requireNonNull(input)
                 .copy();
@@ -246,6 +251,7 @@ public final class RecipeChange implements Consumer<GTRecipe> {
                 inputs[slot] = value.copy();
                 recipe.mInputChances = remapChances(recipe.mInputs, recipe.mInputChances, inputs);
                 recipe.mInputChances[slot] = 10000;
+                recipe.mInputChances = ArrayExt.fixChancesArray(recipe.mInputChances, -1);
                 recipe.mInputs = inputs;
                 if (recipe instanceof GTRecipe.GTRecipe_WithAlt) {
                     GTRecipe.GTRecipe_WithAlt alt = (GTRecipe.GTRecipe_WithAlt) recipe;

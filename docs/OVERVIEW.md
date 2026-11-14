@@ -16,6 +16,8 @@ The current project contains:
 - a harsher steam conversion ratio;
 - a 640,000 L Steam Input Hatch buffer for steam multiblocks;
 - shorter nuclear fuel-rod lifetime;
+- Kevlar drones in Liquid Crystal Kevlar production and a ZPM Replicator
+  required for their mutation;
 - lower Naquadah small-ore generation;
 - restricted early Steel production and reworked MV blast-furnace routes;
 - modified aluminium, ilmenite, titanium, silicon, platinum, samarium and

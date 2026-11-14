@@ -306,3 +306,7 @@ and checks server consumption, retained flowers and client inventory updates.
 completed Magicnetized Rod craft. `recipes/crafting/ArcaneWorkbenchSync` sends pending snapshots at
 server tick END, after vanilla's click transaction, and coalesces requests per
 player. `CommonProxy` registers the listener and clears pending work on stop.
+
+`ChemicalAndMiscNerf` adds consumed Kevlar drones through `RecipeChange`. `MixinKevlarBeeInput` connects native GregTech input matching to Forestry species resolution. `MixinKevlarBeeMutation` adapts Forestry resource registration using GregTech Replicator IDs.
+
+`MixinKevlarRecipeLock` connects `SingleRecipeCheck` to `GTRecipe` counting and consumption only for Liquid Crystal Kevlar in the LCR map. `RecipeChange.addItemInput` uses `ArrayExt.fixChancesArray` to preserve canonical guaranteed-consumption encoding.

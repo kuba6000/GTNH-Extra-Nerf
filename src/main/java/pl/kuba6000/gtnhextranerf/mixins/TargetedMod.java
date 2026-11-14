@@ -10,6 +10,7 @@ public enum TargetedMod implements ITargetMod {
     GT5U("gregtech"), // Also matches GT6.
     GT6("gregtech.asm.GT_ASM", "gregapi"), // Can be used to exclude GT6 from the GT5U target.
     DREAMCRAFT("com.dreammaster.coremod.DreamCoreMod", "dreamcraft"),
+    FORESTRY("Forestry"),
     GOODGENERATOR("goodgenerator"),
     APPLIED_ENERGISTICS_2("appliedenergistics2"),
     EXTRA_UTILITIES("ExtraUtilities"),

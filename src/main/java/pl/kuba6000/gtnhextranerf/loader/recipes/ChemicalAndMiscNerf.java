@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import bartworks.system.material.WerkstoffLoader;
+import forestry.api.apiculture.EnumBeeType;
 import goodgenerator.items.GGMaterial;
 import goodgenerator.util.ItemRefer;
 import gregtech.api.enums.GTValues;
@@ -34,6 +35,7 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
+import gregtech.loaders.misc.GTBeeDefinition;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.core.material.MaterialsElements;
 import gtnhlanth.common.register.WerkstoffMaterialPool;
@@ -52,6 +54,8 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
 
     @Override
     public void register(RecipeRegistry registry) {
+        registry
+            .register(AuditScope.ADD_KEVLAR_DRONE_TO_LIQUID_CRYSTAL_KEVLAR, ChemicalAndMiscNerf::requireKevlarDrones);
         registry.register(AuditScope.REDUCE_TPV_MIXER_OUTPUT, ChemicalAndMiscNerf::reduceTpvMixerOutput);
         registry.register(AuditScope.MODIFY_INDIUM_CONCENTRATE_RECIPES, ChemicalAndMiscNerf::modifyIndiumConcentrate);
         registry.register(AuditScope.MODIFY_PLUTONIUM_DECAY_RECIPES, ChemicalAndMiscNerf::modifyPlutoniumDecay);
@@ -74,6 +78,32 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
         registry.register(
             AuditScope.MODIFY_EXTREME_HEAT_EXCHANGER_HAND_CRAFTING,
             ChemicalAndMiscNerf::modifyExtremeHeatExchanger);
+    }
+
+    private static void requireKevlarDrones(RecipeContext recipes) {
+        for (int multiplier : new int[] { 1, 7 }) {
+            ItemStack drone = GTBeeDefinition.KEVLAR.getMemberStack(EnumBeeType.DRONE);
+            drone.stackSize = multiplier;
+            recipes.machine(multiblockChemicalReactorRecipes)
+                .modifyOne(
+                    RecipeMatch.builder()
+                        .itemInputs(
+                            WerkstoffLoader.CalciumChloride.get(OrePrefixes.dust, multiplier),
+                            Materials.ParaPhenylenediamine.getDust(9 * multiplier),
+                            Materials.TerephthaloylChloride.getDust(9 * multiplier),
+                            GTUtility.getIntegratedCircuit(multiplier == 1 ? 1 : 9))
+                        .itemOutputs()
+                        .fluidInputs(Materials.NMethylIIPyrrolidone.getFluid(1000L * multiplier))
+                        .fluidOutputs(
+                            Materials.LiquidCrystalKevlar.getFluid(9000L * multiplier),
+                            Materials.DilutedHydrochloricAcid.getFluid(2000L * multiplier))
+                        .duration(multiplier == 1 ? 30 * SECONDS : 2 * MINUTES + 55 * SECONDS)
+                        .eut(TierEU.RECIPE_UV)
+                        .build(),
+                    RecipeChange.builder()
+                        .addItemInput(drone)
+                        .build());
+        }
     }
 
     private static void addLivingrockPlate(RecipeContext recipes) {

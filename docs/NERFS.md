@@ -312,6 +312,17 @@ gas amount, duration, energy, heat and output are retained. Cutting the
 finished boule into wafers is unchanged. One modification and seven
 removals are required by the startup audit.
 
+## Kevlar bee requirement
+
+The LCR consumes one Kevlar drone for 9000 mB Liquid Crystal Kevlar on circuit
+1, or seven drones for 63000 mB on circuit 9. Only the active species must be
+Kevlar. Other genetics, inactive species and analysis state are unrestricted.
+Queens and princesses do not qualify. The Kevlar mutation requires a ZPM
+Replicator beneath the housing. Parents, mutation chance, recipe chemicals,
+outputs, time and power are retained. Recipe locking accepts different valid
+Kevlar genetics, including after saving and loading the lock. QFT routes and
+remelting are unchanged.
+
 ## High-tier hull insulation
 
 UV and UHV hulls require Kevlar insulation: 288 mB molten Kevlar in the

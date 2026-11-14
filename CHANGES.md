@@ -4,6 +4,11 @@ This file is a concise summary of the active ruleset. The complete canonical
 catalog, including exact values, conditions and unchanged fields, is
 [`docs/NERFS.md`](docs/NERFS.md).
 
+## Kevlar bees
+
+- Liquid Crystal Kevlar consumes Kevlar drones in the LCR, with unrestricted
+  other genetics, including with recipe locking. The Kevlar mutation requires a ZPM Replicator
+
 ## Lootbag previews
 
 - NEI displays the server's current ME Controller lootbag allowance, including

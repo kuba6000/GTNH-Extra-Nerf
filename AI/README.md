@@ -4,6 +4,9 @@ This directory is the technical source of truth for coding agents and
 maintainers working on GTNH Extra Nerf. Gameplay values must still be checked
 against source code when the implementation changes.
 
+Kevlar drone matching uses Forestry active species and the native GregTech
+input matcher. Exact rules are in `PATCH_CATALOG.md`.
+
 ## Reading order
 
 1. [`PROJECT_MAP.md`](PROJECT_MAP.md) — repository inventory and ownership.

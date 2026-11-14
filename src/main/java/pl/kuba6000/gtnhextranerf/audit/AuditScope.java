@@ -59,6 +59,8 @@ public enum AuditScope implements AuditDefinition {
     VERIFY_OZONE_SAFETY(AuditExpectation.exact()
         .build()),
     MODIFY_HIGH_TIER_HULL_INSULATION(modified(12)),
+    ADD_KEVLAR_DRONE_TO_LIQUID_CRYSTAL_KEVLAR(modified(2)),
+    MODIFY_KEVLAR_BEE_MUTATION_RESOURCE(modified(1)),
     MODIFY_AMERICIUM_BOULE(AuditExpectation.exact()
         .modified(1)
         .removed(7)
