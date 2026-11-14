@@ -363,7 +363,7 @@ public final class MTEIndustrialBrainrotter extends MTEExtendedPowerMultiBlockBa
                         return SimpleCheckRecipeResult.ofFailure("gtnhextranerf.brainrotter.pedestal_occupied");
                 }
                 setMaxParallel(
-                    1 + 2 * Math.max(0, GTUtility.getTier(getMaxInputVoltage()) - GTUtility.getTier(recipe.mEUt)));
+                    1 + 2 * Math.max(0, GTUtility.getTier(getAverageInputVoltage()) - GTUtility.getTier(recipe.mEUt)));
                 return CheckRecipeResultRegistry.SUCCESSFUL;
             }
 
@@ -393,7 +393,7 @@ public final class MTEIndustrialBrainrotter extends MTEExtendedPowerMultiBlockBa
 
     @Override
     protected void setProcessingLogicPower(ProcessingLogic logic) {
-        logic.setAvailableVoltage(getMaxInputVoltage());
+        logic.setAvailableVoltage(getAverageInputVoltage());
         logic.setAvailableAmperage(getMaxInputAmps());
         logic.setAmperageOC(false);
     }
