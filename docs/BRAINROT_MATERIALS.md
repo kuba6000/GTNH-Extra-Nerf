@@ -189,7 +189,8 @@ limit is `1 + 2 * max(0, energyVoltageTier - recipeVoltageTier)`, calculated for
 the matched recipe, so future recipes do not inherit a fixed EV baseline. For an
 EV recipe the limits are EV=1, IV=3, LuV=5, UEV=13 and UXV=19. GT's sub-tick
 parallel multiplier is disabled to keep this limit; batch mode remains sequential
-batching. Amperage contributes available power but does not add voltage overclocks.
+batching. Amperage overclocking uses available power to add overclocks beyond the
+input voltage tier without increasing the voltage-based parallel limit.
 
 Controller and hatch backgrounds share a pixel wood casing. The controller has
 its own CRT/knob/lamp front, with separate active and emissive layers. Casing

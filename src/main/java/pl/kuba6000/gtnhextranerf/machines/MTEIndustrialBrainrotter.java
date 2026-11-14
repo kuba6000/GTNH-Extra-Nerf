@@ -383,7 +383,7 @@ public final class MTEIndustrialBrainrotter extends MTEExtendedPowerMultiBlockBa
                     .setDurationModifier(speedBoost)
                     .setEUtDiscount(euModifier)
                     .setMaxTierSkips(maxTierSkips)
-                    .setAmperageOC(false)
+                    .setAmperageOC(true)
                     .setDurationDecreasePerOC(overClockTimeReduction)
                     .setEUtIncreasePerOC(overClockPowerIncrease);
             }
@@ -395,7 +395,7 @@ public final class MTEIndustrialBrainrotter extends MTEExtendedPowerMultiBlockBa
     protected void setProcessingLogicPower(ProcessingLogic logic) {
         logic.setAvailableVoltage(getAverageInputVoltage());
         logic.setAvailableAmperage(getMaxInputAmps());
-        logic.setAmperageOC(false);
+        logic.setAmperageOC(true);
     }
 
     @Override
