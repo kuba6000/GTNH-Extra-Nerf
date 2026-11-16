@@ -49,6 +49,10 @@ public final class AuditSession {
         return handle;
     }
 
+    public synchronized boolean isFinished() {
+        return report != null;
+    }
+
     public synchronized AuditHandle current() {
         Deque<AuditHandle> stack = stacks.get(Thread.currentThread());
         if (stack == null || stack.isEmpty()) throw new IllegalStateException("No active audit scope");
