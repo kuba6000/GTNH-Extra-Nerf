@@ -1,10 +1,10 @@
 package pl.kuba6000.gtnhextranerf.progression;
 
+import java.util.List;
+
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
-
-import com.google.common.collect.Iterables;
 
 import gregtech.api.enums.MetaTileEntityIDs;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
@@ -19,20 +19,23 @@ import pl.kuba6000.gtnhextranerf.GTNHExtraNerf;
 /** Server-authoritative processing gate. Basic-machine GUIs sync the missing certificate. */
 public final class MachineProgression {
 
+    /**
+     * The overworld record. Machines and energy hatches ask several times per tick, so it is looked up once and
+     * remembered; {@link #refresh} and {@link #reset} keep it from outliving its world.
+     */
+    private static volatile ProgressionData cached;
+
     private MachineProgression() {}
 
     public static ProgressionTier requiredTier(MetaTileEntity machine) {
         if (machine instanceof MTESteamMultiBlockBase) return ProgressionTier.STEAM;
         if (machine instanceof MTEMultiBlockBase) {
             MTEMultiBlockBase controller = (MTEMultiBlockBase) machine;
-            int tier = 0;
-            for (MTEHatch hatch : Iterables.concat(
-                controller.mEnergyHatches,
-                controller.mDynamoHatches,
-                controller.getExoticEnergyHatches(),
-                controller.getExoticDynamoHatches())) {
-                if (EnergyHatchCertification.isEnergyHatch(hatch)) tier = Math.max(tier, hatch.mTier);
-            }
+            // Runs every tick for every controller: plain loops avoid allocating a concatenated view.
+            int tier = maxEnergyHatchTier(controller.mEnergyHatches, 0);
+            tier = maxEnergyHatchTier(controller.mDynamoHatches, tier);
+            tier = maxEnergyHatchTier(controller.getExoticEnergyHatches(), tier);
+            tier = maxEnergyHatchTier(controller.getExoticDynamoHatches(), tier);
             return ProgressionTier.forMachine(tier, false);
         }
         if (EnergyHatchCertification.isEnergyHatch(machine))
@@ -41,6 +44,14 @@ public final class MachineProgression {
         if (machine instanceof MTEIceCreamMachine) return null;
         if (isIndustrialApiary(machine)) return ProgressionTier.HV;
         return ProgressionTier.forMachine(((MTEBasicMachine) machine).mTier, machine.isSteampowered());
+    }
+
+    private static int maxEnergyHatchTier(List<? extends MTEHatch> hatches, int tier) {
+        for (int i = 0, size = hatches.size(); i < size; i++) {
+            MTEHatch hatch = hatches.get(i);
+            if (EnergyHatchCertification.isEnergyHatch(hatch)) tier = Math.max(tier, hatch.mTier);
+        }
+        return tier;
     }
 
     /**
@@ -103,16 +114,37 @@ public final class MachineProgression {
         return data(world).isCurrentCertificate(tier, issuedEpoch);
     }
 
+    /**
+     * Re-reads a remembered record at the start of each server tick, so a replaced record is noticed within one tick.
+     * Nothing is looked up until a machine has asked for the record.
+     */
+    public static void refresh() {
+        if (cached != null) cached = lookup();
+    }
+
+    /** Called when the server stops, so that the next world starts from its own record. */
+    public static void reset() {
+        cached = null;
+    }
+
+    private static ProgressionData lookup() {
+        WorldServer overworld = DimensionManager.getWorld(0);
+        return overworld == null ? null
+            : (ProgressionData) overworld.mapStorage.loadData(ProgressionData.class, ProgressionData.NAME);
+    }
+
     private static ProgressionData data(World world) {
         if (world == null || world.isRemote) throw new IllegalStateException("Certification requires a server world");
+        ProgressionData data = cached;
+        if (data != null) return data;
         WorldServer overworld = DimensionManager.getWorld(0);
         if (overworld == null) throw new IllegalStateException("Progression overworld unavailable");
-        ProgressionData data = (ProgressionData) overworld.mapStorage
-            .loadData(ProgressionData.class, ProgressionData.NAME);
+        data = lookup();
         if (data == null) {
             data = new ProgressionData();
             overworld.mapStorage.setData(ProgressionData.NAME, data);
         }
+        cached = data;
         return data;
     }
 }

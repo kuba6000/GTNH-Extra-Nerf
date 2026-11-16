@@ -34,6 +34,7 @@ import pl.kuba6000.gtnhextranerf.materials.NerfMaterials;
 import pl.kuba6000.gtnhextranerf.progression.CertificationCost;
 import pl.kuba6000.gtnhextranerf.progression.ElectricalSafety;
 import pl.kuba6000.gtnhextranerf.progression.EnergyHatchCertification;
+import pl.kuba6000.gtnhextranerf.progression.MachineProgression;
 import pl.kuba6000.gtnhextranerf.progression.ProgressionCertificates;
 import pl.kuba6000.gtnhextranerf.progression.ProgressionServerTasks;
 import pl.kuba6000.gtnhextranerf.progression.ProgressionTier;
@@ -56,7 +57,7 @@ public class CommonProxy {
     private static final String INTEGRITY_FAILURE_PREFIX = "GTNH Extra Nerf integrity check failed:";
 
     // preInit "Run before anything else. Read your config, create blocks, items, etc, and register them with the
-    // GameRegistry." (Remove if not needed)
+    // GameRegistry."
     public void preInit(FMLPreInitializationEvent event) {
         LootAllowanceSync.initialize();
         Config.synchronizeConfiguration(event.getSuggestedConfigurationFile());
@@ -82,14 +83,14 @@ public class CommonProxy {
             .register(new ProgressionServerTasks());
     }
 
-    // load "Do your mod setup. Build whatever data structures you care about. Register recipes." (Remove if not needed)
+    // load "Do your mod setup. Build whatever data structures you care about. Register recipes."
     public void init(FMLInitializationEvent event) {
         Brainrotter.registerMachine();
         IronBathFurnace.registerMachines();
         if (Mods.OpenComputers.isModLoaded()) IronBathMeasurementDriver.register();
     }
 
-    // postInit "Handle interaction with other mods, complete your setup based on this." (Remove if not needed)
+    // postInit "Handle interaction with other mods, complete your setup based on this."
     public void postInit(FMLPostInitializationEvent event) {
         runStartupStep(RawMachineCasings::registerGroups);
     }
@@ -185,7 +186,7 @@ public class CommonProxy {
         throw failure;
     }
 
-    // register server commands in this event handler (Remove if not needed)
+    // register server commands in this event handler
     public void serverStarting(FMLServerStartingEvent event) {
         ServerLootRuntime.start(event.getServer());
         // The decisions about telemetry and teams belong to the world, so they are read before anything starts.
@@ -207,6 +208,7 @@ public class CommonProxy {
             TeamTracking.stop();
             UpdateChecker.stop();
             ProgressionServerTasks.reset();
+            MachineProgression.reset();
             ArcaneWorkbenchSync.reset();
             Config.unloadWorld();
         }
