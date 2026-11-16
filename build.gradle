@@ -3,6 +3,8 @@ plugins {
     id 'com.gtnewhorizons.gtnhconvention'
 }
 
+apply from: 'gradle/supported-pack.gradle'
+
 fullPack {
     // CI starts every server run from an empty directory. A local run keeps its EULA, world and configuration.
     cleanServerRuntime.set(providers.gradleProperty('fullPackCi').isPresent())

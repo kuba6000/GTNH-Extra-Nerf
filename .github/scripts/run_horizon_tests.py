@@ -1,4 +1,4 @@
-"""Build the pinned Horizon-QA PR and run its portable client supervisor."""
+"""Build pinned Horizon-QA and run its portable client supervisor."""
 
 import argparse
 import json
@@ -11,7 +11,7 @@ import uuid
 import zipfile
 
 
-REVISION = "ad5adb0f8ccede91de4b5da2db50fc0534a4250c"
+REVISION = "e8b9fb3aeee29180dd25301d0ad6522c5287a603"
 REPOSITORY = "https://github.com/GTNewHorizons/Horizon-QA.git"
 
 
@@ -36,7 +36,7 @@ def prepare_framework(source=None):
         source = cache / "source"
         if not source.exists():
             run(["git", "clone", "--filter=blob:none", "--single-branch", "--branch",
-                 "fullpack-client-testing", REPOSITORY, str(source)], cache)
+                 "manual-laboratories", REPOSITORY, str(source)], cache)
         run(["git", "checkout", "--detach", REVISION], source)
     source = source.resolve()
     revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=source, text=True).strip()
@@ -66,11 +66,23 @@ def prepare_framework(source=None):
     return cache
 
 
+def resolve_sdk(path):
+    path = path.resolve()
+    metadata = json.loads((path / "sdk.json").read_text(encoding="utf-8"))
+    if metadata["profile"] != "automation":
+        raise RuntimeError("Client tests require the automation SDK profile")
+    for name in (metadata["devJar"], metadata["runtimeJar"], "tools/scripts/client-tests/build.gradle"):
+        if not (path / name).is_file():
+            raise RuntimeError("Missing Horizon-QA SDK file: " + name)
+    return path
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--tests")
     parser.add_argument("--client-task", choices=(":runFullPack", ":runClient"), default=":runFullPack")
     parser.add_argument("--framework-source", type=Path)
+    parser.add_argument("--framework-sdk", type=Path)
     parser.add_argument("--report-dir", type=Path)
     parser.add_argument("--timeout-seconds", type=int, default=1800)
     parser.add_argument("--prepare-only", action="store_true")
@@ -81,7 +93,9 @@ def main():
     report = (args.report_dir or root / "build" / "horizonqa" / str(uuid.uuid4())).resolve()
     if not args.prepare_only and report.exists():
         raise RuntimeError("Report directory must be new: " + str(report))
-    framework = prepare_framework(args.framework_source)
+    if args.framework_source and args.framework_sdk:
+        parser.error('--framework-source and --framework-sdk are mutually exclusive')
+    framework = resolve_sdk(args.framework_sdk) if args.framework_sdk else prepare_framework(args.framework_source)
     if args.prepare_only:
         print(framework)
         return 0

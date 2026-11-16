@@ -6,13 +6,17 @@ interface HorizonTestFiles {
 if (providers.gradleProperty('horizonQaIntegration').map { it.toBoolean() }.getOrElse(false)) {
     def frameworkPath = providers.gradleProperty('horizonQaHome').get()
     def framework = file(frameworkPath)
-    if (!new File(framework, 'framework.json').isFile()) {
+    def sdkManifest = new File(framework, 'sdk.json')
+    def sdk = sdkManifest.isFile() ? new groovy.json.JsonSlurper().parse(sdkManifest) : null
+    def explicitDevJar = providers.gradleProperty('horizonQaDevJar').orNull
+    if (explicitDevJar == null && sdk == null && !new File(framework, 'framework.json').isFile()) {
         throw new GradleException('Prepare the pinned Horizon-QA dependency with .github/scripts/run_horizon_tests.py')
     }
+    def devJar = explicitDevJar != null ? file(explicitDevJar) : new File(framework, sdk != null ? sdk.devJar : 'horizonqa-dev.jar')
     dependencies {
-        compileOnly files(new File(framework, 'horizonqa-dev.jar'))
+        compileOnly files(devJar)
         if (providers.gradleProperty('horizonQaClientTask').getOrElse(':runFullPack') == ':runClient') {
-            runtimeOnlyNonPublishable files(new File(framework, 'horizonqa-dev.jar'))
+            runtimeOnlyNonPublishable files(devJar)
         }
     }
     sourceSets.main.java.srcDir('src/integrationTest/java')
@@ -23,20 +27,38 @@ if (providers.gradleProperty('horizonQaIntegration').map { it.toBoolean() }.getO
     if (report != null) {
         def game = new File(report, 'game')
         def runtimePath = layout.buildDirectory.file("fullpack/${server ? 'server' : 'client'}-runtime.path").get().asFile
-        def runtimeJar = new File(framework, 'horizonqa.jar')
+        def explicitRuntimeJar = providers.gradleProperty('horizonQaRuntimeJar').orNull
+        def runtimeJar = explicitRuntimeJar != null ? file(explicitRuntimeJar) : new File(framework, sdk != null ? sdk.runtimeJar : 'horizonqa.jar')
+        def seedWorldPath = providers.gradleProperty('horizonQaSeedWorld').orNull
+        if (seedWorldPath != null && !server) {
+            throw new GradleException('horizonQaSeedWorld requires a supervised server run')
+        }
+        def seedWorld = seedWorldPath == null ? null : file(seedWorldPath)
         def operations = objects.newInstance(HorizonTestFiles)
         tasks.named(server ? 'prepareFullPackServer' : 'prepareFullPackClient') {
             inputs.file(runtimeJar)
+            if (seedWorld != null) inputs.dir(seedWorld)
             doLast {
                 def prepared = new File(runtimePath.getText('UTF-8').trim())
                 operations.files.copy {
                     from prepared
                     into game
                     exclude 'saves/**', 'logs/**', 'crash-reports/**', 'screenshots/**', 'options.txt'
+                    if (server) exclude 'world/**'
                 }
                 operations.files.copy {
                     from runtimeJar
                     into new File(game, 'mods')
+                }
+                if (seedWorld != null) {
+                    def targetWorld = new File(game, 'world')
+                    if (!new File(seedWorld, 'level.dat').isFile() || targetWorld.exists()) {
+                        throw new GradleException('Seed world must contain level.dat and target world must be new')
+                    }
+                    operations.files.copy {
+                        from seedWorld
+                        into targetWorld
+                    }
                 }
                 runtimePath.setText(game.absolutePath, 'UTF-8')
             }

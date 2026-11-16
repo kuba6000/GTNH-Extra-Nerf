@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           repository: GTNewHorizons/Horizon-QA
-          ref: ad5adb0f8ccede91de4b5da2db50fc0534a4250c
+          ref: e8b9fb3aeee29180dd25301d0ad6522c5287a603
           path: build/horizonqa-framework
           fetch-depth: 0
       - name: Set up Java toolchains
@@ -35,6 +35,14 @@ jobs:
           validate-wrappers: true
       - name: Install graphics dependencies
         run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libglx-mesa0 x11-xserver-utils
+      - name: Download supported GTNH client
+        run: |
+          mkdir -p "$HOME/Downloads"
+          curl --fail --location --retry 3 \
+            https://downloads.gtnewhorizons.com/Multi_mc_downloads/GT_New_Horizons_2.9.0_Java_17-26.zip \
+            --output "$HOME/Downloads/GT_New_Horizons_2.9.0_Java_17-26.zip"
+          printf '%s  %s\n' 6d0ebe7e6be18fb74b4fc920916cc5710e142a3f885072d324da05244d398b16 \
+            "$HOME/Downloads/GT_New_Horizons_2.9.0_Java_17-26.zip" | sha256sum --check
       - name: Run main Horizon-QA scenarios
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -106,6 +114,15 @@ jobs:
 
       - name: Grant execute permission
         run: chmod +x gradlew
+
+      - name: Download supported GTNH server
+        run: |
+          mkdir -p "$HOME/Downloads"
+          curl --fail --location --retry 3 \
+            https://downloads.gtnewhorizons.com/ServerPacks/GT_New_Horizons_2.9.0_Server_Java_17-26.zip \
+            --output "$HOME/Downloads/GT_New_Horizons_2.9.0_Server_Java_17-26.zip"
+          printf '%s  %s\n' 0ab3de26e4d0de80a2df286916570d9af31c3394cb1f44aee8b9aa1f2ead9831 \
+            "$HOME/Downloads/GT_New_Horizons_2.9.0_Server_Java_17-26.zip" | sha256sum --check
 
       - name: Test full-pack server harness
         run: python .github/scripts/test_run_full_pack_server.py

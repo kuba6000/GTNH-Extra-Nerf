@@ -1,0 +1,94 @@
+import groovy.json.JsonOutput
+import java.security.MessageDigest
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipOutputStream
+
+abstract class PrepareSupportedPack extends DefaultTask {
+    @InputFile
+    @PathSensitive(PathSensitivity.NONE)
+    abstract RegularFileProperty getArchive()
+
+    @Input
+    abstract Property<String> getExpectedSha256()
+
+    @OutputDirectory
+    abstract DirectoryProperty getDestination()
+
+    @TaskAction
+    void prepare() {
+        def source = archive.get().asFile
+        def sourceHash = sha256(source)
+        if (sourceHash != expectedSha256.get()) {
+            throw new GradleException('The archive does not match the supported GTNH 2.9.0 distribution')
+        }
+        def directory = destination.get().asFile
+        directory.mkdirs()
+        def normalized = new File(directory, "${sourceHash}.tmp")
+        new ZipFile(source).withCloseable { zip ->
+            def entries = zip.entries().toList()
+            def roots = entries.findResults { entry ->
+                def match = entry.name =~ /^(.*)mods\/[^\/]+\.jar$/
+                match.matches() ? match.group(1) : null
+            }.unique()
+            if (roots.size() != 1) {
+                throw new GradleException('The GTNH archive must contain one game directory with mods')
+            }
+            def root = roots.first()
+            new ZipOutputStream(new FileOutputStream(normalized)).withCloseable { output ->
+                entries.findAll {
+                    !it.directory && (it.name.startsWith(root) ||
+                        it.name.endsWith('/libraries/lwjgl3ify-3.0.42-forgePatches.jar'))
+                }.each { entry ->
+                    def path = entry.name.startsWith(root) ? entry.name.substring(root.length()) :
+                        '.gtnh/launcher/lwjgl3ify-forgePatches.jar'
+                    if (path.startsWith('/') || path.contains('\\') || path.tokenize('/').contains('..')) {
+                        throw new GradleException("Unsafe archive path: ${path}")
+                    }
+                    def target = new ZipEntry(path)
+                    target.time = 0
+                    target.method = ZipEntry.STORED
+                    target.size = entry.size
+                    target.crc = entry.crc
+                    output.putNextEntry(target)
+                    zip.getInputStream(entry).withCloseable { input -> input.transferTo(output) }
+                    output.closeEntry()
+                }
+            }
+        }
+        def asset = new File(directory, "${sha256(normalized)}.zip")
+        java.nio.file.Files.move(normalized.toPath(), asset.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+        new File(directory, 'manifest.json').setText(JsonOutput.toJson([
+            version: 1,
+            archives: [[url: asset.toURI().toString()]]
+        ]), 'UTF-8')
+    }
+
+    private static String sha256(File file) {
+        def digest = MessageDigest.getInstance('SHA-256')
+        file.withInputStream { input ->
+            new java.security.DigestInputStream(input, digest).transferTo(OutputStream.nullOutputStream())
+        }
+        return HexFormat.of().formatHex(digest.digest())
+    }
+}
+
+def releaseRoot = layout.buildDirectory.dir('fullpack/supported-2.9.0')
+def clientPack = tasks.register('prepareSupportedClientPack', PrepareSupportedPack) {
+    archive.set(layout.file(providers.gradleProperty('fullPackClientArchive').map { new File(it) }.orElse(
+        providers.systemProperty('user.home').map { new File(it, 'Downloads/GT_New_Horizons_2.9.0_Java_17-26.zip') })))
+    expectedSha256.set('6d0ebe7e6be18fb74b4fc920916cc5710e142a3f885072d324da05244d398b16')
+    destination.set(releaseRoot.map { it.dir('client') })
+}
+def serverPack = tasks.register('prepareSupportedServerPack', PrepareSupportedPack) {
+    archive.set(layout.file(providers.gradleProperty('fullPackServerArchive').map { new File(it) }.orElse(
+        providers.systemProperty('user.home').map { new File(it, 'Downloads/GT_New_Horizons_2.9.0_Server_Java_17-26.zip') })))
+    expectedSha256.set('0ab3de26e4d0de80a2df286916570d9af31c3394cb1f44aee8b9aa1f2ead9831')
+    destination.set(releaseRoot.map { it.dir('server') })
+}
+fullPack {
+    manifestUrl.set(releaseRoot.map { it.file('client/manifest.json').asFile.toURI().toString() })
+    serverManifestUrl.set(releaseRoot.map { it.file('server/manifest.json').asFile.toURI().toString() })
+}
+tasks.named('prepareFullPackClient') { dependsOn(clientPack) }
+tasks.named('prepareFullPackServer') { dependsOn(serverPack) }

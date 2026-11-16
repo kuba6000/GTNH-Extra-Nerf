@@ -1,12 +1,16 @@
 package pl.kuba6000.gtnhextranerf.integration;
 
+import java.util.Arrays;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import com.dreammaster.scripts.IngredientFactory;
 
 import bartworks.system.material.WerkstoffLoader;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTRecipe;
@@ -18,29 +22,74 @@ final class AlloyBlastSmelterIntegrationTests {
     private AlloyBlastSmelterIntegrationTests() {}
 
     static void verify() {
-        verifySteelAndAluminium();
-    }
-
-    private static void verifySteelAndAluminium() {
-        RecipeMap<?> smelter = RecipeMaps.alloyBlastSmelterRecipes;
-        check(
-            find(
-                smelter,
-                new ItemStack[] { Materials.Iron.getDust(1), Materials.Coal.getDust(1),
-                    GTUtility.getIntegratedCircuit(11) },
-                Materials.Oxygen.getGas(1_000)) == null,
-            "Alloy Blast Smelter still turns iron and carbon directly into steel");
-        check(
-            find(
-                smelter,
-                new ItemStack[] { Materials.CastIron.getDust(1), GTUtility.getIntegratedCircuit(11) },
-                Materials.Oxygen.getGas(1_000)) == null,
-            "Alloy Blast Smelter still accepts the old cast iron cost");
-        ItemStack[] castIron = { Materials.CastIron.getDust(3), GTUtility.getIntegratedCircuit(11) };
-        equivalentSmelting("cast iron", castIron, Materials.Steel.getMolten(432), Materials.Oxygen.getGas(6_000));
-
+        verifySteel();
         verifyAluminium(Materials.Aluminium.getDust(1));
         verifyAluminium(IngredientFactory.getModItem("TConstruct", "materials", 1, 12));
+    }
+
+    static void verifySteel() {
+        for (RecipeMap<?> map : new RecipeMap<?>[] { RecipeMaps.blastFurnaceRecipes,
+            RecipeMaps.alloyBlastSmelterRecipes }) {
+            long steelRecipes = map.getAllRecipes()
+                .stream()
+                .filter(
+                    recipe -> Arrays.stream(recipe.mOutputs)
+                        .anyMatch(output -> output != null && output.isItemEqual(Materials.Steel.getIngots(1)))
+                        || Arrays.stream(recipe.mFluidOutputs)
+                            .anyMatch(output -> output != null && output.isFluidEqual(Materials.Steel.getMolten(1))))
+                .peek(
+                    recipe -> check(
+                        recipe.mEUt == TierEU.RECIPE_UHV && recipe.mDuration == 1,
+                        map.unlocalizedName + " still has an early or slow industrial steel route"))
+                .count();
+            check(steelRecipes == 3, map.unlocalizedName + " must have one steel batch and two remelting routes");
+            for (Materials material : new Materials[] { Materials.Steel, Materials.SteelMagnetic }) {
+                GTRecipe remelting = find(
+                    map,
+                    new ItemStack[] { material.getDust(1), GTUtility.getIntegratedCircuit(1) });
+                check(remelting != null, map.unlocalizedName + " lost remelting for " + material.mName);
+                check(
+                    remelting.mEUt == TierEU.RECIPE_UHV && remelting.mDuration == 1,
+                    map.unlocalizedName + " remelting must require late power and take one tick");
+                check(remelting.mFluidInputs.length == 0, "Steel remelting must not require gas");
+                if (map == RecipeMaps.blastFurnaceRecipes) {
+                    check(
+                        remelting.mOutputs.length == 1 && remelting.mOutputs[0].stackSize == 1
+                            && remelting.mOutputs[0].isItemEqual(Materials.Steel.getIngots(1))
+                            && remelting.mSpecialValue == 1000
+                            && remelting.mFluidOutputs.length == 0,
+                        "EBF remelting must preserve its steel output and heat requirement");
+                } else {
+                    check(
+                        remelting.mOutputs.length == 0 && remelting.mFluidOutputs.length == 1
+                            && remelting.mFluidOutputs[0].isFluidEqual(Materials.Steel.getMolten(1))
+                            && remelting.mFluidOutputs[0].amount == 144,
+                        "ABS remelting must output one ingot of molten steel");
+                }
+            }
+        }
+        check(
+            !OreDictionary.getOres("dustAnyCarbon")
+                .isEmpty(),
+            "The carbon ore dictionary is empty");
+        for (ItemStack carbon : OreDictionary.getOres("dustAnyCarbon")) {
+            ItemStack ingredient = carbon.copy();
+            ingredient.stackSize = 1;
+            ItemStack[] inputs = { Materials.Iron.getDust(50), ingredient, GTUtility.getIntegratedCircuit(2) };
+            GTRecipe ebf = find(RecipeMaps.blastFurnaceRecipes, inputs);
+            GTRecipe smelter = find(RecipeMaps.alloyBlastSmelterRecipes, inputs);
+            check(ebf != null && smelter != null, "A dustAnyCarbon variant lost the late steel batch");
+            check(
+                ebf.mOutputs[0].stackSize == 50 && ebf.mSpecialValue == 2000,
+                "The late EBF steel batch changed its output or heat requirement");
+            check(
+                ebf.mOutputs.length == 2 && ebf.mOutputs[1].isItemEqual(Materials.Ash.getDust(1))
+                    && ebf.getOutputChance(1) == 1111,
+                "The late EBF steel batch lost its ash chance");
+            check(
+                smelter.mFluidOutputs.length == 1 && smelter.mFluidOutputs[0].amount == 7200,
+                "The late ABS steel batch has an incorrect output");
+        }
     }
 
     private static void verifyAluminium(ItemStack input) {
