@@ -10,9 +10,12 @@ import pl.kuba6000.gtnhextranerf.loader.recipes.ChemicalAndMiscNerf;
 import pl.kuba6000.gtnhextranerf.loader.recipes.CoreModRecipeNerf;
 import pl.kuba6000.gtnhextranerf.loader.recipes.CraftingNerf;
 import pl.kuba6000.gtnhextranerf.loader.recipes.IntergalacticRecipeNerf;
+import pl.kuba6000.gtnhextranerf.loader.recipes.IronBathAlloyRecipes;
+import pl.kuba6000.gtnhextranerf.loader.recipes.IronBathMetalProcessingRecipes;
 import pl.kuba6000.gtnhextranerf.loader.recipes.ProgressionRecipeNerf;
 import pl.kuba6000.gtnhextranerf.loader.recipes.SlimeRecipeNerf;
 import pl.kuba6000.gtnhextranerf.machines.Brainrotter;
+import pl.kuba6000.gtnhextranerf.machines.IronBathFurnace;
 import pl.kuba6000.gtnhextranerf.materials.TungstenSteelProduction;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeFailurePolicy;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeRegistry;
@@ -36,6 +39,9 @@ public final class RecipeLoader {
                     .register(new ProgressionRecipeNerf())
                     .register(new TungstenSteelProduction())
                     .register(new Brainrotter())
+                    .register(new IronBathFurnace())
+                    .register(new IronBathAlloyRecipes())
+                    .register(new IronBathMetalProcessingRecipes())
                     .run();
         Ae2AssemblyLineRecipes.register();
     }

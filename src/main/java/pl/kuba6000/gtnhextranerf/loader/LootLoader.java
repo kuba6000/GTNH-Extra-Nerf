@@ -1,6 +1,6 @@
 package pl.kuba6000.gtnhextranerf.loader;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,12 +20,14 @@ import pl.kuba6000.gtnhextranerf.loot.LootModule;
 import pl.kuba6000.gtnhextranerf.loot.LootPatchRunner;
 import pl.kuba6000.gtnhextranerf.loot.LootValidationException;
 import pl.kuba6000.gtnhextranerf.loot.NativeLootTables;
+import pl.kuba6000.gtnhextranerf.loot.modules.IronBathLootModule;
 import pl.kuba6000.gtnhextranerf.loot.modules.MeControllerLootModule;
 
 /** A single post-deserialization pipeline, using only native ELB tables. */
 public final class LootLoader {
 
-    private static final List<LootModule> MODULES = Collections.singletonList(new MeControllerLootModule());
+    private static final List<LootModule> MODULES = Arrays
+        .asList(new MeControllerLootModule(), new IronBathLootModule());
     private static boolean sealed;
     private static int initialLoads;
     private static boolean developmentUnavailable;

@@ -14,6 +14,7 @@ import pl.kuba6000.gtnhextranerf.components.ComponentItem;
 import pl.kuba6000.gtnhextranerf.fabrication.FabricationItem;
 import pl.kuba6000.gtnhextranerf.items.BlightedSoybean;
 import pl.kuba6000.gtnhextranerf.loader.ComponentLoader;
+import pl.kuba6000.gtnhextranerf.machines.IronBathFurnace;
 import pl.kuba6000.gtnhextranerf.progression.ProgressionCertificateItem;
 import pl.kuba6000.gtnhextranerf.progression.ProgressionCertificates;
 import pl.kuba6000.gtnhextranerf.progression.ProgressionTier;
@@ -32,6 +33,9 @@ public final class NEIExtraNerfConfig implements IConfigureNEI {
         }
         API.registerRecipeHandler(new UfoAssemblerRecipeHandler());
         API.registerUsageHandler(new UfoAssemblerRecipeHandler());
+        API.registerRecipeHandler(new IronBathRecipeHandler());
+        API.registerUsageHandler(new IronBathRecipeHandler());
+        API.addRecipeCatalyst(IronBathFurnace.controller(), IronBathRecipeHandler.class.getName());
         API.addRecipeCatalyst(
             ComponentLoader.fabrication()
                 .assembly(),
@@ -48,6 +52,16 @@ public final class NEIExtraNerfConfig implements IConfigureNEI {
 
     @SubscribeEvent
     public void registerHandlerInfo(NEIRegisterHandlerInfosEvent event) {
+        event.registerHandlerInfo(
+            new HandlerInfo.Builder(IronBathRecipeHandler.class.getName(), "GTNH Extra Nerf", GTNHExtraNerf.MODID)
+                .setDisplayStack(IronBathFurnace.controller())
+                .setWidth(IronBathRecipeHandler.WIDTH)
+                .setHeight(IronBathRecipeHandler.HEIGHT)
+                .setMaxRecipesPerPage(1)
+                .setMultipleWidgetsAllowed(false)
+                .setShowOverlayButton(false)
+                .setShowFavoritesButton(false)
+                .build());
         event.registerHandlerInfo(
             new HandlerInfo.Builder(CertificateRecipeHandler.class.getName(), "GTNH Extra Nerf", GTNHExtraNerf.MODID)
                 .setDisplayStack(ProgressionCertificates.stack(ProgressionTier.LV))

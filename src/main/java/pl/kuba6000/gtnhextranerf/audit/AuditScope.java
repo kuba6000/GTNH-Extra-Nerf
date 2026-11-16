@@ -99,6 +99,20 @@ public enum AuditScope implements AuditDefinition {
     ADD_BRAINROTTER_RECIPES(AuditExpectation.exact()
         .added(5)
         .build()),
+    ADD_IRON_BATH_RECIPES(AuditExpectation.exact()
+        .added(24)
+        .modified(3)
+        .build()),
+    MODIFY_IRON_BATH_ALLOY_MIXTURES(modified(10)),
+    MODIFY_IRON_BATH_ALLOY_HAND_CRAFTING(modified(2)),
+    REMOVE_IRON_BATH_IRON_WASHING(AuditExpectation.exact()
+        .removed(36)
+        .build()),
+    REMOVE_IRON_BATH_ALLOY_LOOT(removed(2)),
+    REMOVE_AMBIGUOUS_SHAFT_ALLOY_RECYCLING(removed(3)),
+    RESTRICT_CHAINMAIL_STEEL_RECOVERY(removed(8)),
+    VERIFY_IRON_BATH(AuditExpectation.exact()
+        .build()),
     VERIFY_BRAINROTTER(AuditExpectation.exact()
         .build()),
 
@@ -152,9 +166,9 @@ public enum AuditScope implements AuditDefinition {
     MODIFY_ILMENITE_SLAG_CENTRIFUGE_RECIPE(modified(2)),
     RESTRICT_PRIMITIVE_BLAST_FURNACE_STEEL_FUELS(removed(39)),
     MODIFY_STEEL_BLAST_FURNACE_RECIPES(AuditExpectation.exact()
-        .modified(2)
-        .added(1)
-        .removed(2)
+        .modified(5)
+        .added(2)
+        .removed(4)
         .build()),
     MODIFY_ALUMINIUM_BLAST_FURNACE_RECIPES(AuditExpectation.exact()
         .modified(5)

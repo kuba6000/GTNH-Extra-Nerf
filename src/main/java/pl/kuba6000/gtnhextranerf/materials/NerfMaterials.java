@@ -66,6 +66,7 @@ public final class NerfMaterials {
         rawTungstenSteel.mMetaItemSubID = RAW_TUNGSTEN_STEEL_ID;
         rawTungstenSteel.setProcessingMaterialTierEU(Materials.TungstenSteel.getProcessingMaterialTierEU());
         Materials.TungstenSteel.setChemicalFormula("");
+        IronBathMaterials.register();
     }
 
     public static Materials rawTungstenSteel() {

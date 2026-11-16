@@ -14,9 +14,11 @@ import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import drethic.questbook.config.QBConfig;
 import gregtech.api.GregTechAPI;
+import gregtech.api.enums.Mods;
 import pl.kuba6000.gtnhextranerf.audit.AuditManager;
 import pl.kuba6000.gtnhextranerf.audit.AuditReport;
 import pl.kuba6000.gtnhextranerf.audit.AuditScope;
+import pl.kuba6000.gtnhextranerf.integration.opencomputers.IronBathMeasurementDriver;
 import pl.kuba6000.gtnhextranerf.items.BlightedSoybean;
 import pl.kuba6000.gtnhextranerf.items.MagicnetizedRods;
 import pl.kuba6000.gtnhextranerf.loader.ComponentLoader;
@@ -25,6 +27,7 @@ import pl.kuba6000.gtnhextranerf.loader.RecipeLoader;
 import pl.kuba6000.gtnhextranerf.loot.runtime.LootAllowanceSync;
 import pl.kuba6000.gtnhextranerf.loot.runtime.ServerLootRuntime;
 import pl.kuba6000.gtnhextranerf.machines.Brainrotter;
+import pl.kuba6000.gtnhextranerf.machines.IronBathFurnace;
 import pl.kuba6000.gtnhextranerf.machines.ProgressionMachineNerf;
 import pl.kuba6000.gtnhextranerf.machines.RawMachineCasings;
 import pl.kuba6000.gtnhextranerf.materials.NerfMaterials;
@@ -63,6 +66,7 @@ public class CommonProxy {
         NerfMaterials.registerBlocks();
         RawMachineCasings.register();
         Brainrotter.registerItem();
+        IronBathFurnace.registerBlocks();
         BlightedSoybean.register();
         MagicnetizedRods.register();
         FMLCommonHandler.instance()
@@ -81,6 +85,8 @@ public class CommonProxy {
     // load "Do your mod setup. Build whatever data structures you care about. Register recipes." (Remove if not needed)
     public void init(FMLInitializationEvent event) {
         Brainrotter.registerMachine();
+        IronBathFurnace.registerMachines();
+        if (Mods.OpenComputers.isModLoaded()) IronBathMeasurementDriver.register();
     }
 
     // postInit "Handle interaction with other mods, complete your setup based on this." (Remove if not needed)
@@ -129,6 +135,7 @@ public class CommonProxy {
             if (AuditScope.VERIFY_ASSEMBLY_LINE_SPATIAL_DIMENSION.isActive())
                 runStartupStep(ProgressionMachineNerf::verifySpatialAssemblyLines);
             runStartupStep(Brainrotter::verify);
+            runStartupStep(IronBathFurnace::verify);
             if (AuditScope.VERIFY_NATIVE_LOOT_TABLES.isActive()) runStartupStep(LootLoader::verifyPublished);
         } catch (RuntimeException | Error failure) {
             startupFailure = failure;

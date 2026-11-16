@@ -157,6 +157,12 @@ public enum Mixin implements IMixins {
 
     StartupErrorScreen(new MixinBuilder().addClientMixins("MixinFMLClientHandler")
         .setPhase(EARLY)),
+    LocomotiveTrades(new MixinBuilder().addCommonMixins("MixinMerchantRecipe", "MixinMerchantRecipeList")
+        .setPhase(EARLY)),
+    VillagerTradePreview(new MixinBuilder().addCommonMixins("MixinVillagerTradePreview")
+        .addRequiredMod(TargetedMod.RAILCRAFT)
+        .addRequiredMod(TargetedMod.MOBS_INFO)
+        .setPhase(LATE)),
     CraftingManagerAccessor(new MixinBuilder().addCommonMixins("MixinCraftingManagerAccessor")
         .setPhase(EARLY)),
     RecipeAccessor(new MixinBuilder().addCommonMixins("MixinRecipeAccessor")

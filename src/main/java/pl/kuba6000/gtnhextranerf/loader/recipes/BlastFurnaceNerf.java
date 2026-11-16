@@ -99,7 +99,7 @@ public final class BlastFurnaceNerf implements RecipeModule {
                 1);
 
         recipes.machine(blastFurnaceRecipes)
-            .modifyOne(
+            .removeExactly(
                 RecipeMatch.builder()
                     .itemInputs(
                         GTOreDictUnificator.get(OrePrefixes.dust, Materials.CastIron, 1),
@@ -113,17 +113,7 @@ public final class BlastFurnaceNerf implements RecipeModule {
                     .eut(TierEU.RECIPE_MV)
                     .specialValue(1000)
                     .build(),
-                RecipeChange.builder()
-                    .itemInputs(
-                        GTOreDictUnificator.get(OrePrefixes.dust, Materials.CastIron, 3),
-                        GTUtility.getIntegratedCircuit(11))
-                    .itemOutputs(
-                        GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Steel, 3),
-                        Materials.Ash.getDust(1))
-                    .fluidInputs(Materials.Oxygen.getGas(6_000))
-                    .fluidOutputs(Materials.CarbonDioxide.getGas(2_500))
-                    .duration(45 * SECONDS)
-                    .build());
+                1);
 
         recipes.machine(alloyBlastSmelterRecipes)
             .removeExactly(
@@ -140,7 +130,7 @@ public final class BlastFurnaceNerf implements RecipeModule {
                     .build(),
                 1);
         recipes.machine(alloyBlastSmelterRecipes)
-            .modifyOne(
+            .removeExactly(
                 RecipeMatch.builder()
                     .itemInputs(Materials.CastIron.getDust(1), GTUtility.getIntegratedCircuit(11))
                     .itemOutputs()
@@ -149,12 +139,39 @@ public final class BlastFurnaceNerf implements RecipeModule {
                     .duration(4 * SECONDS)
                     .eut(TierEU.RECIPE_MV)
                     .build(),
-                RecipeChange.builder()
-                    .itemInputAmount(Materials.CastIron.getDust(1), 3)
-                    .fluidInputAmount(Materials.Oxygen.getGas(1_000), 6_000)
-                    .fluidOutputAmount(Materials.Steel.getMolten(144), 432)
-                    .duration(36 * SECONDS)
-                    .build());
+                1);
+
+        for (Materials material : new Materials[] { Materials.Steel, Materials.SteelMagnetic }) {
+            recipes.machine(blastFurnaceRecipes)
+                .modifyOne(
+                    RecipeMatch.builder()
+                        .itemInputs(material.getDust(1), GTUtility.getIntegratedCircuit(1))
+                        .itemOutputs(Materials.Steel.getIngots(1))
+                        .fluidInputs()
+                        .fluidOutputs()
+                        .duration(50 * SECONDS)
+                        .eut(TierEU.RECIPE_MV)
+                        .specialValue(1000)
+                        .build(),
+                    RecipeChange.builder()
+                        .eut(TierEU.RECIPE_UHV)
+                        .duration(1)
+                        .build());
+            recipes.machine(alloyBlastSmelterRecipes)
+                .modifyOne(
+                    RecipeMatch.builder()
+                        .itemInputs(material.getDust(1), GTUtility.getIntegratedCircuit(1))
+                        .itemOutputs()
+                        .fluidInputs()
+                        .fluidOutputs(Materials.Steel.getMolten(144))
+                        .duration(40 * SECONDS)
+                        .eut(TierEU.RECIPE_MV)
+                        .build(),
+                    RecipeChange.builder()
+                        .eut(TierEU.RECIPE_UHV)
+                        .duration(1)
+                        .build());
+        }
 
         RecipeMatch ironToCastIron = RecipeMatch.builder()
             .itemInputs(GTOreDictUnificator.get(OrePrefixes.dust, Materials.Iron, 3), GTUtility.getIntegratedCircuit(1))
@@ -181,12 +198,12 @@ public final class BlastFurnaceNerf implements RecipeModule {
                     .metadata(COIL_HEAT, 1000),
                 ironToCastIron);
 
-        assertEvSteelRecipeUnchanged(recipes);
+        lateSteelBatch(recipes);
     }
 
-    private static void assertEvSteelRecipeUnchanged(RecipeContext recipes) {
+    private static void lateSteelBatch(RecipeContext recipes) {
         recipes.machine(blastFurnaceRecipes)
-            .requireExactlyOne(
+            .modifyOne(
                 RecipeMatch.builder()
                     .itemInputs(
                         GTOreDictUnificator.get(OrePrefixes.dust, Materials.Iron, 50),
@@ -200,6 +217,29 @@ public final class BlastFurnaceNerf implements RecipeModule {
                     .duration(150 * SECONDS)
                     .eut(TierEU.RECIPE_EV)
                     .specialValue(2000)
+                    .build(),
+                RecipeChange.builder()
+                    .duration(1)
+                    .eut(TierEU.RECIPE_UHV)
+                    .build());
+        recipes.machine(alloyBlastSmelterRecipes)
+            .addOne(
+                GTValues.RA.stdBuilder()
+                    .itemInputs(
+                        Materials.Iron.getDust(50),
+                        new OreDictItemStack(OrePrefixes.dust.name() + Materials.AnyCarbon.mName, 1),
+                        GTUtility.getIntegratedCircuit(2))
+                    .fluidOutputs(Materials.Steel.getMolten(7200))
+                    .duration(1)
+                    .eut(TierEU.RECIPE_UHV),
+                RecipeMatch.builder()
+                    .itemInputs(Materials.Iron.getDust(50), GTUtility.getIntegratedCircuit(2))
+                    .oreDictInput(OrePrefixes.dust.name() + Materials.AnyCarbon.mName, 1)
+                    .itemOutputs()
+                    .fluidInputs()
+                    .fluidOutputs(Materials.Steel.getMolten(7200))
+                    .duration(1)
+                    .eut(TierEU.RECIPE_UHV)
                     .build());
     }
 
@@ -269,7 +309,7 @@ public final class BlastFurnaceNerf implements RecipeModule {
                         GTOreDictUnificator.get(OrePrefixes.dust, Materials.Ilmenite, 5),
                         GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 1))
                     .itemOutputs(
-                        GTOreDictUnificator.get(OrePrefixes.ingot, Materials.WroughtIron, 1),
+                        GTOreDictUnificator.get(OrePrefixes.ingot, Materials.CastIron, 1),
                         GTOreDictUnificator.get(OrePrefixes.dust, Materials.Rutile, 3))
                     .fluidInputs()
                     .fluidOutputs(Materials.CarbonMonoxide.getGas(1_000))
@@ -282,7 +322,7 @@ public final class BlastFurnaceNerf implements RecipeModule {
                         GTOreDictUnificator.get(OrePrefixes.dust, Materials.Ilmenite, 10),
                         GTOreDictUnificator.get(OrePrefixes.dust, Materials.Carbon, 2))
                     .itemOutputs(
-                        GTOreDictUnificator.get(OrePrefixes.ingot, Materials.WroughtIron, 2),
+                        GTOreDictUnificator.get(OrePrefixes.ingot, Materials.CastIron, 2),
                         GTOreDictUnificator.get(OrePrefixes.dust, Materials.Rutile, 6),
                         GTOreDictUnificator.get(OrePrefixes.dust, Materials.IlmeniteSlag, 1))
                     .fluidOutputs(Materials.CarbonMonoxide.getGas(2_000))
