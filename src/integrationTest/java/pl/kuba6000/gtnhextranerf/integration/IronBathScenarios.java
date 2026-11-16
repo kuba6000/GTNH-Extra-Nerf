@@ -1314,8 +1314,15 @@ public final class IronBathScenarios {
                         == IronBathFurnace.casingBlock(),
                     "The disconnection test must remove a chimney casing");
                 fixture[0].setBlock(shell, Blocks.air, 0);
+                // Reads use the controller's maintained formation state, so run the structure check it would run.
+                check(
+                    !fixture[0].machine.checkStructure(true, fixture[0].controller),
+                    "Removing a chimney casing did not break formation");
                 check(measurementRead(component[0])[0] == null, "Retained OC environment exposed an unformed furnace");
                 fixture[0].setBlock(shell, IronBathFurnace.casingBlock(), 0);
+                check(
+                    fixture[0].machine.checkStructure(true, fixture[0].controller),
+                    "Restoring the chimney casing did not reform the furnace");
                 check(
                     measurementTable(component[0]).containsKey("metalMb"),
                     "Reformed furnace did not restore live measurements");

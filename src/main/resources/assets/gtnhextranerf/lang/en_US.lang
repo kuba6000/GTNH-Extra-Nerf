@@ -467,3 +467,24 @@ gtnhextranerf.iron_bath.measurement.connection=Optional side platform hatch. Con
 gtnhextranerf.iron_bath.energy_hatches=Use between one and eight energy hatches
 
 gtnhextranerf.iron_bath.gui.charge_page=Page %s/%s
+
+gtnhextranerf.iron_bath.tooltip.type=Iron Bath Furnace
+gtnhextranerf.iron_bath.tooltip.info.0=Electrically heats a persistent iron and carbon bath
+gtnhextranerf.iron_bath.tooltip.info.1=Accepts ingots, dusts, carbon additives, Calcite and Oxygen
+gtnhextranerf.iron_bath.tooltip.info.2=Tapping height selects molten metal, slag or empty space
+gtnhextranerf.iron_bath.tooltip.info.3=Cupronickel coils provide 512 ingots of bath capacity
+gtnhextranerf.iron_bath.tooltip.info.4=Higher coils double bath capacity
+gtnhextranerf.iron_bath.tooltip.info.5=Queued metal reserves tank space and shares the available heating power
+gtnhextranerf.iron_bath.tooltip.info.6=Extra amperage gives proportional throughput at the same EU per ingot
+gtnhextranerf.iron_bath.tooltip.info.7=Higher voltage applies native EBF overclocks and coil heat bonuses
+gtnhextranerf.iron_bath.tooltip.info.8=Calcite reserve: 180 binding units, plus 160 per coil upgrade
+gtnhextranerf.iron_bath.tooltip.info.9=Refractory chimney with exposed coils and a raised feed conveyor
+gtnhextranerf.iron_bath.tooltip.info.10=Start with base refractory casings and Cupronickel coils
+gtnhextranerf.iron_bath.tooltip.info.11=Optional LuV Measurement Hatch: read-only OpenComputers telemetry
+gtnhextranerf.iron_bath.tooltip.info.12=Wrought Iron reinforcement improves insulation after the first bath
+gtnhextranerf.iron_bath.tooltip.structure.controller=Side platform beside the feed conveyor
+gtnhextranerf.iron_bath.tooltip.structure.chimney_base=Chimney base
+gtnhextranerf.iron_bath.tooltip.structure.buffered_inputs=Side platform, buffered inputs
+gtnhextranerf.iron_bath.tooltip.structure.side_platform=Side platform
+gtnhextranerf.iron_bath.tooltip.structure.taps=1+ tapping hatches
+gtnhextranerf.iron_bath.tooltip.structure.tap_walls=Narrow chimney walls beside coils

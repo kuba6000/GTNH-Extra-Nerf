@@ -22,6 +22,7 @@ import java.util.Map;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -190,7 +191,7 @@ public final class MTEIronBathFurnace extends MTEExtendedPowerMultiBlockBase<MTE
                 .getTileEntity(port.getXCoord(), port.getYCoord(), port.getZCoord()) != port
             || tile.getMetaTileEntity() != this
             || port.getMetaTileEntity() != hatch
-            || !checkStructure(true, tile)
+            || !mMachine
             || !measurementHatches.contains(hatch)) return null;
         Map<String, Object> values = new LinkedHashMap<>();
         values.put("metalMb", bath.metalMb());
@@ -550,27 +551,43 @@ public final class MTEIronBathFurnace extends MTEExtendedPowerMultiBlockBase<MTE
 
     @Override
     protected MultiblockTooltipBuilder createTooltip() {
-        return new MultiblockTooltipBuilder().addMachineType("Iron Bath Furnace")
-            .addInfo("Electrically heats a persistent iron and carbon bath")
-            .addInfo("Accepts ingots, dusts, carbon additives, Calcite and Oxygen")
-            .addInfo("Tapping height selects molten metal, slag or empty space")
-            .addInfo("Cupronickel coils provide 512 ingots of bath capacity")
-            .addInfo("Higher coils double bath capacity")
-            .addInfo("Queued metal reserves tank space and shares the available heating power")
-            .addInfo("Extra amperage gives proportional throughput at the same EU per ingot")
-            .addInfo("Higher voltage applies native EBF overclocks and coil heat bonuses")
-            .addInfo("Calcite reserve: 180 binding units, plus 160 per coil upgrade")
-            .addInfo("Refractory chimney with exposed coils and a raised feed conveyor")
-            .addInfo("Start with base refractory casings and Cupronickel coils")
-            .addInfo("Optional LuV Measurement Hatch: read-only OpenComputers telemetry")
-            .addInfo("Wrought Iron reinforcement improves insulation after the first bath")
+        return new MultiblockTooltipBuilder()
+            .addMachineType(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.type"))
+            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.0"))
+            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.1"))
+            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.2"))
+            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.3"))
+            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.4"))
+            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.5"))
+            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.6"))
+            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.7"))
+            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.8"))
+            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.9"))
+            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.10"))
+            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.11"))
+            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.12"))
             .beginStructureBlock(IronBathStructure.WIDTH, IronBathStructure.HEIGHT, IronBathStructure.DEPTH, false)
-            .addController("Side platform beside the feed conveyor")
-            .addEnergyHatch("1-8", "Chimney base", 1)
-            .addInputBus("1+", "Side platform, buffered inputs", 1)
-            .addInputHatch("1+", "Side platform, buffered inputs", 1)
-            .addMaintenanceHatch("1", "Side platform", 1)
-            .addOutputHatch("1+ tapping hatches", "Narrow chimney walls beside coils", 2)
+            .addController(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.controller"))
+            .addEnergyHatch(
+                "1-8",
+                StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.chimney_base"),
+                1)
+            .addInputBus(
+                "1+",
+                StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.buffered_inputs"),
+                1)
+            .addInputHatch(
+                "1+",
+                StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.buffered_inputs"),
+                1)
+            .addMaintenanceHatch(
+                "1",
+                StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.side_platform"),
+                1)
+            .addOutputHatch(
+                StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.taps"),
+                StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.tap_walls"),
+                2)
             .toolTipFinisher();
     }
 }
