@@ -30,8 +30,10 @@ import pl.kuba6000.gtnhextranerf.loot.LootReward;
 import pl.kuba6000.gtnhextranerf.loot.LootState;
 
 /**
- * Exclusive, forced append journal. Corruption is fatal and never silently resets counts. The one exception is an
- * incomplete final record, left by a crash or a backup copied mid-write: that write never finished, so it is cut off.
+ * Exclusive, forced append journal. Corruption is fatal and never silently resets counts. The one exception is a
+ * damaged final record that nothing valid can follow, left by a crash, power loss or a backup copied mid-write: a frame
+ * running past the end of the file, an invalid length followed only by zero bytes, or a checksum mismatch on a frame
+ * ending exactly at the end of the file. That write never finished, so it is cut off.
  */
 public final class FileLootLedger implements AutoCloseable {
 
@@ -120,7 +122,7 @@ public final class FileLootLedger implements AutoCloseable {
         return ledgerId;
     }
 
-    /** Bytes of an unfinished final record that were cut off when the journal was opened, or 0. */
+    /** Bytes of a damaged final record that were cut off when the journal was opened, or 0. */
     public long discardedTail() {
         return discardedTail;
     }
@@ -249,7 +251,14 @@ public final class FileLootLedger implements AutoCloseable {
                 prefix.flip();
                 int length = prefix.getInt();
                 int crc = prefix.getInt();
-                if (length <= 0 || length > MAX_FRAME) throw new IOException("Invalid loot journal frame");
+                if (length <= 0 || length > MAX_FRAME) {
+                    // A zero-filled tail (e.g. preallocated blocks after power loss) holds no record at all.
+                    if (zeroFrom(frameStart)) {
+                        tornAt = frameStart;
+                        break;
+                    }
+                    throw new IOException("Invalid loot journal frame");
+                }
                 // A frame running past the end of the file can only be the last write, interrupted.
                 if (length > channel.size() - channel.position()) {
                     tornAt = frameStart;
@@ -257,7 +266,14 @@ public final class FileLootLedger implements AutoCloseable {
                 }
                 ByteBuffer payload = ByteBuffer.allocate(length);
                 readFully(payload);
-                if (checksum(payload.array()) != crc) throw new IOException("Loot journal checksum mismatch");
+                if (checksum(payload.array()) != crc) {
+                    // Only the very last frame can be a write that never finished.
+                    if (channel.position() == channel.size()) {
+                        tornAt = frameStart;
+                        break;
+                    }
+                    throw new IOException("Loot journal checksum mismatch");
+                }
                 DataInputStream in = new DataInputStream(new ByteArrayInputStream(payload.array()));
                 int type = in.readUnsignedByte();
                 long number = in.readLong();
@@ -322,6 +338,18 @@ public final class FileLootLedger implements AutoCloseable {
         if (previous == null || previous.outcome() != LootClaim.Outcome.PENDING || (status != 1 && status != 2))
             throw new IOException("Invalid outcome record");
         claims.put(opening, previous.withOutcome(status == 1 ? LootClaim.Outcome.DELIVERED : LootClaim.Outcome.FAILED));
+    }
+
+    /** True if every byte from {@code start} to the end of the file is zero. Leaves the position at the end. */
+    private boolean zeroFrom(long start) throws IOException {
+        channel.position(start);
+        ByteBuffer buffer = ByteBuffer.allocate(8192);
+        while (channel.read(buffer) > 0) {
+            buffer.flip();
+            while (buffer.hasRemaining()) if (buffer.get() != 0) return false;
+            buffer.clear();
+        }
+        return true;
     }
 
     private void readFully(ByteBuffer target) throws IOException {

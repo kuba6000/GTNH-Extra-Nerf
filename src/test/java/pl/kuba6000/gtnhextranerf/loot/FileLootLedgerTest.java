@@ -40,6 +40,43 @@ class FileLootLedgerTest {
     }
 
     @Test
+    void aZeroFilledOrChecksumDamagedLastRecordIsCutOff() throws Exception {
+        Path directory = temporary.resolve("zeroTail");
+        ItemKey item = ItemKey.of("appliedenergistics2:tile.BlockController", 0);
+        GlobalItemLimit limit = new GlobalItemLimit("gtnhextranerf:me_controller", item, 1);
+        try (FileLootLedger ledger = FileLootLedger.create(directory)) {
+            new GlobalLootLimits(ledger, limit).claim(new UUID(0, 1), BagVariant.of(38, 3), new LootReward(item, 1));
+        }
+        Path file = directory.resolve("claims.journal");
+        long complete = Files.size(file);
+        // Power loss: zero bytes after the last record, and a complete-length frame whose checksum does not match.
+        for (byte[] tail : new byte[][] { new byte[64], { 0, 0, 0, 4, 0, 0, 0, 0, 9, 9, 9, 9 } }) {
+            Files.write(file, tail, StandardOpenOption.APPEND);
+            try (FileLootLedger ledger = FileLootLedger.open(directory)) {
+                assertEquals(tail.length, ledger.discardedTail());
+                assertFalse(new GlobalLootLimits(ledger, limit).available(item, 1));
+            }
+            assertEquals(complete, Files.size(file));
+        }
+    }
+
+    @Test
+    void damageFollowedByMoreDataIsFatal() throws Exception {
+        Path directory = temporary.resolve("middle");
+        try (FileLootLedger ignored = FileLootLedger.create(directory)) {}
+        Path file = directory.resolve("claims.journal");
+        byte[] header = Files.readAllBytes(file);
+        // Zero length followed by a non-zero byte, and a checksum mismatch with bytes after the frame.
+        for (byte[] tail : new byte[][] { { 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+            { 0, 0, 0, 4, 0, 0, 0, 0, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0 } }) {
+            Files.write(file, header);
+            Files.write(file, tail, StandardOpenOption.APPEND);
+            assertThrows(IOException.class, () -> FileLootLedger.open(directory));
+            assertEquals(header.length + tail.length, Files.size(file));
+        }
+    }
+
+    @Test
     void aJournalWithoutACompleteHeaderIsNeverRepaired() throws Exception {
         Path directory = temporary.resolve("headless");
         Files.createDirectories(directory);
