@@ -55,7 +55,8 @@ validation permits up to eight energy hatches.
 The optional LuV `MTEIronBathMeasurement` fits the side platform's measurement position.
 `IronBathMeasurementDriver` exposes it through an OpenComputers Adapter as
 `iron_bath_measurement`. Its server-thread `read` callback returns a fresh snapshot
-from the controller after validating formation and installed hatch membership.
+from the controller while the controller is formed (as of its last structure check),
+both tiles are live and the hatch is installed. Reads never rescan the structure.
 The controller remains the owner of measured state.
 
 `IronBathMaterials` registers independent Wrought Iron, Overcarburized Iron and
@@ -129,6 +130,9 @@ pauses basic machines, Steam controllers and electric multiblocks with gated
 energy/dynamo hatches. `MixinMultiblockCertification` checks again after native
 structure validation, before recipe processing, so newly loaded controllers cannot
 lose a batch through a locked hatch. Native recipe fields remain the saved state.
+`MachineProgression` remembers the overworld `ProgressionData` record between
+queries, re-reads it at the start of each server tick and drops it when the
+server stops.
 
 GTNH Extra Nerf is a compatibility-sensitive balance mod for a specific GTNH
 snapshot. It changes
@@ -169,12 +173,23 @@ flowchart TD
 `GTNHExtraNerf` owns the Forge event handlers and delegates all of them to a
 sided proxy. Lifecycle handlers include:
 
-- `preInit` calls `Config.synchronizeConfiguration`.
+- `preInit` reads the legacy configuration (`Config.synchronizeConfiguration`),
+  initializes telemetry and team tracking, and registers blocks, items,
+  components, certificates, exams and event handlers.
+- `init` registers the Brainrotter and Iron Bath machines and, with
+  OpenComputers, the measurement driver.
+- `postInit` registers the raw machine casing groups.
 - `loadComplete` runs recipe patches, finalizes `AuditSession`, and releases
   mutable audit state after creating an immutable report.
+- `serverStarting` starts the loot runtime, loads the world's reporting choice
+  (`Config.loadWorld`), starts telemetry, team tracking, the consent prompt and
+  the update checker, and registers the server commands.
+- `serverStopped` stops those services and resets per-world state.
 
-`init`, `postInit`, `serverStarting`, and all client-specific proxy behavior
-are currently empty.
+`ClientProxy` additionally registers the loot allowance preview, client
+commands, item renderers, NEI integration, tooltips and menu branding, opens
+URLs, certificates and exams, and shows integrity failures on the client
+startup error screen.
 
 ### Early mixin phase
 

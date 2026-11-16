@@ -58,5 +58,7 @@ dependencies, lifecycle, patch cardinality, or file ownership changes.
 Mixins are registered through the `Mixin` enum. Load-complete recipe modules
 use an ordered modifier registry. The build uses a pinned GTNHGradle fork.
 
-No gameplay configuration switches currently exist. `Config` only opens and
-saves the Forge configuration file if Forge reports a change.
+No gameplay configuration switches currently exist. `Config` holds the loaded
+world's telemetry and team tracking choice (from its `TelemetryConsent`
+record) and reads legacy values from the Forge configuration file once, to
+carry them into the first world that is loaded.
