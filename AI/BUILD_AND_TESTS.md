@@ -74,6 +74,10 @@ revision may be supplied with `--framework-source`. The upstream supervisor
 owns process lifetimes, deadlines, classpath snapshots and JSON/JUnit
 verification.
 
+An installed shared automation SDK can be selected with
+`--framework-sdk <sdkRoot>`. The launcher uses that SDK's development JAR,
+runtime JAR and supervisor together.
+
 Select a fixture or GUI scenario:
 
 ```powershell
@@ -303,3 +307,103 @@ The client-only hook was confirmed inside FML's custom-error catch boundary in
 the transformed class. The production server JAR again passed the complete
 audit (3006 modified, 36 added, 120 removed), reached Done and exited with code 0;
 the built/deployed SHA-256 values matched. Existing unrelated pack diagnostics remain.
+
+## Gradle verification ownership
+
+Run one Gradle task graph at a time per checkout. Audits, library-model
+preparation and Horizon QA packaging share compiled classes and JAR outputs.
+Finish build verification before launching the game. Independent agent edits can
+run in parallel while one owner schedules Gradle and runtime verification.
+
+## Supported full-pack release
+
+`runFullPack`, `runFullPackServer` and their HQA runs use the supported GTNH 2.9.0
+distribution archives. Keep `GT_New_Horizons_2.9.0_Java_17-26.zip` and
+`GT_New_Horizons_2.9.0_Server_Java_17-26.zip` in `~/Downloads`, or supply their
+paths through `-PfullPackClientArchive` and `-PfullPackServerArchive`.
+The preparation tasks verify each archive's pinned SHA-256 and produce a local
+manifest for the existing full-pack installer. The client preparation places the
+archive's LWJGL3ify early-classpath JAR in the launcher's expected location.
+The full-pack workflow downloads the same release archives and verifies their
+checksums. HQA uses its pinned automation revision.
+
+## Iron Bath scenarios
+
+Select `gtnhextranerftests:IronBathScenarios` with the Horizon QA runner to check
+native power, material feedback and the visual furnace. The scenarios cover the
+two-LV-hatch operating point, the eight-energy-hatch limit, physical
+phase tapping, redstone behavior, loaded-controller pickup and output-based alloy
+switching. Native mouse/keyboard actions edit the tap's amount and trigger mode,
+then verify authoritative values and reopening synchronization. Captures include
+cardinal and elevated structure views, the controller and the tap GUI.
+The production scenario also checks the shared Oxygen limit. `neiDiagrams` opens registered product pages, follows
+a Steel ingot output search and selects another carbon additive. Its captures
+show the resulting NEI diagrams.
+`neiStyleReference` opens the native HTGR page and the bath at the same viewport
+and GUI scale for visual comparison. Select multiple scenarios with comma-separated
+full names.
+
+`eightEnergyHatchesProvidePerfectAmperageParallel` compares paid heat from two,
+four and eight LV energy hatches and checks rejection of a ninth hatch.
+`inputPowerAcceleratesColdAndMeltingBath` compares paid heating and melting with
+two LV, MV and HV energy hatches. `coilsProvideNativeHeatDiscountAndPerfectOverclock`
+compares Cupronickel, Kanthal and Nichrome at the same supplied power to check
+native heat discounts and perfect overclocks.
+`heldProbeSignalDoesNotFireAgainAfterTapReload` reloads the actual tap tile under
+a maintained redstone signal and checks that only a new rising edge extracts
+another sample.
+`measurementHatchReadsLiveBathThroughOpenComputers` exercises the registered OC
+component, live measurements and disconnection after structure or hatch removal.
+
+`gtnhextranerftests:IronBathScenarios.nativeBlueprintRequiresShellCoilsAndDedicatedPorts`
+checks the chimney shell, coil tiers, dedicated hatch locations and energy-hatch limit.
+`gtnhextranerftests:IronBathScenarios.blueprintStructureViews` captures the native
+structure from four sides using the production construction definition.
+
+Select `gtnhextranerflabtests:IronBathLabScenarios.persistentLaboratory` to build
+and save the walkable creative laboratory. It provides native debug energy
+hatches, a manual station and a ProjectRed-controlled station. The scenario
+requests Iron, Wrought Iron, Steel, Cast Iron and Pig Iron by consuming stock
+from native inventories. It checks that a needed current alloy takes priority,
+then verifies replenishment, the physical metal reserve and access to the
+controller, hatches and taps.
+
+For an interactive HQA session, a `ManualSession.Setup` entry point can call
+`IronBathLabScenarios.prepareManualLaboratory(world, player)`. It uses the same
+native construction, with full supplies and the STOP lever engaged. Build the
+entry point against an HQA SDK containing `ManualSession` and launch it through
+`runFullPack` with `-Dhorizonqa.manualSession=<selector>`. Verify sustained world
+ticks with `clientAutomationEnabled=false` before handing over the session.
+
+`gtnhextranerflabtests:IronBathLabScenarios.controllerRenderingProfile` checks
+group pagination and measures native GUI CPU, GPU and allocations.
+`gtnhextranerflabtests:IronBathLabScenarios.sampleDrainsWhileControllerIsStopped`
+checks local sample drainage, retained RS memory and the 143 + 1 mB casting and
+return boundary while the main controller is stopped.
+
+
+`gtnhextranerftests:IronBathScenarios.paidRemeltingAcrossNativePowerAndCoils`
+measures paid native melting through debug hatches, automatic maintenance, real
+input admission and a continuous tap. Its diagnostics include exported metal,
+actual Steel output, stored-heat changes, EU per ingot and native calculator
+references. Cold Steel remelting provides a lower bound for the full steel chain.
+
+The dedicated-server restart check uses two separate launches through
+`runServerTests` with `--server-task :runFullPackServer`. Run
+`gtnhextranerfpersistencetests:IronBathPersistenceScenarios.preparePersistedBath`
+first. Then run
+`gtnhextranerfpersistencetests:IronBathPersistenceScenarios.verifyPersistedBath`
+with `--gradle-argument=-PhorizonQaSeedWorld=<first-report>/game/world` and a fresh
+report directory. The seed hook copies the saved world into the second runtime.
+The scenarios compare the native world-save checkpoint before resuming its
+partially heated charges. Use `--keep-runtime-files` to retain the seed world,
+`--accept-eula` after accepting Minecraft's EULA, and `--shutdown-seconds 120`
+to allow the full pack to finish saving during shutdown.
+
+The dedicated runtime reads the supported release's local `fullPack.serverManifestUrl`.
+
+`gtnhextranerflabtests:IronBathLabScenarios.controllerRenderingProfile` compares
+an empty controller with a hot, occupied maximum-coil controller at the same
+window size and GUI scale. Its artifacts include both screenshots and
+`controller-rendering-profile.json` with separate CPU time, GPU timer queries
+and allocated bytes. The report records scope and measurement limits.

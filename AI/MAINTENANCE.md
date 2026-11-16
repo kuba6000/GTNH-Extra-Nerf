@@ -15,6 +15,44 @@
 Do not port behavior from `CHANGES.md`, an old diff, or comments without
 checking live source. Those artifacts can lag behind implementation.
 
+## Stargate compatibility
+
+Apply this rule when designing or changing recipes, materials, machines and
+processing bonuses. Stargate Compatible means Extra Nerf preserves or increases
+the cost and difficulty of obtaining a result compared with the pinned base
+GTNH pack. Check the complete acquisition route, material and EU costs, yields,
+by-products, progression and available machine modifiers.
+
+Give new production materials distinct required uses in existing recipes, with
+recurring demand beyond machine construction. Introduce those uses as nerfs.
+Retain existing costs when adding a required material, or establish the full
+cost of a replacement. Check alternate recipes and parallel maps for bypasses.
+Apply the progression bootstrap checks before selecting a new gate.
+
+Evaluate optional recipes, resource recovery and processing bonuses against the
+same base-pack comparison. A new recipe or useful by-product must not create a
+cheaper or easier route to an existing result.
+
+## Progression bootstrap checks
+
+Before gating a component, machine or tier behind a new ingredient, establish
+one complete acquisition path that works before the first gated item is made.
+Trace every required ingredient through its production machines, machine
+crafting ingredients, tools, fluids, research and dimension access. Check the
+final GTNH recipes, including Extra Nerf changes and relevant recipe maps.
+
+Check the machines used to prepare materials as well as the recipe that consumes
+them. For example, gating MV motors on Botania requires the cutters and other
+equipment needed for those Botania materials to be obtainable before the first
+MV motor. A prerequisite that depends on the gated component creates a cycle.
+
+Verify the initial acquisition path separately from later automated production.
+Record the path and its limiting prerequisite when proposing a progression gate.
+Use behavior tests to protect the affected prerequisite production routes and
+their machine requirements. Recipe presence alone does not prove that a player
+can reach them. Report any unresolved dependency before calling progression
+verified.
+
 ## Adding a load-complete machine recipe patch
 
 Use `RecipeItems.requireModItem(mod, name, amount, metadata)` for a required

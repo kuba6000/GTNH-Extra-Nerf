@@ -1,5 +1,84 @@
 # Architecture
 
+## Electric Iron Bath
+
+`IronBathMaterials` owns the independent metal registrations and processing
+identities. `IronBathAlloyRecipes` owns recurring alloy demand and acquisition
+guards through recipe transactions. Native Forestry comb processing and alloy
+decomposition keep their original outputs. `IronBathLootModule` owns the
+corresponding ELB reward restrictions in the existing loot pipeline.
+
+`IronBath` owns the persistent metal, carbon, queued metals, heat, impurities,
+Calcite reserve and slag. Items with identical item data and progress form charge groups
+with a shared per-item heat value. Groups consume paid coil heat in proportion
+to their item counts and join the bath together after one heating stage. The charge budget
+includes the energy carried by molten metal at 1,700 K. Unpowered charges can cool
+into a colder bath. `MTEIronBathFurnace` connects that process to native GT
+power, maintenance, buffered inventories and the physical structure.
+Coil tier determines bath capacity, the automatic temperature ceiling and the
+Calcite reserve. The reserve starts at 180 units and gains 160 per coil tier.
+Stored units survive a downgrade, with refilling paused until below the new limit.
+Metal admission reserves queued volume and leaves 1/32 of the tank for slag.
+Total stored and queued material cannot exceed tank capacity. Carbon additives
+enter the bath directly within constituent limits. Calcite binding uses free
+volume after queued metal reservations.
+`IronBath.configure` preserves the contents and heating
+progress when applying a fitting coil configuration.
+`MTEIronBathTap` exposes extracted material through an ordinary output tank and
+supports rising-edge, powered, continuous and stopped operation.
+Its rising-edge history is saved with the hatch. Each metal discharge keeps the
+product selected at its start, with quantity bounded by available metal and carbon.
+
+The controller shares one paid EU allowance between charge processing and bath
+heating. Native coil bonuses apply to charge processing. Direct bath heating
+uses a fixed heat conversion. The automatic ceiling is 2200 K plus 900 K per coil
+tier. Natural carbon burning grows sublinearly above 2200 K.
+
+`IronBathGui` synchronizes bath measurements while the player views the panel.
+Temperature is displayed as actual temperature and coil ceiling.
+The tank shows resident metal and floating slag through melting and freezing.
+Solid portions use a fixed frame of the native molten texture sheet. Liquid
+portions use the animated atlas with a temperature-driven pulsing overlay.
+Melting groups share a source item, count and processing progress. The controller
+displays the melting item count, one icon per group and pages through distinct groups. The composition
+scale includes pure Iron, uses the shared NEI material palette and
+labels the highlighted product below its active band. Layer tooltips combine
+total and molten quantities, showing the molten amount during partial freezing.
+The panel retains native maintenance hints and structure errors.
+Early automation observes the extracted products. Input buses admit carbon additives
+directly and queue metal within the volume limits. Oxygen hatches share a bounded
+per-tick flow budget. Redstone triggers taps in five equal-height bands. The bath selects slag whenever
+liquid slag overlaps the requested band, then metal if no slag is present. The native overclock calculator
+uses EBF voltage, amperage, heat-discount and perfect-overclock rules. Structure
+validation permits up to eight energy hatches.
+
+The optional LuV `MTEIronBathMeasurement` fits the side platform's measurement position.
+`IronBathMeasurementDriver` exposes it through an OpenComputers Adapter as
+`iron_bath_measurement`. Its server-thread `read` callback returns a fresh snapshot
+from the controller after validating formation and installed hatch membership.
+The controller remains the owner of measured state.
+
+`IronBathMaterials` registers independent Wrought Iron, Overcarburized Iron and
+Slag forms before GT generates items and fluids. `IronBathFurnace` owns the
+machine catalog, construction recipes, casting recipes and NEI material balances.
+`IronBathRecipeHandler` draws NEI diagrams for the product bands and carbon
+additives. It derives additive quantities from the registered material balances
+and routes native item and fluid searches to the corresponding product.
+The monochrome vessel illustration uses native GT slots and shaded arrows,
+following the HTGR and purification-machine diagrams.
+Its symmetric front elevation shows Oxygen entering from below and separate
+outlets for the upper Slag layer and lower metal layer.
+`IronBathStructure` defines the refractory chimney, exposed coil banks, Steel
+Frames and raised feed conveyor. Its named port offsets place the controller,
+buffered inputs and maintenance on the side platform, energy at the chimney base,
+and tapping hatches along the neck. Construction and validation share its shape
+and controller offsets. Tap rows map to band indices in the bath. Band boundaries follow tank capacity,
+independently of the controller's elevation.
+`IronBathCasings` registers dedicated refractory side and top textures. Reinforced
+walls use a separate side texture with Wrought Iron straps. Both casing variants
+use the refractory brick top.
+World and controller-item NBT share the same process serialization.
+
 ## Bee recipe inputs
 
 `ChemicalAndMiscNerf` owns the Liquid Crystal Kevlar ingredient changes through

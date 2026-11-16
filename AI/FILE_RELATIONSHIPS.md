@@ -1,5 +1,13 @@
 # File relationships
 
+`NerfMaterials -> IronBathMaterials` establishes independent bath materials before
+GregTech generates their forms and processing recipes. `RecipeLoader` invokes
+`IronBathAlloyRecipes` and `IronBathMetalProcessingRecipes` through the shared
+recipe transaction. Native comb processing and decomposition stay with their
+upstream owners. `LootLoader -> IronBathLootModule` applies alloy reward restrictions
+through `NativeLootTables`. Native alloy and material scenarios verify the
+resulting maps, casting, ore matching and immediate construction ingredients.
+
 `MixinProgressionTickGate` and `MixinMultiblockCertification` both consult
 `MachineProgression`. Electric controller requirements come from the native
 normal/exotic energy and dynamo hatch lists. The second gate runs after those

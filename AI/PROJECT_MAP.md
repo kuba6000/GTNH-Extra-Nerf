@@ -5,6 +5,24 @@ Paths are relative to the repository root. Generated `.gradle/`, `build/`, and
 
 ## Native loot tables and global limits
 
+`loot/modules/IronBathLootModule` removes alloy rewards that bypass the bath's
+production chains. `IronBathLootModuleTest` checks native table edits and weights.
+
+## Iron Bath alloy integration
+
+`src/main/resources/assets/gtnhextranerf/guidenh/_en_us/` contains the player
+guide. GuideNH discovers the resource tree directly. Its Iron Bath pages cover
+construction, chemistry, heating, tapping and automation, with native item links
+and a StructureLib preview.
+
+`materials/IronBathMaterials` owns independent bath material registration and
+native processing targets. `loader/recipes/IronBathAlloyRecipes` patches both
+Mixer maps, manual mixtures and shaft recovery.
+`loader/recipes/IronBathMetalProcessingRecipes` owns Cast Iron conversion
+restrictions. Native Forestry comb processing and alloy decomposition remain
+unchanged. `IronBathAlloyScenarios` and
+`IronBathMaterialScenarios` exercise these boundaries in the pinned pack.
+
 `loader/LootLoader` applies `loot/LootModule` implementations to ELB's actual
 tables after deserialization. `loot/NativeLootTables` provides staged native edits
 and weight verification; `loot/modules/MeControllerLootModule` validates both

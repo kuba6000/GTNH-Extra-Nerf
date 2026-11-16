@@ -37,6 +37,7 @@ for newer releases ([update check](docs/UPDATE_CHECK.md)).
 
 ## Documentation
 
+- [Electric Iron Bath guide](src/main/resources/assets/gtnhextranerf/guidenh/_en_us/iron-bath/index.md), available in game under GuideNH's Extra Nerf section
 - [Project overview](docs/OVERVIEW.md)
 - [Complete gameplay change catalog](docs/NERFS.md)
 - [Progression certificates](docs/PROGRESSION.md) and [certification exams](docs/CERTIFICATION_EXAM.md)

@@ -9,6 +9,14 @@ catalog, including exact values, conditions and unchanged fields, is
 - Liquid Crystal Kevlar consumes Kevlar drones in the LCR, with unrestricted
   other genetics, including with recipe locking. The Kevlar mutation requires a ZPM Replicator
 
+## Iron Bath alloy production
+
+- Stainless Steel requires Wrought Iron, Electrical Steel requires Cast Iron,
+  and both Dark Steel mixtures require Pig Iron
+- The bath metals retain their identities through native processing
+- Alloy acquisition is restricted across ambiguous recycling and the
+  corresponding loot rewards. Native comb production and decomposition remain unchanged
+
 ## Lootbag previews
 
 - NEI displays the server's current ME Controller lootbag allowance, including

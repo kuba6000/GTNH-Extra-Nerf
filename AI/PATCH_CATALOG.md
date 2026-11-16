@@ -693,47 +693,19 @@ ore-dictionary `fuelCoke` input or the Railcraft Coal Coke Block.
 The supported full-pack contract requires exactly 7 retained and 39 removed
 Steel recipes. Non-Steel Primitive Blast Furnace recipes are not candidates.
 
-### Electric Blast Furnace Steel routes
+### Industrial Steel routes
 
-`MODIFY_STEEL_BLAST_FURNACE_RECIPES` requires exactly two removed, two
-modified and one added recipe across the EBF and Alloy Blast Smelter maps.
+`MODIFY_STEEL_BLAST_FURNACE_RECIPES` requires four removed, five modified and
+two added recipes across the EBF and Alloy Blast Smelter maps.
 
-Removed route:
-
-- inputs: 1 Iron dust, 1 Any Carbon dust and circuit 11;
-- fluid input: 1,000 L Oxygen;
-- outputs: 1 Steel ingot, 1 Ash dust and 250 L Carbon Dioxide;
-- 25 seconds at MV recipe voltage and 1,000 K.
-
-Modified Cast Iron route:
-
-| Field | Original | Current |
-| --- | --- | --- |
-| Cast Iron dust | 1 | 3 |
-| Circuit | 11 | 11 |
-| Oxygen | 1,000 L | 6,000 L |
-| Steel ingots | 1 | 3 |
-| Ash dust | 1 | 1 |
-| Carbon Dioxide | none | 2,500 L |
-| Duration | 5 s | 45 s |
-| Voltage | MV | MV |
-| Heat | 1,000 K | 1,000 K |
-
-Added Cast Iron route:
-
-- inputs: 3 Iron dust, integrated circuit 1 and an ore-dictionary input of 2 Any Carbon dust;
-- output: 3 Cast Iron ingots;
-- no item or fluid byproducts;
-- 20 seconds at MV recipe voltage and 1,000 K.
-
-After applying the changes, the module asserts that the bulk EV route still
-exists unchanged: 50 Iron dust, 1 Any Carbon dust and circuit 2 produce 50
-Steel ingots and 1 Ash dust in 150 seconds at EV recipe voltage and 2,000 K.
-
-In the Alloy Blast Smelter, the old Iron plus Coal route is removed and the
-Cast Iron route consumes 3 dust and 6,000 L Oxygen for 432 L molten Steel in
-36 seconds at MV. Its generated molten-metal route does not return EBF
-byproducts.
+The Electric Blast Furnace and Alloy Blast Smelter remove low-tier Iron and
+Cast Iron Steel routes. Steel Dust and Magnetic Steel Dust remelting requires
+UHV recipe voltage and one tick, retaining circuit 1 and one Steel ingot or
+144 L molten Steel per dust. Their bulk Iron and carbon route uses the same
+voltage and duration for 50 Steel ingots or 7,200 L molten Steel respectively.
+The EBF Cast Iron recipe takes
+3 Iron dust, 2 Any Carbon dust and circuit 1 for 3 ingots in 20 seconds at MV
+and 1,000 K. The Arc Furnace Cast Iron route remains available.
 
 ### Aluminium
 
@@ -1459,3 +1431,56 @@ LV circuits introduced by the crafting module remain OreDictionary ingredients:
 both slots in LV Circuit Assembler crafting and the Tool Station Slab accept all
 registered `circuitBasic` variants. Resolving the first ore entry is appropriate
 for a matching probe, but must not replace the category in a published recipe.
+
+## Electric Iron Bath
+
+The Steam Locomotive offer requires 17 Steel Plates and 32–40 Emeralds while
+preserving offer stock, regular locomotive recycling and MobsInfo preview.
+Chainmail keeps Macerator Steel Dust recovery but loses Arc Furnace and Fluid
+Extractor recovery. Mob drops, blacksmith trades and quest rewards remain.
+
+`IronBathFurnace` registers the controller, tapping hatches and refractory casing
+variants. `ADD_IRON_BATH_RECIPES` registers construction, casting and informational
+fuel balances through the shared recipe transactions. `VERIFY_IRON_BATH` checks
+native machine registrations, casing textures and generated product forms.
+
+`IronBathMaterials.register` binds native Wrought Iron to its independent
+material and gives Cast Iron and Pig Iron self-preserving native processing
+targets before form and recipe generation. `IronBathMetalProcessingRecipes`
+closes Cast Iron conversion through magnetic Iron, anvils and empty fuel rods.
+The Ilmenite EBF patch selects native Cast Iron explicitly.
+
+`IronBathAlloyRecipes` applies the Wrought/Cast/Pig requirements to both Mixer
+maps and the two hand mixtures. Native comb processing keeps alloy dust and wax.
+Electrical Steel, Dark Steel and Stainless Steel bee mutations already require
+a block of the corresponding alloy. Dark Steel and End Steel decomposition
+retain their native alloy returns and other products.
+The ambiguous windmill shaft shape has its three Dark Steel recyclers removed.
+`IronBathLootModule` applies the two alloy reward removals through the native
+ELB patch pipeline and verifies the published tables.
+
+The casting patch changes the three native molten Cast Iron recipes to retain
+Cast Iron in their ingot, nugget and block outputs. It replaces each ordinary
+Iron output in place rather than adding a competing ingot recipe. Native costs
+stay at 144 mB / 32 ticks / 7 EU/t for an ingot, 16 mB / 16 ticks / 4 EU/t for a
+nugget and 1,296 mB / 288 ticks / 7 EU/t for a block. The scope expects 24 added
+recipes and three modified recipes. The focused native regression
+`castIronSolidifiesWithoutLosingItsMaterial` checks actual item material identity
+and unique casting recipes for all three forms.
+
+`IronBath.tick` shares paid coil heat among queued items by count, capped by the
+shared transfer budget. Completed charges join the bath at 1,700 K with their
+stored energy. At the coil ceiling, standby costs 30 EU/t with Cupronickel
+coils and doubles per coil upgrade. Heat loss scales linearly with temperature
+above ambient. Full Wrought Iron reinforcement halves that loss. Hatch count
+and tier do not increase standby costs. More power heats the bath faster. Active
+heating and melting lose 10% of their working energy. Reinforcement reduces
+that loss linearly to 5% at full coverage. Unreplaced heat loss removes twice
+the heat needed for powered standby. Cooling continues without power or a
+formed structure. The controller gates input admission, heating and tapping on
+its working state.
+`IronBathTest` checks charge progress, the mixing temperature and energy costs. It also covers thermal and constituent accounting, physical phase taps,
+canonical remelting, cleanup capacity and persistent queues. `IronBathScenarios`
+constructs the real multiblock, exercises powered production and redstone taps,
+checks loaded-controller pickup and captures the structure and GUI. Its switching
+scenario drives native input buffers and redstone using extracted fluid samples.

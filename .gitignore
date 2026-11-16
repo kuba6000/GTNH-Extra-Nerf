@@ -42,6 +42,6 @@ layout.json
 # Project documentation for coding agents. Some developer environments ignore
 # /AI globally, so explicitly keep the repository-owned documentation tracked.
 !/AI/
-!/AI/**
+!/AI/*.md
 /AI/Cache/
 /AI/Reviews/
