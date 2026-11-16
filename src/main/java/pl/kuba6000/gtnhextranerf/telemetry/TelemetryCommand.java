@@ -69,7 +69,7 @@ public final class TelemetryCommand extends CommandBase implements ICommand {
         } else if ("off".equals(action)) {
             Config.setTelemetryEnabled(false);
             ServerTelemetry.stop();
-            sender.addChatMessage(new ChatComponentTranslation("gtnhextranerf.telemetry.off"));
+            sender.addChatMessage(new ChatComponentTranslation(offMessage(Config.teamTrackingEnabled)));
         } else if ("on".equals(action)) {
             Config.setTelemetryEnabled(true);
             TeamTracking.stop();
@@ -78,6 +78,11 @@ public final class TelemetryCommand extends CommandBase implements ICommand {
         } else {
             sender.addChatMessage(new ChatComponentTranslation(getCommandUsage(sender)));
         }
+    }
+
+    /** Team reports carry names and UUIDs and are not stopped by this command, so the reply must say so. */
+    static String offMessage(boolean teamTrackingStillOn) {
+        return teamTrackingStillOn ? "gtnhextranerf.telemetry.off_team_on" : "gtnhextranerf.telemetry.off";
     }
 
     @Override

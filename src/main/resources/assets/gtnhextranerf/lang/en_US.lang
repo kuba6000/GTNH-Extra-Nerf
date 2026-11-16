@@ -216,6 +216,7 @@ gtnhextranerf.progression.global=Certification is shared by all players and dime
 gtnhextranerf.progression.certified=%s activated. Certification unlocked for the entire world.
 gtnhextranerf.progression.already_certified=This world is already certified. %s was not consumed.
 gtnhextranerf.telemetry.off=Basic statistics are off for this world and your choice is saved
+gtnhextranerf.telemetry.off_team_on=Basic statistics are off for this world, but team tracking is still on - turn it off with /extranerfteam off
 gtnhextranerf.telemetry.save_failed=Couldn't load or save your choice, so reporting is stopped for this session - check world storage and try again
 gtnhextranerf.structure_error.stinky_coils=These coil blocks are too stinky! Use better ones.
 gtnhextranerf.structure_error.unfluix_world=I don't like this world. I'd prefer somewhere more fluixy!

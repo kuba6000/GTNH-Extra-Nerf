@@ -78,6 +78,43 @@ class ServerTelemetryTest {
     }
 
     @Test
+    void aFailedDeliveryIsRetriedAfterTheBackOffInsteadOfTheFullInterval() throws Exception {
+        AtomicInteger sends = new AtomicInteger();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        ServerTelemetry dispatcher = new ServerTelemetry((captured, cancelled) -> {
+            if (sends.incrementAndGet() <= 2) throw new java.io.IOException("offline");
+            return new TelemetryClient.Response(204, 0);
+        }, executor, 10_000_000, 100);
+        java.util.function.Supplier<ServerTelemetry.Snapshot> snapshot = () -> new ServerTelemetry.Snapshot(
+            UUID.randomUUID(),
+            1,
+            "stone",
+            true);
+        try {
+            assertTrue(dispatcher.request(100, snapshot));
+            executor.submit(() -> {})
+                .get(5, TimeUnit.SECONDS);
+            assertFalse(dispatcher.request(101, snapshot));
+            assertFalse(dispatcher.request(60_100, snapshot));
+            assertTrue(dispatcher.request(60_101, snapshot));
+            executor.submit(() -> {})
+                .get(5, TimeUnit.SECONDS);
+            // The early retry failed too: wait the full interval from it, not another back-off.
+            assertFalse(dispatcher.request(60_102, snapshot));
+            assertFalse(dispatcher.request(120_102, snapshot));
+            assertFalse(dispatcher.request(10_060_100, snapshot));
+            assertTrue(dispatcher.request(10_060_101, snapshot));
+            executor.submit(() -> {})
+                .get(5, TimeUnit.SECONDS);
+            assertEquals(3, sends.get());
+            // A successful delivery returns to the normal interval.
+            assertFalse(dispatcher.request(10_120_101, snapshot));
+        } finally {
+            dispatcher.close();
+        }
+    }
+
+    @Test
     void optOutDoesNotCaptureWorldStateOrSubmitNetworkWork() throws Exception {
         AtomicInteger sends = new AtomicInteger();
         ServerTelemetry dispatcher = new ServerTelemetry((captured, cancelled) -> {

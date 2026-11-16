@@ -215,6 +215,7 @@ gtnhextranerf.progression.global=认证由所有玩家与所有维度共享。
 gtnhextranerf.progression.certified=%s已激活。整个世界的认证已解锁。
 gtnhextranerf.progression.already_certified=此世界已取得认证。%s未被消耗。
 gtnhextranerf.telemetry.off=本世界的基础统计已关闭，选择已保存
+gtnhextranerf.telemetry.off_team_on=本世界的基础统计已关闭，但团队追踪仍处于开启状态 - 使用 /extranerfteam off 关闭
 gtnhextranerf.telemetry.save_failed=无法读取或保存统计选项，本次会话的报告已停止，请检查世界存储后重试
 gtnhextranerf.structure_error.stinky_coils=这些线圈方块太臭了！换更好的吧。
 gtnhextranerf.structure_error.unfluix_world=我不喜欢这儿。我更想去个更“福鲁伊克斯”的地方！

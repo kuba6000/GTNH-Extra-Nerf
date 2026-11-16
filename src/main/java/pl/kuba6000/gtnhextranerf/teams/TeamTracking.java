@@ -66,6 +66,8 @@ public final class TeamTracking implements AutoCloseable {
     private boolean registered;
     private long blockedUntil = Long.MIN_VALUE; // nanoTime's origin is arbitrary and may be negative
     private long nextDue;
+    private boolean retryScheduled;
+    private boolean lastSendWasRetry;
 
     @FunctionalInterface
     public interface Sender {
@@ -196,13 +198,23 @@ public final class TeamTracking implements AutoCloseable {
         TelemetryClient.Response response = lastResponse;
         if (response != observedResponse) {
             observedResponse = response;
-            if (response != null) blockedUntil = nowMillis + response.retryAfterSeconds * 1000;
+            if (response != null) {
+                blockedUntil = nowMillis + response.retryAfterSeconds * 1000;
+                // Status 0 means the delivery itself failed: retry once after the back-off, not the full interval.
+                // A failed retry waits the full interval, so an offline server does not retry every minute.
+                if (response.status == 0 && !lastSendWasRetry) {
+                    nextDue = Math.min(nextDue, nowMillis);
+                    retryScheduled = true;
+                }
+            }
         }
         if (closed || nowMillis < blockedUntil || nowMillis < nextDue || !inFlight.compareAndSet(false, true))
             return false;
         try {
             Snapshot captured = snapshot.get();
             nextDue = nowMillis + intervalMillis;
+            lastSendWasRetry = retryScheduled;
+            retryScheduled = false;
             executor.execute(() -> {
                 try {
                     if (closed) return;
