@@ -2,6 +2,7 @@ package pl.kuba6000.gtnhextranerf.integration;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -27,6 +28,7 @@ import gtPlusPlus.core.material.MaterialMisc;
 import gtPlusPlus.core.material.MaterialsElements;
 import gtPlusPlus.core.material.MaterialsOres;
 import gtPlusPlus.core.material.nuclear.MaterialsFluorides;
+import tectech.recipe.TecTechRecipeMaps;
 
 /** Exercises final native recipe lookup, including routes copied into GT++ maps. */
 final class ProgressionNerfIntegrationTests {
@@ -342,6 +344,25 @@ final class ProgressionNerfIntegrationTests {
                 "Another gas still bypasses the Americium boule gate");
         }
         check(found, "The Oganesson Americium boule route disappeared");
+        List<GTRecipe> moltenBouleRecipes = TecTechRecipeMaps.godforgeMoltenRecipes.getAllRecipes()
+            .stream()
+            .filter(recipe -> contains(recipe.mOutputs, boule))
+            .collect(Collectors.toList());
+        check(moltenBouleRecipes.size() == 1, "Melting Core must have exactly one Americium boule recipe");
+        GTRecipe moltenBoule = moltenBouleRecipes.get(0);
+        ItemStack mineralMix = MaterialsOres.DEEP_EARTH_REACTOR_FUEL_DEPOSIT.getDust(1);
+        check(!contains(moltenBoule.mInputs, protactinium), "Melting Core still requires Protactinium");
+        check(
+            Arrays.stream(moltenBoule.mInputs)
+                .filter(input -> input != null && input.isItemEqual(mineralMix))
+                .mapToInt(input -> input.stackSize)
+                .sum() == 1,
+            "Melting Core must require one Radioactive Mineral Mix dust");
+        check(
+            moltenBoule.mFluidInputs.length == 1
+                && moltenBoule.mFluidInputs[0].isFluidEqual(WerkstoffLoader.Oganesson.getFluidOrGas(1)),
+            "Melting Core must still require Oganesson");
+        verifyConsumedIngredient(TecTechRecipeMaps.godforgeMoltenRecipes, moltenBoule, mineralMix);
         check(
             RecipeMaps.cutterRecipes.getAllRecipes()
                 .stream()

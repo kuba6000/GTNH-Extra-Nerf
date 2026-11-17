@@ -203,7 +203,8 @@ catalog, including exact values, conditions and unchanged fields, is
   Acid, at the same fluid amount. Ordinary board-production alternatives stay.
 
 - Americium-doped boule in EBF requires Oganesson and two Protactinium dust.
-  Other gas variants are removed; wafer cutting is retained.
+  Helioflux Melting Core uses one Radioactive Mineral Mix dust instead of
+  Protactinium. Other gas variants are removed; wafer cutting is retained.
 
 - UV/UHV hulls require Kevlar insulation; UEV-UXV require Radox Polymer.
   Both Assembler and existing hand recipes are covered. Native recycling

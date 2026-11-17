@@ -195,6 +195,10 @@ Its signature includes all original inputs, fluid, time, EU/t and heat.
 the appended stack guaranteed consumption. The native integration fixture
 checks gas admission, missing-ingredient rejection, consumption and the
 retained wafer-cutting route.
+After GregTech derives the separate Melting Core map on first world entry,
+`MixinGodforge` replaces the two Protactinium dust with one Radioactive
+Mineral Mix dust on exactly one matching Melting Core recipe. EBF keeps its
+original additive. The native fixture checks the two recipe maps independently.
 
 `MODIFY_HIGH_TIER_HULL_INSULATION` in `ProgressionRecipeNerf` changes six
 Assembler and six hand recipes in one transaction. UV/UHV use Kevlar;

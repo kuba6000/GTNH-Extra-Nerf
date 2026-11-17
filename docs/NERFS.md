@@ -311,6 +311,8 @@ variants are removed. Silicon SG, Gallium Arsenide, Americium, circuit,
 gas amount, duration, energy, heat and output are retained. Cutting the
 finished boule into wafers is unchanged. One modification and seven
 removals are required by the startup audit.
+Helioflux Melting Core has its own version of the same Oganesson recipe. It
+uses one Radioactive Mineral Mix dust in place of the two Protactinium dust.
 
 ## Kevlar bee requirement
 

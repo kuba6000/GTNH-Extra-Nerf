@@ -60,12 +60,16 @@ import pl.kuba6000.gtnhextranerf.machines.RawMachineCasings;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeContext;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeModule;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeRegistry;
+import pl.kuba6000.gtnhextranerf.recipes.RecipeTransaction;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeValidationException;
 import pl.kuba6000.gtnhextranerf.recipes.crafting.CraftingDefinition;
 import pl.kuba6000.gtnhextranerf.recipes.crafting.CraftingRecipeBuilder;
 import pl.kuba6000.gtnhextranerf.recipes.crafting.CraftingRecipeType;
+import pl.kuba6000.gtnhextranerf.recipes.machine.MachineRecipeStore;
+import pl.kuba6000.gtnhextranerf.recipes.machine.MachineRecipes;
 import pl.kuba6000.gtnhextranerf.recipes.machine.RecipeChange;
 import pl.kuba6000.gtnhextranerf.recipes.machine.RecipeMatch;
+import tectech.recipe.TecTechRecipeMaps;
 
 /** Late progression edits share the existing recipe transactions and audit policy. */
 public final class ProgressionRecipeNerf implements RecipeModule {
@@ -352,12 +356,25 @@ public final class ProgressionRecipeNerf implements RecipeModule {
         Predicate<GTRecipe> scope = RecipeMatch.builder()
             .itemOutputs(ItemList.Circuit_Silicon_Ingot5.get(1))
             .build();
-        RecipeMatch oganesson = RecipeMatch.builder()
-            .itemInputs(
-                item(OrePrefixes.block, Materials.SiliconSG, 64),
-                ItemList.GalliumArsenideCrystal.get(4),
-                item(OrePrefixes.ingot, Materials.Americium, 4),
-                GTUtility.getIntegratedCircuit(3))
+        RecipeMatch oganesson = americiumBouleSignature();
+        recipes.machine(blastFurnaceRecipes)
+            .retainExactly(scope, oganesson, 1, 7);
+        recipes.machine(blastFurnaceRecipes)
+            .modifyOne(
+                oganesson,
+                RecipeChange.builder()
+                    .addItemInput(protactiniumDust())
+                    .build());
+    }
+
+    private static RecipeMatch americiumBouleSignature(ItemStack... additionalInputs) {
+        ItemStack[] originalInputs = { item(OrePrefixes.block, Materials.SiliconSG, 64),
+            ItemList.GalliumArsenideCrystal.get(4), item(OrePrefixes.ingot, Materials.Americium, 4),
+            GTUtility.getIntegratedCircuit(3) };
+        ItemStack[] inputs = Arrays.copyOf(originalInputs, originalInputs.length + additionalInputs.length);
+        System.arraycopy(additionalInputs, 0, inputs, originalInputs.length, additionalInputs.length);
+        return RecipeMatch.builder()
+            .itemInputs(inputs)
             .itemOutputs(ItemList.Circuit_Silicon_Ingot5.get(1))
             .fluidInputs(WerkstoffLoader.Oganesson.getFluidOrGas(1_600))
             .fluidOutputs()
@@ -365,16 +382,32 @@ public final class ProgressionRecipeNerf implements RecipeModule {
             .eut(TierEU.RECIPE_LuV)
             .specialValue(9000)
             .build();
-        recipes.machine(blastFurnaceRecipes)
-            .retainExactly(scope, oganesson, 1, 7);
+    }
+
+    private static ItemStack protactiniumDust() {
         ItemStack dust = MaterialsElements.getInstance().PROTACTINIUM.getDust(2);
         if (dust == null) throw new RecipeValidationException("Missing Protactinium dust");
-        recipes.machine(blastFurnaceRecipes)
-            .modifyOne(
-                oganesson,
-                RecipeChange.builder()
-                    .addItemInput(dust)
-                    .build());
+        return dust;
+    }
+
+    /** The native Melting Core map is populated from EBF recipes on first world entry. */
+    public static void patchMeltingCoreAmericiumBoule() {
+        try {
+            ItemStack protactinium = protactiniumDust();
+            ItemStack mineralMix = MaterialsOres.DEEP_EARTH_REACTOR_FUEL_DEPOSIT.getDust(1);
+            if (mineralMix == null) throw new RecipeValidationException("Missing Radioactive Mineral Mix dust");
+            RecipeMap<?> map = TecTechRecipeMaps.godforgeMoltenRecipes;
+            RecipeTransaction.execute(
+                transaction -> new MachineRecipes(map, transaction.edit(new MachineRecipeStore(map))).modifyOne(
+                    americiumBouleSignature(protactinium),
+                    RecipeChange.builder()
+                        .replaceItemInput(protactinium, mineralMix)
+                        .build()));
+        } catch (RecipeValidationException failure) {
+            if (!GTNHExtraNerf.isDevelopmentEnvironment())
+                throw new RecipeValidationException("Melting Core Americium boule: " + failure.getMessage(), failure);
+            GTNHExtraNerf.LOG.warn("Development Melting Core Americium boule patch skipped", failure);
+        }
     }
 
     private static void hullInsulation(RecipeContext recipes) {
