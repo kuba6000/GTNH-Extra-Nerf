@@ -253,6 +253,10 @@ public enum Mixin implements IMixins {
         .addRequiredMod(GT5U)
         .addExcludedMod(GT6)
         .setPhase(LATE)),
+    ReinforcedGlassName(new MixinBuilder().addCommonMixins("MixinBWItemBlocks")
+        .addRequiredMod(GT5U)
+        .addExcludedMod(GT6)
+        .setPhase(LATE)),
     BrainrotMoltenAudit(new MixinBuilder().addCommonMixins("MixinGodforge")
         .addRequiredMod(GT5U)
         .addExcludedMod(GT6)
