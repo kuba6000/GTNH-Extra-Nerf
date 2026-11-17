@@ -9,6 +9,8 @@ From MV upwards they also require every paid certification up to their tier:
 MV through MAX. Each is earned by payment without an exam. Higher-tier
 basic machines require all registered gates up to their tier. LuV through MAX
 currently use provisional item fees; MAX remains available with its MHDCSM fee.
+The same requirements apply to Crop Managers from CropsNH: their automatic
+harvesting, watering, fertilizing and weed control pause whenever certification is missing.
 The Industrial Apiary has a special tier: GregTech registers it as a UV
 machine, but it requires only the certificates up to HV. The unpowered Ice
 Cream Machine does not require a certificate. The Vending Machine's controller

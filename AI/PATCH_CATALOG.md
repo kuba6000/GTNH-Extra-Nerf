@@ -953,7 +953,10 @@ selected Steam first, regardless of activation order.
 `MixinProgressionTickGate` wraps exactly one `MetaTileEntity.onPostTick` call in
 `BaseMetaTileEntity.doPostTick`. It gates electric `MTEBasicMachine` instances
 from LV upwards, basic Steam machines and `MTESteamMultiBlockBase` controllers,
-and retains in-flight work. Electric `MTEMultiBlockBase` controllers also require
+and retains in-flight work. CropsNH Crop Managers use `MTETieredMachineBlock`
+directly. `MachineProgression` recognizes their contiguous registered LV–UMV IDs
+and uses their voltage tier to gate harvesting and crop care through the same tick.
+Electric `MTEMultiBlockBase` controllers also require
 the highest tier among their normal/exotic energy and dynamo hatches.
 `MixinMultiblockCertification` checks again immediately before `runMachine` in
 `onPostTick` (exactly one injection), after structure validation has discovered

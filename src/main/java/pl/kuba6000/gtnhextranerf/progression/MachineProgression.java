@@ -12,6 +12,7 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEBasicMachine;
 import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEMultiBlockBase;
+import gregtech.api.metatileentity.implementations.MTETieredMachineBlock;
 import gregtech.common.tileentities.machines.basic.MTEIceCreamMachine;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.base.MTESteamMultiBlockBase;
 import pl.kuba6000.gtnhextranerf.GTNHExtraNerf;
@@ -40,10 +41,14 @@ public final class MachineProgression {
         }
         if (EnergyHatchCertification.isEnergyHatch(machine))
             return ProgressionTier.forMachine(((MTEHatch) machine).mTier, false);
-        if (!(machine instanceof MTEBasicMachine)) return null;
-        if (machine instanceof MTEIceCreamMachine) return null;
-        if (isIndustrialApiary(machine)) return ProgressionTier.HV;
-        return ProgressionTier.forMachine(((MTEBasicMachine) machine).mTier, machine.isSteampowered());
+        if (machine instanceof MTEBasicMachine basic) {
+            if (machine instanceof MTEIceCreamMachine) return null;
+            if (isIndustrialApiary(machine)) return ProgressionTier.HV;
+            return ProgressionTier.forMachine(basic.mTier, machine.isSteampowered());
+        }
+        if (machine instanceof MTETieredMachineBlock tiered && isCropManager(machine))
+            return ProgressionTier.forMachine(tiered.mTier, false);
+        return null;
     }
 
     private static int maxEnergyHatchTier(List<? extends MTEHatch> hatches, int tier) {
@@ -61,6 +66,14 @@ public final class MachineProgression {
     private static boolean isIndustrialApiary(MetaTileEntity machine) {
         IGregTechTileEntity tile = machine.getBaseMetaTileEntity();
         return tile != null && tile.getMetaTileID() == MetaTileEntityIDs.INDUSTRIAL_APIARY.ID;
+    }
+
+    /** CropsNH registers the Crop Manager variants in a contiguous LV–UMV ID range. */
+    private static boolean isCropManager(MetaTileEntity machine) {
+        IGregTechTileEntity tile = machine.getBaseMetaTileEntity();
+        if (tile == null) return false;
+        int id = tile.getMetaTileID();
+        return id >= MetaTileEntityIDs.CropsNHCropManagerLV.ID && id <= MetaTileEntityIDs.CropsNHCropManagerUMV.ID;
     }
 
     /** Checks the required tier against saved certificate masks without resolving the missing certificate's name. */
