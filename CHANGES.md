@@ -4,6 +4,11 @@ This file is a concise summary of the active ruleset. The complete canonical
 catalog, including exact values, conditions and unchanged fields, is
 [`docs/NERFS.md`](docs/NERFS.md).
 
+## IV borosilicate glass
+
+- IV borosilicate glass is named TungTungTungstensteel Reinforced
+  Borosilicate Glass Block.
+
 ## Kevlar bees
 
 - Liquid Crystal Kevlar consumes Kevlar drones in the LCR, with unrestricted

@@ -5,6 +5,12 @@ fluid identity remain the existing GT identities. Previously saved items still
 resolve to this material. The current IV casing recipes continue to consume
 its double plates.
 
+BartWorks' IV glass is named **TungTungTungstensteel Reinforced Borosilicate
+Glass Block**. In the Fluid Solidifier, one Borosilicate Glass Block and
+1152 mB of finished molten TungTungTungstensteel produce one reinforced block.
+Macerating that block yields nine Borosilicate Glass Dust and eight finished
+TungTungTungstensteel Dust.
+
 The finished material's tooltip displays a bundled Tung Tung Tung Sahur image
 instead of a chemical formula. Its steel/tungsten composition and physics are
 unchanged, and the raw material retains its ordinary formula. Client-only

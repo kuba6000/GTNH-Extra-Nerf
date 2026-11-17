@@ -435,6 +435,8 @@ the supplied High Pressure Operator paper with an 8/10 passing threshold.
 
 GregTech's existing Tungstensteel is displayed as **TungTungTungstensteel**,
 including its processed forms. Existing item identities and recipes are preserved.
+The IV **TungTungTungstensteel Reinforced Borosilicate Glass Block** uses the
+finished material in its Fluid Solidifier recipe.
 A separate **Tungstensteel** material (`RawTungstenSteel`) is registered for the
 Brainrotter input, with separate items and molten fluid. The prototype Industrial
 Brainrotter uses the supplied 5×5×3 glass and fireproof Forestry log structure,

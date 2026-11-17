@@ -4,6 +4,14 @@ This is the exhaustive technical catalog for the current source snapshot. It
 records implemented behavior, not historical intent. Player-facing wording is
 in [`../docs/NERFS.md`](../docs/NERFS.md).
 
+## IV borosilicate glass name
+
+`MixinBWItemBlocks` replaces the item translation key only for
+`bartworks:BW_TieredGlass` metadata 2. The block still uses the native BartWorks
+Fluid Solidifier and Macerator recipes with GregTech's finished
+`Materials.TungstenSteel`. See [Brainrot materials](../docs/BRAINROT_MATERIALS.md)
+for the recipe quantities.
+
 ## Kevlar bee requirement
 
 `ChemicalAndMiscNerf.requireKevlarDrones` adds consumed drones to both exact
