@@ -1304,6 +1304,8 @@ M.M
   recipe takes 30 seconds at LuV and requires research from scanning a 64k ME
   Storage Cell for 60 seconds at HV. Scanning consumes the cell, including any contents.
 - Blank Pattern uses three Sunnarium plates instead of three Glowstone plates.
+- Universal Wireless Terminal assembly consumes an ME Processing Pattern
+  Terminal in addition to its wireless terminals.
 
 See [AE2 progression and Controller recipe](AE2_PROGRESSION.md).
 

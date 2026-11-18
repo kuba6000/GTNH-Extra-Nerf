@@ -1233,6 +1233,13 @@ scopes. The Controller uses a native Assembly Line recipe at LuV, with research
 from a 64k ME Storage Cell scanned at HV. Standard Scanner consumption and NBT
 matching apply; no Scanner mixin is added.
 
+`Ae2RecipeNerf` also replaces exactly one vanilla shapeless recipe for
+`ae2fc:wireless_ultra_terminal`. It keeps the wireless terminal inputs,
+including Wireless Crafting Terminal when `ae2wct` is present, and consumes one
+`appliedenergistics2:item.ItemMultiPart` with metadata 500. The scope is active
+when AE2 Fluid Crafting is loaded. Exact class matching excludes the card
+upgrade recipes, which use subclasses of the base recipe.
+
 Titanium substitution is restricted to AE2-owned outputs. GT processing
 times, energy, fluid quantities and output amounts are retained. See docs/AE2_PROGRESSION.md.
 

@@ -17,11 +17,12 @@ public final class CraftingRecipeBuilder {
 
         SHAPED,
         SHAPELESS,
+        VANILLA_SHAPELESS,
         UNIVERSAL,
         UNIVERSAL_SHAPELESS;
 
         boolean isShapeless() {
-            return this == SHAPELESS || this == UNIVERSAL_SHAPELESS;
+            return this == SHAPELESS || this == VANILLA_SHAPELESS || this == UNIVERSAL_SHAPELESS;
         }
     }
 
@@ -55,6 +56,10 @@ public final class CraftingRecipeBuilder {
 
     public static CraftingRecipeBuilder shapeless() {
         return new CraftingRecipeBuilder(Kind.SHAPELESS);
+    }
+
+    public static CraftingRecipeBuilder vanillaShapeless() {
+        return new CraftingRecipeBuilder(Kind.VANILLA_SHAPELESS);
     }
 
     public static CraftingRecipeBuilder universalShaped() {
@@ -105,8 +110,8 @@ public final class CraftingRecipeBuilder {
     }
 
     public CraftingRecipeBuilder removable(boolean value) {
-        if (kind == Kind.UNIVERSAL || kind == Kind.UNIVERSAL_SHAPELESS)
-            throw new IllegalArgumentException("Universal recipes do not support removable");
+        if (kind != Kind.SHAPED && kind != Kind.SHAPELESS)
+            throw new IllegalArgumentException("Removability is configurable only for GT recipes");
         removable = value;
         return this;
     }

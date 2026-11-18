@@ -160,9 +160,10 @@ removal; `addOne` also rejects an existing matching signature.
 
 ## Crafting operations
 
-Describe crafting with `CraftingRecipeBuilder.shaped()`, `.shapeless()` or
-`.universalShaped()` or `.universalShapeless()`. A built `CraftingDefinition` supplies both its matching
-probe and constructor arguments, so rules do not duplicate nine-slot arrays.
+Use `CraftingRecipeBuilder.shaped()` or `.shapeless()` for GregTech recipes,
+`.universalShaped()` or `.universalShapeless()` for NHCore recipes, and
+`.vanillaShapeless()` for native Minecraft shapeless recipes. A built
+`CraftingDefinition` supplies its matching probe and constructor arguments.
 
 ```java
 CraftingDefinition original = CraftingRecipeBuilder.shaped()
@@ -182,11 +183,13 @@ recipes.crafting().removeOne(obsoleteDefinition);
 recipes.crafting().addOne(newDefinition);
 ```
 
-Bindings accept `ItemStack` or OreDict names; shapeless recipes use
-`.inputs(item, item, otherItem)`. `toBuilder()` creates an independent editable
-copy. Patterns must be rectangular and fit 3x3, with exactly the declared
-non-space bindings. Outputs and ingredients must be nonempty. Shapeless recipes
-require 1..9 inputs. Invalid declarations fail before accessing the registry.
+Bindings accept `ItemStack` or OreDict names. Shapeless recipes use
+`.inputs(item, item, otherItem)` for item stacks. Vanilla shapeless recipes
+only accept item stacks, as the native recipe has no OreDict matching.
+`toBuilder()` creates an independent editable copy. Patterns must be
+rectangular and fit 3x3, with exactly the declared non-space bindings.
+Outputs and ingredients must be nonempty. Shapeless recipes require 1..9
+inputs. Invalid declarations fail before accessing the registry.
 `probe()` returns independent stacks, resolving OreDict representatives at use.
 
 The ingredient model uses the `CraftingIngredient` interface, with immutable
@@ -217,8 +220,8 @@ an independent builder. The raw `CraftingTarget` is package-private.
 Construction kind and target type are separate: `.matchType(CraftingRecipeType)`
 optionally restricts the upstream class, while omitting it matches any compatible
 recipe. Named `.removable(boolean)` and `.mirrored(boolean)` replace positional
-flags. GT recipes default to removable and unmirrored; universal recipes use
-the upstream constructor's behavior and reject unsupported flag setters.
+flags. GT recipes default to removable and unmirrored. The other constructors use
+their native behavior and reject unsupported flags.
 The internal factory still calls constructors directly without reflection.
 
 Every target checks actual recipe matching and exact output. Replacements are

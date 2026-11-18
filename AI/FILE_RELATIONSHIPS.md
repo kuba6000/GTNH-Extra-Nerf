@@ -140,7 +140,7 @@ The CI harness searches logs for the exact prefix
 | `BlastFurnaceNerf` | `MachineRecipes` | primitive blast furnace and EBF maps, Railcraft Coke, BartWorks gases, optional TConstruct item | Typed scopes |
 | `ChemicalAndMiscNerf` | `MachineRecipes` and `CraftingRecipes` | chemical reactor, LCR, Forge Hammer, distillery, centrifuge, electrolyzer, chemical bath, blast furnace | Typed scopes |
 | `CoreModRecipeNerf` | `MachineRecipes` | assembler, circuit assembler, chemical maps, mixer, centrifuge, vacuum furnace | Typed scopes |
-| `Ae2RecipeNerf` | `MachineRecipes`, `CraftingRecipes`, `Ae2RecipeIngredients` | AE2-owned outputs in GT maps; Controller and Blank Pattern crafting | Load-complete scopes; shared crafting material rule audited during registration |
+| `Ae2RecipeNerf` | `MachineRecipes`, `CraftingRecipes`, `Ae2RecipeIngredients` | AE2-owned outputs in GT maps; Controller, Blank Pattern and Universal Wireless Terminal crafting | Load-complete scopes; shared crafting material rule audited during registration |
 | `Ae2AssemblyLineRecipes` | Native GT Assembly Line builder | Controller production, 64k cell research, Scanner and NEI entries | One audited addition after recipe modifications |
 | `SlimeRecipeNerf` | `MachineRecipes` and `CraftingRecipes` | extractor, centrifuge, multiblock centrifuge, assembler and Minecraft crafting | Typed scopes with TConstruct/GT++/EMT/NHCore activation contracts |
 

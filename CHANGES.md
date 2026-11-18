@@ -4,6 +4,10 @@ This file is a concise summary of the active ruleset. The complete canonical
 catalog, including exact values, conditions and unchanged fields, is
 [`docs/NERFS.md`](docs/NERFS.md).
 
+## Universal Wireless Terminal
+
+- Crafting the Universal Wireless Terminal also consumes one ME Processing Pattern Terminal
+
 ## Botania structural glass
 
 - Managlass, Alfglass and Bifrost Block count as HV glass in GregTech.

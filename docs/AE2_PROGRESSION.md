@@ -1,6 +1,6 @@
 # AE2 progression
 
-New rules apply to recipes producing items registered by Applied Energistics 2:
+Extra Nerf changes these Applied Energistics 2 recipes:
 
 - Titanium ingredients become TPV in the same form and quantity, including
   plates, screws and molten metal. Other alloys such as Niobium-Titanium remain
@@ -9,6 +9,21 @@ New rules apply to recipes producing items registered by Applied Energistics 2:
   Assembly Line after scanning a 64k ME Storage Cell.
 - The Blank Pattern crafting recipe uses three Sunnarium plates instead of three
   Glowstone plates, preserving its Quartz Glass, Certus Quartz and Aluminium.
+
+## Universal Wireless Terminal
+
+Craft one Universal Wireless Terminal with the following ingredients in any order:
+
+- 1 Wireless Terminal
+- 1 Wireless Pattern Terminal
+- 1 Wireless Interface Terminal
+- 1 Wireless Level Terminal
+- 1 Wireless Crafting Terminal, when Wireless Crafting Terminal is installed
+- 1 ME Processing Pattern Terminal
+
+This recipe charges for the separate processing pattern mode. Crafting the
+ME Processing Pattern Terminal requires LuV components. Cards still upgrade a crafted
+Universal Wireless Terminal through the standard recipes.
 
 ## ME Controller Assembly Line recipe
 
@@ -62,6 +77,9 @@ checks the real Assembly Line list and resolves the Scanner's resulting Data
 Stick back to the Controller recipe. It checks that Redstone Certus recipes remain,
 and verifies that replacing a fluid preserves its amount, chances, other fluid
 alternatives, duration and voltage. It also retains all previous recipe tests.
+
+When AE2 Fluid Crafting is loaded, a separate audit scope requires exactly one
+replacement of the base shapeless Universal Wireless Terminal recipe.
 
 The implementation targets GT5 5.09.54.261, NHCore 2.9.99 and NEI 2.8.171-GTNH.
 Only NHCore's current GT crafting overload with recipe flags is supported;

@@ -227,6 +227,7 @@ public enum AuditScope implements AuditDefinition {
         .added(1)
         .build()),
     AE2_SUNNARIUM_PATTERN(Mods.AppliedEnergistics2::isModLoaded, modified(1)),
+    AE2_REQUIRE_PROCESSING_PATTERN_TERMINAL(Mods.AE2FluidCraft::isModLoaded, modified(1)),
     MODIFY_CRAFTING_INPUT_PROXY_RECIPE(
         () -> Mods.GTNHIntergalactic.isModLoaded() && Mods.AppliedEnergistics2.isModLoaded()
             && Mods.AE2FluidCraft.isModLoaded(),

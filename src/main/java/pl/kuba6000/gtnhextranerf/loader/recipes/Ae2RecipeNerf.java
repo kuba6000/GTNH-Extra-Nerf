@@ -37,6 +37,7 @@ public final class Ae2RecipeNerf implements RecipeModule {
         registry.register(AuditScope.AE2_REMOVE_CONTROLLER, Ae2RecipeNerf::removeController);
         registry.register(AuditScope.AE2_TPV_MACHINES, Ae2RecipeNerf::machineMaterials);
         registry.register(AuditScope.AE2_SUNNARIUM_PATTERN, Ae2RecipeNerf::blankPattern);
+        registry.register(AuditScope.AE2_REQUIRE_PROCESSING_PATTERN_TERMINAL, Ae2RecipeNerf::universalWirelessTerminal);
     }
 
     private static void removeController(RecipeContext recipes) {
@@ -100,6 +101,30 @@ public final class Ae2RecipeNerf implements RecipeModule {
                     .modifyKnownOne(recipe, changes.build());
             }
         }
+    }
+
+    private static void universalWirelessTerminal(RecipeContext recipes) {
+        List<ItemStack> inputs = new ArrayList<>(
+            Arrays.asList(
+                requireModItem(Mods.AppliedEnergistics2, "item.ToolWirelessTerminal", 1, 0),
+                requireModItem(Mods.AE2FluidCraft, "wireless_fluid_pattern_terminal", 1, 0),
+                requireModItem(Mods.AE2FluidCraft, "wireless_interface_terminal", 1, 0),
+                requireModItem(Mods.AE2FluidCraft, "wireless_level_terminal", 1, 0)));
+        if (Mods.AE2WCT.isModLoaded()) {
+            inputs.add(requireModItem(Mods.AE2WCT, "wirelessCraftingTerminal", 1, 0));
+        }
+        CraftingDefinition original = CraftingRecipeBuilder.vanillaShapeless()
+            .inputs(inputs.toArray(new ItemStack[0]))
+            .output(requireModItem(Mods.AE2FluidCraft, "wireless_ultra_terminal", 1, 0))
+            .matchType(CraftingRecipeType.VANILLA_SHAPELESS)
+            .build();
+        inputs.add(requireModItem(Mods.AppliedEnergistics2, "item.ItemMultiPart", 1, 500));
+        recipes.crafting()
+            .replaceOne(
+                original,
+                original.toBuilder()
+                    .inputs(inputs.toArray(new ItemStack[0]))
+                    .build());
     }
 
     private static void blankPattern(RecipeContext recipes) {
