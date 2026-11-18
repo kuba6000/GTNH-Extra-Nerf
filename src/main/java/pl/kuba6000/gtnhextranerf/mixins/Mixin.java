@@ -28,6 +28,10 @@ public enum Mixin implements IMixins {
         .addRequiredMod(TargetedMod.THAUMCRAFT)
         .setPhase(LATE)),
 
+    ArcaneTerminalSolegnolia(new MixinBuilder().addCommonMixins("MixinArcaneTerminalSolegnolia")
+        .addRequiredMod(TargetedMod.THAUMIC_ENERGISTICS)
+        .setPhase(LATE)),
+
     CrucibleMetalDuplication(new MixinBuilder().addCommonMixins("MixinCrucibleMetalDuplication")
         .addRequiredMod(GT5U)
         .addRequiredMod(TargetedMod.THAUMCRAFT)

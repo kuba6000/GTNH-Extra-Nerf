@@ -25,7 +25,8 @@ toolchains and Java 8-compatible output.
 - `com.github.GTNewHorizons:NewHorizonsCoreMod:2.9.99:dev`;
 - EnhancedLootBags `1.3.5:dev` as an implementation dependency;
 - BetterQuesting `3.8.92-GTNH:dev`, Chisel `2.17.34-GTNH:dev`, Extra Utilities `2264384`, Custom Main Menu
-  `1.14.1:dev` and ChromaticTooltips `1.0.36-GTNH:dev` for compilation;
+  `1.14.1:dev`, ChromaticTooltips `1.0.36-GTNH:dev` and Thaumic Energistics
+  `1.7.68-GTNH:dev` for compilation;
 - NotEnoughItems `2.8.171-GTNH:dev` for non-published runtime development;
 - JUnit Platform/Jupiter 6.1.3, Objenesis 3.6, fastutil 8.5.19 and LWJGL 2.9.3
   for tests.

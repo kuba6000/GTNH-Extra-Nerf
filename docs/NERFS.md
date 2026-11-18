@@ -669,7 +669,8 @@ The hand-crafting and Assembler recipes require a Magicnetized Manasteel Rod
 instead of a Magnetic Steel Rod. In an Arcane Workbench, place a Manasteel Rod
 between two Magnetic Steel Rods with a Solegnolia below it. The recipe costs
 10 Aer and 10 Ordo vis, keeps the Solegnolia in the workbench, and turns the
-Magnetic Steel Rods into Steel Rods.
+Magnetic Steel Rods into Steel Rods. The Arcane Crafting Terminal also keeps
+the Solegnolia in its grid.
 
 An HV Assembler can also produce one Magicnetized Manasteel Rod from one
 Manasteel Rod, two Magnetic Steel Rods, two Salis Mundus and 144 L Mercury.

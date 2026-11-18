@@ -192,6 +192,7 @@ the following together:
 | `MixinAssemblerOutputs` | GregTech machine builder | `@ModifyVariable` | Two Assembling Machine item outputs |
 | `MixinAssemblerRecipeMap` | GregTech recipe maps | `@ModifyArg` | Two Assembler recipe outputs and NEI slots |
 | `MixinArcaneCraftingRemainders` | Thaumcraft | `@WrapMethod` + `@WrapOperation` | Magicnetized Manasteel Rod crafting remainders and scheduling inventory synchronization |
+| `MixinArcaneTerminalSolegnolia` | Thaumic Energistics | `@WrapOperation` | Preserves Solegnolia in the terminal for the Magicnetized Manasteel Rod recipe |
 | `MixinCutterRecipeRegistration` | GregTech | `@WrapOperation` | Cutter variants with ordinary or distilled water, before recipe-map insertion |
 | `MixinMetalTransmutation` | Witching Gadgets | `@WrapOperation` | GT-generated `METALLURGICPERFECTION_TRANSMUTATION` crucible recipes |
 | `MixinMetalResearchText` | Witching Gadgets | `@ModifyConstant` | Metal transmutation research page text |

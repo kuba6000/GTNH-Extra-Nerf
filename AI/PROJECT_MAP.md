@@ -224,6 +224,7 @@ All paths below start at
 | `mixins/late/MixinHealingAxeHunger.java` | Extra Utilities `ItemHealingAxe` | Marks the carried axe, changes its displayed name and replaces hunger gain with drain. |
 | `mixins/late/MixinSoybeanCrop.java` | HarvestCraft `BlockPamCrop` | Replaces soybean item returns from crop and seed methods. |
 | `mixins/late/MixinArcaneCraftingRemainders.java` | Thaumcraft `SlotCraftingArcaneWorkbench` | Returns the flower and demagnetized rods when crafting the MV ingredient. |
+| `mixins/late/MixinArcaneTerminalSolegnolia.java` | Thaumic Energistics `ContainerPartArcaneCraftingTerminal` | Keeps Solegnolia in the terminal crafting grid. |
 | `mixins/late/MixinCutterRecipeRegistration.java` | GregTech `RecipeMapBackend` | Filters ordinary and distilled water cutter variants before registration. |
 | `mixins/late/MixinMetalTransmutation.java` | Witching Gadgets `WG_alchemic_clusters` | Modifies GT-generated metal transmutation recipes during registration. |
 | `mixins/late/MixinMetalResearchText.java` | Witching Gadgets `WGResearch` | Uses text describing the resulting metal dusts. |

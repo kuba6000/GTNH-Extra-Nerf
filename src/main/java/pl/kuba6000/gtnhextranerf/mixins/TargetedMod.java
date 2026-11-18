@@ -22,6 +22,7 @@ public enum TargetedMod implements ITargetMod {
     BETTER_QUESTING("betterquesting"),
     BQ_STANDARD("bq_standard"),
     THAUMCRAFT("Thaumcraft"),
+    THAUMIC_ENERGISTICS("thaumicenergistics"),
     WITCHING_GADGETS("WitchingGadgets");
 
     private final TargetModBuilder builder;

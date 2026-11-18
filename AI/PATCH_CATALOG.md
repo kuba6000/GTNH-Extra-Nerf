@@ -87,6 +87,7 @@ research pages and NEI read the registered recipes and are audited by
 `MagicnetizedRods` registers an arcane recipe using a Manasteel Rod,
 two Magnetic Steel Rods, a Solegnolia, 10 Aer and 10 Ordo. The workbench
 keeps the flower in the workbench and converts the Magnetic Steel Rods to Steel Rods.
+The Arcane Crafting Terminal keeps the full Solegnolia stack in its grid.
 `ArcaneWorkbenchSync` sends the final Shift-click inventory at server tick END.
 `CraftingNerf` and `CoreModRecipeNerf` replace the
 Magnetic Steel Rod in the MV motor's hand and Assembler recipes. The COAL
@@ -94,7 +95,8 @@ recipe uses Long Magnetic Steel Rods.
 
 `CommonProxy` registers the item in pre-init and its arcane recipe during
 load-complete. `MixinArcaneCraftingRemainders` handles the rod and flower
-remainders and requests the final inventory snapshot. `LvRecipeIntegrationTests`
+remainders and requests the final inventory snapshot. `MixinArcaneTerminalSolegnolia` skips the flower when
+Thaumic Energistics consumes the recipe inputs. `LvRecipeIntegrationTests`
 checks the recipes, arcane ingredients and remainder helper.
 `ArcaneWorkbenchScenarios` checks native workbench clicks and client inventory
 synchronization.

@@ -78,16 +78,20 @@ public final class MagicnetizedRods {
         if (input.isItemEqual(magnetic)) {
             return GTOreDictUnificator.get(OrePrefixes.stick, Materials.Steel, 1);
         }
-        ItemStack flower = solegnolia();
-        if (input.isItemEqual(flower) && input.hasTagCompound()
-            && "solegnolia".equals(
-                input.getTagCompound()
-                    .getString("type"))) {
+        if (isSolegnolia(input)) {
             ItemStack remainder = input.copy();
             remainder.stackSize = 1;
             return remainder;
         }
         return null;
+    }
+
+    public static boolean isSolegnolia(ItemStack input) {
+        return input != null && input.hasTagCompound()
+            && "solegnolia".equals(
+                input.getTagCompound()
+                    .getString("type"))
+            && input.isItemEqual(solegnolia());
     }
 
     public static ItemStack solegnolia() {
