@@ -10,6 +10,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -42,6 +43,7 @@ import pl.kuba6000.gtnhextranerf.progression.ProgressionTier;
 import pl.kuba6000.gtnhextranerf.progression.SteamSafety;
 import pl.kuba6000.gtnhextranerf.progression.exam.CertificationExams;
 import pl.kuba6000.gtnhextranerf.progression.exam.ExamSyncHandler;
+import pl.kuba6000.gtnhextranerf.progression.quest.SmelteryQuestRewards;
 import pl.kuba6000.gtnhextranerf.recipes.MetalDuplication;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeValidationException;
 import pl.kuba6000.gtnhextranerf.recipes.crafting.ArcaneWorkbenchSync;
@@ -200,6 +202,11 @@ public class CommonProxy {
         UpdateChecker.start(Tags.VERSION);
         event.registerServerCommand(new TelemetryCommand());
         event.registerServerCommand(new TeamCommand());
+    }
+
+    /** Runs after every mod's start handler, once BetterQuesting has loaded the world's questbook. */
+    public void serverStarted(FMLServerStartedEvent event) {
+        if (Loader.isModLoaded("betterquesting")) SmelteryQuestRewards.verify();
     }
 
     public void serverStopped(FMLServerStoppedEvent event) {

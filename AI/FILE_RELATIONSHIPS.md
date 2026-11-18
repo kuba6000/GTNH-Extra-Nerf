@@ -44,7 +44,8 @@ changes; `LootAllowancePreview` rejects packets from previous connections.
 `CommonProxy` verifies it through `VERIFY_PARTY_REWARDS` at load-complete.
 BetterQuesting retains ownership of claim checks, delivery and per-member progress.
 `MixinQuestInstance` clears the Smeltery crafting quest's rewards on the server
-when BetterQuesting reads its definition.
+when BetterQuesting reads its definition. `SmelteryQuestRewards` owns the quest
+ID and `CommonProxy.serverStarted` uses it to verify the loaded questbook.
 
 `MixinCraftingTaskRetrieval` adds BQ's inventory and observation interfaces to
 every `TaskCrafting` while preserving native production events. Its adapter,

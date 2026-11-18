@@ -184,6 +184,8 @@ sided proxy. Lifecycle handlers include:
 - `serverStarting` starts the loot runtime, loads the world's reporting choice
   (`Config.loadWorld`), starts telemetry, team tracking, the consent prompt and
   the update checker, and registers the server commands.
+- `serverStarted` verifies, with BetterQuesting, that the loaded questbook
+  still has the Smeltery quest and that it grants no rewards.
 - `serverStopped` stops those services and resets per-world state.
 
 `ClientProxy` additionally registers the loot allowance preview, client

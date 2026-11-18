@@ -281,6 +281,9 @@ On the server, `MixinQuestInstance` clears the rewards of quest UUID
 its definition. The split default questbook supplies the ID in the definition
 before registration. World saves and edits can use the registered ID.
 Tasks, prerequisites and saved progress use the native BetterQuesting paths.
+`SmelteryQuestRewards` checks the loaded questbook on `FMLServerStartedEvent`,
+after BetterQuesting has loaded it. A missing quest or remaining rewards stop
+the server with an integrity failure; development launches log a warning.
 
 Every BQ Standard crafting task additionally accepts its required items from
 the inventory without consuming them. `MixinCraftingTaskRetrieval` adds the
