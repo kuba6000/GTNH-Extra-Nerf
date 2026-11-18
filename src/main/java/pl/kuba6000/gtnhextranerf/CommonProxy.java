@@ -5,6 +5,7 @@ import net.minecraftforge.common.MinecraftForge;
 import com.cleanroommc.modularui.widget.Widget;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -51,6 +52,7 @@ import pl.kuba6000.gtnhextranerf.telemetry.ConsentPrompt;
 import pl.kuba6000.gtnhextranerf.telemetry.ServerTelemetry;
 import pl.kuba6000.gtnhextranerf.telemetry.TelemetryCommand;
 import pl.kuba6000.gtnhextranerf.update.UpdateChecker;
+import pl.kuba6000.gtnhextranerf.warp.ChickenJockeyWarpEvent;
 
 public class CommonProxy {
 
@@ -93,6 +95,7 @@ public class CommonProxy {
     // postInit "Handle interaction with other mods, complete your setup based on this."
     public void postInit(FMLPostInitializationEvent event) {
         runStartupStep(RawMachineCasings::registerGroups);
+        if (Loader.isModLoaded("WarpTheory")) ChickenJockeyWarpEvent.register();
     }
 
     public void loadComplete(FMLLoadCompleteEvent event) {

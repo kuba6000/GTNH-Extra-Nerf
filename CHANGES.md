@@ -18,6 +18,11 @@ catalog, including exact values, conditions and unchanged fields, is
 - Liquid Crystal Kevlar consumes Kevlar drones in the LCR, with unrestricted
   other genetics, including with recipe locking. The Kevlar mutation requires a ZPM Replicator
 
+## Chicken jockey warp effect
+
+- From 20 effective warp, Warp Theory can spawn up to 24 chicken jockeys
+  around the affected player
+
 ## Iron Bath alloy production
 
 - Stainless Steel requires Wrought Iron, Electrical Steel requires Cast Iron,

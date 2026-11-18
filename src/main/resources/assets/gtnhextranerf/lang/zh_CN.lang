@@ -376,3 +376,5 @@ gtnhextranerf.error.logs=完整错误报告见 logs/latest.log。改动安装前
 gtnhextranerf.error.preview=开发预览版 —— 由 JVM 参数强制启用
 
 gtnhextranerf.task.crafting_or_retrieval=合成或持有物品
+
+chat.warptheory.gtnhextranerf.chicken_jockeys=鸡灵来找你了。

@@ -1330,6 +1330,12 @@ These changes run only when Forestry is loaded.
 
 - Indium output decreases from 30 dust to 20.
 
+## Chicken jockey warp effect
+
+From 20 effective warp, Warp Theory can unleash up to 24 chicken jockeys around the affected player.
+They appear 8 to 16 blocks away wherever there is room on solid ground. The effect respects Peaceful
+difficulty and the `doMobSpawning` game rule.
+
 ## Hungry Axe (Extra Utilities Healing Axe)
 
 Extra Utilities' Healing Axe gives its holder one hunger point every 40 ticks while it is the selected hotbar

@@ -1469,6 +1469,13 @@ both slots in LV Circuit Assembler crafting and the Tool Station Slab accept all
 registered `circuitBasic` variants. Resolving the first ore entry is appropriate
 for a matching probe, but must not replace the category in a published recipe.
 
+## Chicken jockey warp effect
+
+`ChickenJockeyWarpEvent` joins Warp Theory's event pool during Extra Nerf's post-init when Warp Theory
+is present. Warp Theory handles selection and queuing. The effect uses severity 20 and spawns at most
+24 vanilla pairs on solid ground 8 to 16 blocks from the target. It uses only loaded chunks, skips
+Peaceful and `doMobSpawning=false`, and removes the mount if Forge rejects the rider.
+
 ## Electric Iron Bath
 
 The Steam Locomotive offer requires 17 Steel Plates and 32–40 Emeralds while
