@@ -43,6 +43,7 @@ catalog, including exact values, conditions and unchanged fields, is
 - BetterQuesting crafting tasks also accept their required items from the
   inventory without consuming them. Crafting remains valid, and saved task IDs
   are preserved.
+- The Smeltery crafting quest **You Are Not Prepared!!!** has no rewards.
 
 ## Telemetry consent
 

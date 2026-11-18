@@ -201,6 +201,9 @@ matching rules. Observation Stations can detect items as for retrieval tasks.
 Crafting, smelting, anvil use and crafting statistics retain their original
 behavior where enabled by the task.
 
+**You Are Not Prepared!!!** grants no rewards. It keeps its existing Smeltery
+requirements and still leads to **You Are Now Prepared, Hopefully!**.
+
 Production and inventory progress are tracked separately. For each required
 item, the greater count applies instead of summing the two counts, and different
 requirements may be satisfied by different methods. Inventory progress

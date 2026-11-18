@@ -276,6 +276,12 @@ claimant and marks all current party members claimed, including absent members.
 `NativeScenarios.partyRewards` exercises native parties, item delivery, claim
 eligibility and repeated configuration loading from a false setting.
 
+On the server, `MixinQuestInstance` clears the rewards of quest UUID
+`00000000-0000-0000-0000-000000000bd7` (3031) after BetterQuesting reads
+its definition. The split default questbook supplies the ID in the definition
+before registration. World saves and edits can use the registered ID.
+Tasks, prerequisites and saved progress use the native BetterQuesting paths.
+
 Every BQ Standard crafting task additionally accepts its required items from
 the inventory without consuming them. `MixinCraftingTaskRetrieval` adds the
 inventory/observation interfaces while retaining native craft, smelt, anvil and

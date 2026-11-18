@@ -153,6 +153,10 @@ public enum Mixin implements IMixins {
         .addRequiredMod(TargetedMod.BETTER_QUESTING)
         .setPhase(LATE)),
 
+    SmelteryQuestRewards(new MixinBuilder().addCommonMixins("MixinQuestInstance")
+        .addRequiredMod(TargetedMod.BETTER_QUESTING)
+        .setPhase(LATE)),
+
     CraftingTaskRetrieval(new MixinBuilder().addCommonMixins("MixinCraftingTaskRetrieval")
         .addClientMixins("MixinCraftingTaskRetrievalGui")
         .addRequiredMod(TargetedMod.BETTER_QUESTING)
