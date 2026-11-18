@@ -106,6 +106,7 @@ public final class MTEIronBathTap extends MTEHatchOutput {
         FluidStack fluid = IronBathFurnace.material(preview.product())
             .getMolten(preview.amountMb());
         if (fluid == null) throw new IllegalStateException("Missing molten bath product: " + preview.product());
+        if (!canStoreFluid(fluid)) return false;
         int accepted = fill(fluid, false);
         if (accepted == 0) return false;
         IronBath.Tap removed = bath.tap(band, accepted);

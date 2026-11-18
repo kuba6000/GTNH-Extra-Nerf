@@ -42,6 +42,7 @@ import pl.kuba6000.gtnhextranerf.machines.MTEIronBathFurnace;
 import pl.kuba6000.gtnhextranerf.machines.MTEIronBathTap;
 import pl.kuba6000.gtnhextranerf.machines.ironbath.IronBath;
 import pl.kuba6000.gtnhextranerf.machines.ironbath.IronProduct;
+import pl.kuba6000.gtnhextranerf.materials.IronBathMaterials;
 import pl.kuba6000.gtnhextranerf.progression.MachineProgression;
 import pl.kuba6000.gtnhextranerf.progression.ProgressionTier;
 
@@ -105,6 +106,48 @@ public final class IronBathPersistenceScenarios {
                 IronBath bath = state(machine);
                 check(bath.metalMb() == 2304, "Melting changed the admitted metal volume");
                 check(Math.abs(bath.carbon() - 26.9) < 0.01, "Melting changed the native materials' carbon content");
+            })
+            .thenSucceed();
+    }
+
+    @GameTest(template = "gtnhextranerftests:native_fixture")
+    public static void tappingHatchRespectsFluidLockWithEmptyBuffer(GameTestHelper helper) {
+        WorldServer world = helper.getWorld();
+        FixtureWorld.loadAround(world, X, Z);
+        helper.afterTest(() -> world.setBlockToAir(X, Y, Z));
+        BaseMetaTileEntity tile = place(world, FakePlayerFactory.getMinecraft(world), IronBathFurnace.tap(1), 0, 0, 0);
+        tile.enableWorking();
+        MTEIronBathTap tap = (MTEIronBathTap) tile.getMetaTileEntity();
+        tap.setRedstoneMode(2);
+        int metal = 4 * 144;
+        NBTTagCompound contents = new NBTTagCompound();
+        contents.setInteger("Metal", metal);
+        contents.setDouble("Carbon", 4);
+        IronBath bath = new IronBath(0);
+        bath.load(contents);
+        contents.setDouble("Heat", bath.heatDemand(IronBath.WORKING_TEMPERATURE));
+        bath.load(contents);
+
+        FluidStack wroughtIron = IronBathMaterials.wroughtIron()
+            .getMolten(1);
+        FluidStack steel = Materials.Steel.getMolten(1);
+        tap.setLockedFluid(wroughtIron.getFluid());
+        tap.lockFluid(true);
+        helper.startSequence()
+            .thenExecute(() -> {
+                check(!tap.discharge(bath, 0), "Empty tapping hatch discharged Steel while locked to Wrought Iron");
+                check(tap.getFluidAmount() == 0, "Mismatched fluid reached the hatch buffer");
+                check(bath.metalMb() == metal, "A blocked discharge removed metal from the bath");
+            })
+            .thenIdle(1)
+            .thenExecute(() -> {
+                tap.setLockedFluid(steel.getFluid());
+                check(tap.discharge(bath, 0), "Empty tapping hatch refused its selected Steel");
+                FluidStack output = tap.getFluid();
+                check(
+                    output != null && output.isFluidEqual(steel) && output.amount == 144,
+                    "Matching fluid did not fill the hatch");
+                check(bath.metalMb() == metal - 144, "Matching discharge removed the wrong amount");
             })
             .thenSucceed();
     }
