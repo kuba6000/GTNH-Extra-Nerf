@@ -41,6 +41,7 @@ public enum AuditScope implements AuditDefinition {
     MODIFY_IRON_TO_STEEL_TRANSMUTATION(Mods.Thaumcraft::isModLoaded, modified(1)),
     MODIFY_OTHER_METAL_TRANSMUTATIONS(() -> Mods.Thaumcraft.isModLoaded() && Mods.GregTech.isModLoaded(),
         AuditExpectation.atLeastModified(1)),
+    LOWER_BOTANIA_GLASS_TIERS(Mods.Botania::isModLoaded, modified(3)),
 
     VERIFY_ASSEMBLY_LINE_SPATIAL_DIMENSION(Mods.AppliedEnergistics2::isModLoaded, AuditExpectation.exact()
         .build()),

@@ -4,6 +4,10 @@ This file is a concise summary of the active ruleset. The complete canonical
 catalog, including exact values, conditions and unchanged fields, is
 [`docs/NERFS.md`](docs/NERFS.md).
 
+## Botania structural glass
+
+- Managlass, Alfglass and Bifrost Block count as HV glass in GregTech.
+
 ## IV borosilicate glass
 
 - IV borosilicate glass is named TungTungTungstensteel Reinforced

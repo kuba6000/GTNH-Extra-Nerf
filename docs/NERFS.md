@@ -34,6 +34,13 @@ An electric Forge Hammer converts one Livingrock and 22 L of Lubricant into
 one Livingrock Plate in 150 seconds at 30 EU/t. This provides an LV route to
 the Diluted Mana Pool without requiring a Cutting Machine.
 
+## Botania structural glass
+
+Managlass, Alfglass and Bifrost Block count as HV glass in GregTech structures
+and recipes that accept HV glass by tier. The Alfheim trade still requires EV
+glass for Alfglass, so Managlass no longer qualifies. Recipes that call for a
+specific Botania glass, such as Mana Lens or Bifrost Block, still use it.
+
 ## Metal transmutation
 
 Crucible recipes that duplicate a GregTech metal nugget consume one nugget and

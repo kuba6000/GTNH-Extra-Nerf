@@ -4,6 +4,16 @@ This is the exhaustive technical catalog for the current source snapshot. It
 records implemented behavior, not historical intent. Player-facing wording is
 in [`../docs/NERFS.md`](../docs/NERFS.md).
 
+## Botania structural glass
+
+`MixinBotaniaGlassTiers` registers Managlass, Alfglass and Bifrost Block at HV
+in the native `GlassTier.RegisterGlassTiers` pass, before GregTech publishes
+the tiered OreDictionary groups. The HV variants use subtiers 8 through 10.
+`LOWER_BOTANIA_GLASS_TIERS` expects exactly three tier changes when Botania
+is loaded. Block identities, recipe definitions and reinforced glass
+registrations are unchanged. Botanic Horizons trades Alfglass for
+`blockGlassEV`, so that trade now requires a different EV glass.
+
 ## IV borosilicate glass name
 
 `MixinBWItemBlocks` replaces the item translation key only for
