@@ -29,6 +29,20 @@ public final class NativeScenarios {
     }
 
     @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void toolForgeRecipes(GameTestHelper helper) {
+        scenario(helper, "toolForgeRecipes", false, LvRecipeIntegrationTests::verifyToolForgeRecipes);
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
+    public static void universalWirelessTerminal(GameTestHelper helper) {
+        scenario(
+            helper,
+            "universalWirelessTerminal",
+            false,
+            () -> Ae2RecipeIntegrationTests.verifyUniversalWirelessTerminal(helper.getWorld()));
+    }
+
+    @GameTest(template = "native_fixture", timeoutTicks = 1200)
     public static void metalTransmutation(GameTestHelper helper) {
         scenario(
             helper,

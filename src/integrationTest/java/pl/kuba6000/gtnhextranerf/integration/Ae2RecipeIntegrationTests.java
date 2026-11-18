@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -110,6 +114,65 @@ final class Ae2RecipeIntegrationTests {
                 .noneMatch(originalQuartz)) failures.add("redstone Certus route missing: " + map.unlocalizedName);
         }
         if (!failures.isEmpty()) throw new AssertionError(failures.toString());
+    }
+
+    static void verifyUniversalWirelessTerminal(World world) {
+        ItemStack universal = terminalItem(Mods.AE2FluidCraft, "wireless_ultra_terminal", 0);
+        List<ItemStack> inputs = new ArrayList<>(
+            Arrays.asList(
+                terminalItem(Mods.AppliedEnergistics2, "item.ToolWirelessTerminal", 0),
+                terminalItem(Mods.AE2FluidCraft, "wireless_fluid_pattern_terminal", 0),
+                terminalItem(Mods.AE2FluidCraft, "wireless_interface_terminal", 0),
+                terminalItem(Mods.AE2FluidCraft, "wireless_level_terminal", 0)));
+        if (Mods.AE2WCT.isModLoaded()) {
+            inputs.add(terminalItem(Mods.AE2WCT, "wirelessCraftingTerminal", 0));
+        }
+        ItemStack oldResult = craft(world, inputs);
+        if (oldResult != null && universal.isItemEqual(oldResult)) {
+            throw new AssertionError("Universal Wireless Terminal crafts without a Processing Pattern Terminal");
+        }
+
+        inputs.add(0, terminalItem(Mods.AppliedEnergistics2, "item.ItemMultiPart", 500));
+        ItemStack result = craft(world, inputs);
+        if (!ItemStack.areItemStacksEqual(universal, result)) {
+            throw new AssertionError("Expected one Universal Wireless Terminal with the Processing Pattern Terminal");
+        }
+        verifyWirelessCard(world, result, "quantum_bridge_card", "infinityBoosterCard");
+        verifyWirelessCard(world, result, "energy_card", "InfinityEnergyCard");
+    }
+
+    private static void verifyWirelessCard(World world, ItemStack terminal, String cardName, String tag) {
+        ItemStack upgraded = craft(world, Arrays.asList(terminal, terminalItem(Mods.AE2FluidCraft, cardName, 0)));
+        if (upgraded == null || !terminal.isItemEqual(upgraded)
+            || upgraded.getTagCompound() == null
+            || !upgraded.getTagCompound()
+                .getBoolean(tag)) {
+            throw new AssertionError("Universal Wireless Terminal could not install " + cardName);
+        }
+    }
+
+    private static ItemStack terminalItem(Mods mod, String name, int metadata) {
+        ItemStack stack = GTModHandler.getModItem(mod.ID, name, 1, metadata);
+        if (stack == null) throw new AssertionError("Expected registered item " + mod.ID + ":" + name);
+        return stack;
+    }
+
+    private static ItemStack craft(World world, List<ItemStack> inputs) {
+        InventoryCrafting grid = new InventoryCrafting(new Container() {
+
+            @Override
+            public boolean canInteractWith(EntityPlayer player) {
+                return false;
+            }
+        }, 3, 3);
+        for (int i = 0; i < inputs.size(); i++) {
+            grid.setInventorySlotContents(
+                i,
+                inputs.get(i)
+                    .copy());
+        }
+        return CraftingManager.getInstance()
+            .findMatchingRecipe(grid, world);
     }
 
     private static void verifyFluidSlotReplacement() {

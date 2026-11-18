@@ -76,6 +76,33 @@ public final class CraftingRetrievalScenarios {
             .thenSucceed();
     }
 
+    @GameTest(template = "gtnhextranerftests:native_fixture", timeoutTicks = 1200)
+    public static void smelteryQuestHasNoRewards(GameTestHelper helper) {
+        helper.startSequence()
+            .thenExecute("inspect the loaded questbook", () -> {
+                IQuest smeltery = QuestDatabase.INSTANCE.get(new UUID(0, 3031));
+                IQuest storage = QuestDatabase.INSTANCE.get(new UUID(0, 3));
+                check(smeltery != null && storage != null, "Expected GTNH quests are missing");
+                check(
+                    smeltery.getTasks()
+                        .size() > 0,
+                    "Smeltery tasks are missing");
+                check(
+                    smeltery.getRequirements()
+                        .contains(new UUID(0, 18)),
+                    "Smeltery lost its Basic Processing prerequisite");
+                check(
+                    storage.getRewards()
+                        .size() > 0,
+                    "Storage For Days lost its rewards");
+                check(
+                    smeltery.getRewards()
+                        .size() == 0,
+                    "Smeltery still has claimable rewards");
+            })
+            .thenSucceed();
+    }
+
     private static EntityPlayerMP player() {
         return (EntityPlayerMP) MinecraftServer.getServer()
             .getConfigurationManager().playerEntityList.get(0);

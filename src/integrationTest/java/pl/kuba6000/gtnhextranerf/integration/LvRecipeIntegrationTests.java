@@ -1,6 +1,7 @@
 package pl.kuba6000.gtnhextranerf.integration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -383,6 +384,22 @@ final class LvRecipeIntegrationTests {
                     craft(stick, pattern, stick, stick, table, stick, null, ore("craftingToolSoftMallet"), null)),
                 "ordinary tool station still requires the added circuit");
         }
+    }
+
+    static void verifyToolForgeRecipes() {
+        ItemStack forge = IngredientFactory.getModItem(Mods.TinkerConstruct.ID, "ToolForgeBlock", 1, 13);
+        check(forge != null, "Missing Tool Forge fixture");
+        List<Integer> variants = new ArrayList<>();
+        CraftingManager.getInstance()
+            .getRecipeList()
+            .forEach(recipe -> {
+                ItemStack output = recipe.getRecipeOutput();
+                if (output != null && output.getItem() == forge.getItem()) {
+                    variants.add(output.getItemDamage());
+                }
+            });
+        variants.sort(null);
+        check(variants.equals(Arrays.asList(10, 13)), "Unexpected Tool Forge crafting variants: " + variants);
     }
 
     static ItemStack craft(ItemStack... inputs) {
