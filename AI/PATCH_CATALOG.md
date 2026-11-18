@@ -772,6 +772,16 @@ HV recipe voltage and 1,700 K remain unchanged.
 
 All changes in this module use typed `AuditScope` contracts and fail fast.
 
+### Biomes O' Plenty Blood
+
+`ADD_CRYSTAL_BLOOD_CONVERSION` adds exactly one recipe to
+`multiblockChemicalReactorRecipes` when Tainted Magic, Tinkers' Construct
+and Biomes O' Plenty are loaded. It consumes one Phial of Crystal Blood
+(`TaintedMagic:ItemMaterial:7`) and 100 L Tinkers' Blood (`blood`) and
+produces 100 L Biomes O' Plenty Blood (`hell_blood`) in 20 seconds at
+480 EU/t. The default Nether Air conversion and the Soul Infused Medium and
+Elite Circuit recipes remain unchanged.
+
 ### Indium concentrate
 
 `chemical.indium-concentrate` is applied to both single-block and multiblock

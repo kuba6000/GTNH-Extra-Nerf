@@ -20,6 +20,7 @@ import static gregtech.api.util.GTRecipeConstants.FUSION_THRESHOLD;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import bartworks.system.material.WerkstoffLoader;
@@ -29,6 +30,7 @@ import goodgenerator.util.ItemRefer;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
+import gregtech.api.enums.Mods;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.TierEU;
 import gregtech.api.recipe.RecipeMap;
@@ -41,6 +43,7 @@ import gtPlusPlus.core.material.MaterialsElements;
 import gtnhlanth.common.register.WerkstoffMaterialPool;
 import pl.kuba6000.gtnhextranerf.audit.AuditScope;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeContext;
+import pl.kuba6000.gtnhextranerf.recipes.RecipeItems;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeModule;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeRegistry;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeValidationException;
@@ -57,6 +60,7 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
         registry
             .register(AuditScope.ADD_KEVLAR_DRONE_TO_LIQUID_CRYSTAL_KEVLAR, ChemicalAndMiscNerf::requireKevlarDrones);
         registry.register(AuditScope.REDUCE_TPV_MIXER_OUTPUT, ChemicalAndMiscNerf::reduceTpvMixerOutput);
+        registry.register(AuditScope.ADD_CRYSTAL_BLOOD_CONVERSION, ChemicalAndMiscNerf::addCrystalBloodConversion);
         registry.register(AuditScope.MODIFY_INDIUM_CONCENTRATE_RECIPES, ChemicalAndMiscNerf::modifyIndiumConcentrate);
         registry.register(AuditScope.MODIFY_PLUTONIUM_DECAY_RECIPES, ChemicalAndMiscNerf::modifyPlutoniumDecay);
         registry.register(AuditScope.MODIFY_SILICON_LINE_RECIPES, ChemicalAndMiscNerf::modifySiliconLine);
@@ -104,6 +108,31 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
                         .addItemInput(drone)
                         .build());
         }
+    }
+
+    private static void addCrystalBloodConversion(RecipeContext recipes) {
+        ItemStack phial = RecipeItems.requireModItem(Mods.TaintedMagic, "ItemMaterial", 1, 7);
+        FluidStack tinkersBlood = FluidRegistry.getFluidStack("blood", 100);
+        FluidStack bopBlood = FluidRegistry.getFluidStack("hell_blood", 100);
+        if (tinkersBlood == null || bopBlood == null)
+            throw new RecipeValidationException("Crystal Blood conversion requires the blood and hell_blood fluids");
+
+        recipes.machine(multiblockChemicalReactorRecipes)
+            .addOne(
+                GTValues.RA.stdBuilder()
+                    .itemInputs(phial)
+                    .fluidInputs(tinkersBlood)
+                    .fluidOutputs(bopBlood)
+                    .duration(20 * SECONDS)
+                    .eut(TierEU.RECIPE_HV),
+                RecipeMatch.builder()
+                    .itemInputs(phial)
+                    .itemOutputs()
+                    .fluidInputs(tinkersBlood)
+                    .fluidOutputs(bopBlood)
+                    .duration(20 * SECONDS)
+                    .eut(TierEU.RECIPE_HV)
+                    .build());
     }
 
     private static void addLivingrockPlate(RecipeContext recipes) {

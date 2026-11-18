@@ -182,6 +182,11 @@ public enum AuditScope implements AuditDefinition {
     MODIFY_TITANIUM_BLAST_FURNACE_RECIPE(modified(1)),
     MODIFY_INDIUM_CONCENTRATE_RECIPES(modified(2)),
     REDUCE_TPV_MIXER_OUTPUT(modified(2)),
+    ADD_CRYSTAL_BLOOD_CONVERSION(
+        () -> Mods.TaintedMagic.isModLoaded() && Mods.TinkerConstruct.isModLoaded() && Mods.BiomesOPlenty.isModLoaded(),
+        AuditExpectation.exact()
+            .added(1)
+            .build()),
     MODIFY_PLUTONIUM_DECAY_RECIPES(AuditExpectation.exact()
         .modified(3)
         .added(1)

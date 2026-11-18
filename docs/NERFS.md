@@ -963,6 +963,13 @@ For integrated circuit 24 Distillery recipes, oil input doubles from 12 L to
 | Medium Oil | 6 L |
 | Heavy Oil | 9 L |
 
+## Biomes O' Plenty Blood
+
+The Large Chemical Reactor can turn one Phial of Crystal Blood and 100 L of
+Tinkers' Construct Blood into 100 L of Biomes O' Plenty Blood. The recipe
+takes 20 seconds at HV (480 EU/t). This supplies enough blood for one batch
+of Soul Infused Medium without visiting the Nether.
+
 ## Plutonium decay
 
 ### Small batch
