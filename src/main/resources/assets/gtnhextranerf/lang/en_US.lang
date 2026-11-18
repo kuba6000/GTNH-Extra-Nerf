@@ -463,31 +463,28 @@ gtnhextranerf.nei.iron_bath.tap_control=Tap the liquid at the selected carbon ra
 
 gtnhextranerf.iron_bath.measurement.name=Bath Measurement Hatch
 gtnhextranerf.iron_bath.measurement.description=Read-only exact measurements from a formed Iron Bath
-gtnhextranerf.iron_bath.measurement.connection=Optional side platform hatch. Connect an OpenComputers Adapter and call read()
+gtnhextranerf.iron_bath.measurement.connection=Mount on the chimney, connect an OpenComputers Adapter and call read()
 
+gtnhextranerf.iron_bath.measurement_hatches=Use at most one Bath Measurement Hatch
 gtnhextranerf.iron_bath.energy_hatches=Use between one and eight energy hatches
 
 gtnhextranerf.iron_bath.gui.charge_page=Page %s/%s
 
 gtnhextranerf.iron_bath.tooltip.type=Iron Bath Furnace
-gtnhextranerf.iron_bath.tooltip.info.0=Electrically heats a persistent iron and carbon bath
-gtnhextranerf.iron_bath.tooltip.info.1=Accepts ingots, dusts, carbon additives, Calcite and Oxygen
-gtnhextranerf.iron_bath.tooltip.info.2=Tapping height selects molten metal, slag or empty space
-gtnhextranerf.iron_bath.tooltip.info.3=Cupronickel coils provide 512 ingots of bath capacity
-gtnhextranerf.iron_bath.tooltip.info.4=Higher coils double bath capacity
-gtnhextranerf.iron_bath.tooltip.info.5=Queued metal reserves tank space and shares the available heating power
-gtnhextranerf.iron_bath.tooltip.info.6=Extra amperage gives proportional throughput at the same EU per ingot
-gtnhextranerf.iron_bath.tooltip.info.7=Higher voltage applies native EBF overclocks and coil heat bonuses
-gtnhextranerf.iron_bath.tooltip.info.8=Calcite reserve: 180 binding units, plus 160 per coil upgrade
-gtnhextranerf.iron_bath.tooltip.info.9=Refractory chimney with exposed coils and a raised feed conveyor
-gtnhextranerf.iron_bath.tooltip.info.10=Start with base refractory casings and Cupronickel coils
-gtnhextranerf.iron_bath.tooltip.info.11=Optional LuV Measurement Hatch: read-only OpenComputers telemetry
-gtnhextranerf.iron_bath.tooltip.info.12=Wrought Iron reinforcement improves insulation after the first bath
+gtnhextranerf.iron_bath.tooltip.info.0=Adjust the carbon content of molten iron to make different alloys
+gtnhextranerf.iron_bath.tooltip.info.1=Use Calcite to bind impurities and oxygen to lower carbon
+gtnhextranerf.iron_bath.tooltip.info.2=Metal settles below slag, and tap height determines what can flow out
+gtnhextranerf.iron_bath.tooltip.info.3=More amps at the same voltage melt more items in parallel
+gtnhextranerf.iron_bath.tooltip.info.4=Higher voltage overclocks the bath, and better coils improve melting
+gtnhextranerf.iron_bath.tooltip.structure.coils=50 matching heating coils
+gtnhextranerf.iron_bath.tooltip.structure.coil_layers=Chimney base and the five exposed coil layers
 gtnhextranerf.iron_bath.tooltip.structure.controller=Side platform beside the feed conveyor
-gtnhextranerf.iron_bath.tooltip.structure.chimney_base=Chimney base
-gtnhextranerf.iron_bath.tooltip.structure.buffered_inputs=Side platform, buffered inputs
-gtnhextranerf.iron_bath.tooltip.structure.side_platform=Side platform
-gtnhextranerf.iron_bath.tooltip.structure.taps=1+ tapping hatches
-gtnhextranerf.iron_bath.tooltip.structure.tap_walls=Narrow chimney walls beside coils
+gtnhextranerf.iron_bath.tooltip.structure.chimney_base=Bottom layer under the chimney
+gtnhextranerf.iron_bath.tooltip.structure.platform_hatch=Controller platform hatch
+gtnhextranerf.iron_bath.tooltip.structure.platform_casings=Any Steel Machine Casing on the controller platform
+gtnhextranerf.iron_bath.tooltip.structure.platform_requirements=Requires 1+ Input Buses, 1+ Fluid Input Hatches and exactly 1 Maintenance Hatch
+gtnhextranerf.iron_bath.tooltip.structure.tap_name=Bath Tapping Hatch
+gtnhextranerf.iron_bath.tooltip.structure.tap_walls=1 or more beside the coils, with all five heights shown in NEI
+gtnhextranerf.iron_bath.tooltip.structure.measurement=Optional (LuV) in place of any refractory casing on the chimney
 
 chat.warptheory.gtnhextranerf.chicken_jockeys=The poultrygeist has come for you.

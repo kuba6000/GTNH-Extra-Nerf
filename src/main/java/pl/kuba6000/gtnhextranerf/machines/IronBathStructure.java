@@ -37,7 +37,7 @@ public final class IronBathStructure {
     public static final Offset INPUT_BUS = new Offset(1, 1, 0);
     public static final Offset OXYGEN_INPUT = new Offset(-1, 1, 0);
     public static final Offset MAINTENANCE = new Offset(0, 1, 2);
-    public static final Offset MEASUREMENT = new Offset(0, 0, 2);
+    public static final Offset PREVIEW_MEASUREMENT = new Offset(8, 1, -2);
     public static final Offset ENERGY_A = new Offset(8, -1, -2);
     public static final Offset ENERGY_B = new Offset(8, -1, 4);
     public static final Offset EXTRA_ENERGY = new Offset(7, -1, -2);
@@ -65,9 +65,9 @@ public final class IronBathStructure {
             "             " },
         { "   C         ", " CCCCC       ", " CCCCC       ", "CCCPCCC    F ", " CCCCC       ", " CCCCC       ",
             "   C         " },
-        { "  CCC        ", " CCCCC       ", "CCCCCCC   IMO", "CCCPCCC   MMM", "CCCCCCC   MVM", " CCCCC       ",
+        { "  CCC        ", " CCCCC       ", "CCCCCCC   MMM", "CCCPCCC   MMM", "CCCCCCC   MMM", " CCCCC       ",
             "  CCC        " },
-        { "  KKK        ", " KKKKK       ", "KKKKKKC   M~M", "KKKPPPPPPPMMM", "KKKKKKC   MQM", " KKKKK       ",
+        { "  KKK        ", " KKKKK       ", "KKKKKKC   M~M", "KKKPPPPPPPMMM", "KKKKKKC   MMM", " KKKKK       ",
             "  KKK        " },
         { "  CEE        ", " CCCCC       ", "CCCCCCC   MMM", "CCCCCCCFFFMMM", "CCCCCCC   MMM", " CCCCC       ",
             "  CEC        " } };

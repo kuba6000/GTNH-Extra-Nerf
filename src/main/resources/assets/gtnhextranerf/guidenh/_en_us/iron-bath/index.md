@@ -35,12 +35,14 @@ Use the preview or StructureLib hints to inspect the shape. All coils must match
 | --- | --- |
 | Electric Iron Bath controller | &nbsp;Side platform beside the conveyor |
 | <Color color="#89DCEB">50</Color> matching heating coils | &nbsp;Chimney base and exposed coil bands |
-| <Color color="#89DCEB">1</Color> input bus | &nbsp;Side platform, for metal, carbon additives and Calcite |
-| <Color color="#89DCEB">1</Color> fluid input hatch | &nbsp;Side platform, for Oxygen |
+| <Color color="#89DCEB">1+</Color> input bus | &nbsp;Side platform, for metal, carbon additives and Calcite |
+| <Color color="#89DCEB">1+</Color> fluid input hatch | &nbsp;Side platform, for Oxygen |
 | <Color color="#89DCEB">1</Color> maintenance hatch | &nbsp;Side platform |
 | <Color color="#89DCEB">1</Color> to <Color color="#89DCEB">8</Color> energy hatches | &nbsp;Chimney base |
 | <Color color="#89DCEB">1</Color> or more Bath Tapping Hatches | &nbsp;Narrow chimney walls beside the coils |
-| Bath Measurement Hatch | &nbsp;Optional port behind the controller platform |
+| Bath Measurement Hatch | &nbsp;Optional LuV port in place of any refractory casing on the chimney |
+
+Any Steel Machine Casing on the controller platform can be replaced with an input bus, fluid input hatch or maintenance hatch.
 
 Start with Cupronickel coils and Steel-Bound Refractory Casings. Wrought Iron-Reinforced Casings reduce heat loss by <Color color="#A6E3A1">50%</Color> for the whole shell, or <Color color="#A6E3A1">25%</Color> for half.
 

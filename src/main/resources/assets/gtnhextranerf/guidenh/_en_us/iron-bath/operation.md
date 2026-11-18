@@ -106,7 +106,7 @@ A screwdriver cycles amounts through <Color color="#89DCEB">1, 16, 144 and the t
 
 <ItemImage id="gregtech:gt.blockmachines:32425" />
 
-The LuV-gated Bath Measurement Hatch fits in its platform port. Connect it to an OpenComputers Adapter. The **iron_bath_measurement** component's **read()** call returns a table for the formed bath.
+The LuV Bath Measurement Hatch can replace any refractory casing on the chimney. Connect it to an OpenComputers Adapter. The **iron_bath_measurement** component's **read()** call returns a table for the formed bath.
 
 | Reading | &nbsp;Unit or meaning |
 | --- | --- |

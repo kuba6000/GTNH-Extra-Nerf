@@ -12,19 +12,21 @@ import static gregtech.api.enums.HatchElement.Maintenance;
 import static gregtech.api.util.GTStructureUtility.buildHatchAdder;
 import static gregtech.api.util.GTStructureUtility.ofCoil;
 import static gregtech.api.util.GTStructureUtility.ofFrame;
-import static gregtech.api.util.GTStructureUtility.ofHatchAdder;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
+
+import org.jetbrains.annotations.NotNull;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
@@ -37,9 +39,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.GregTechAPI;
 import gregtech.api.enums.GTValues;
 import gregtech.api.enums.HeatingCoilLevel;
+import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.enums.Textures;
+import gregtech.api.interfaces.INEIPreviewModifier;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.ICasingTextureProvider;
@@ -59,8 +63,10 @@ import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
 import gregtech.api.util.OverclockCalculator;
 import gregtech.common.blocks.BlockCasingsAbstract;
+import gregtech.common.blocks.ItemMachines;
 import gregtech.common.gui.modularui.multiblock.base.MTEMultiBlockBaseGui;
 import gregtech.common.render.IMTERenderer;
+import gregtech.common.tileentities.machines.IDualInputHatch;
 import gregtech.common.tileentities.machines.IRecipeProcessingAwareHatch;
 import io.netty.buffer.ByteBuf;
 import pl.kuba6000.gtnhextranerf.client.render.IronBathSurfaceRenderer;
@@ -71,9 +77,16 @@ import pl.kuba6000.gtnhextranerf.machines.ironbath.IronProduct;
 /** Native ports and structure around the persistent iron-bath process. */
 @IMetaTileEntity.SkipGenerateDescription
 public final class MTEIronBathFurnace extends MTEExtendedPowerMultiBlockBase<MTEIronBathFurnace>
-    implements ISurvivalConstructable, ICasingTextureProvider, IMTERenderer {
+    implements ISurvivalConstructable, ICasingTextureProvider, IMTERenderer, INEIPreviewModifier {
 
     private static final String MAIN = "main";
+    private static final int PLATFORM_PORT_HINT = 1;
+    private static final int TAPPING_HATCH_HINT = 2;
+    private static final int ENERGY_HINT = 5;
+    private static final int MEASUREMENT_HATCH_HINT = 6;
+    private static final String PLATFORM_HATCH_NAME = "gtnhextranerf.iron_bath.tooltip.structure.platform_hatch";
+    private static final String TAP_NAME = "gtnhextranerf.iron_bath.tooltip.structure.tap_name";
+    private static final String MEASUREMENT_NAME = "gtnhextranerf.iron_bath.measurement.name";
     private static final int STEEL_CASING_TEXTURE_INDEX = ((BlockCasingsAbstract) GregTechAPI.sBlockCasings2)
         .getTextureIndex(0);
     private static final int OVERCLOCK_DURATION = 1 << 28;
@@ -85,6 +98,7 @@ public final class MTEIronBathFurnace extends MTEExtendedPowerMultiBlockBase<MTE
     private int reinforcedCasings;
     private int totalCasings;
     private long actualPower;
+    private boolean placingNeiPreview;
     private HeatingCoilLevel coilLevel = HeatingCoilLevel.None;
     private Surface surface = Surface.EMPTY;
 
@@ -108,48 +122,49 @@ public final class MTEIronBathFurnace extends MTEExtendedPowerMultiBlockBase<MTE
     }
 
     private static IStructureDefinition<MTEIronBathFurnace> createStructure() {
+        IStructureElement<MTEIronBathFurnace> platformPort = buildHatchAdder(MTEIronBathFurnace.class)
+            .atLeast(InputBus, InputHatch, Maintenance)
+            .hatchItemFilterAnd(machine -> stack -> hasLocalInputBuffer(ItemMachines.getMetaTileEntity(stack)))
+            .casingIndex(STEEL_CASING_TEXTURE_INDEX)
+            .hint(PLATFORM_PORT_HINT)
+            .description(() -> PLATFORM_HATCH_NAME)
+            .shouldReject(
+                machine -> machine.placingNeiPreview
+                    || (InputBus.count(machine) > 0 && InputHatch.count(machine) > 0 && Maintenance.count(machine) > 0))
+            .build();
+        IStructureElement<MTEIronBathFurnace> measurementPort = buildHatchAdder(MTEIronBathFurnace.class)
+            .hatchClass(MTEIronBathMeasurement.class)
+            .adder(MTEIronBathFurnace::addMeasurementHatch)
+            .casingIndex(IronBathFurnace.CASING_TEXTURE_INDEX)
+            .hint(MEASUREMENT_HATCH_HINT)
+            .cacheHint(() -> StatCollector.translateToLocal(MEASUREMENT_NAME))
+            .description(() -> MEASUREMENT_NAME)
+            .shouldReject(machine -> machine.placingNeiPreview || !machine.measurementHatches.isEmpty())
+            .build();
         return StructureDefinition.<MTEIronBathFurnace>builder()
             .addShape(MAIN, transpose(IronBathStructure.shape()))
             .addElement('F', ofFrame(Materials.Steel))
-            .addElement('C', ofChain(casing(0), casing(1)))
-            .addElement('M', ofBlock(GregTechAPI.sBlockCasings2, 0))
+            .addElement('C', ofChain(measurementPort, casing(0), casing(1)))
+            .addElement('M', ofChain(platformPort, ofBlock(GregTechAPI.sBlockCasings2, 0)))
             .addElement('P', ofBlock(GregTechAPI.sBlockCasings11, 1))
             .addElement('K', ofCoil(MTEIronBathFurnace::setCoilLevel, MTEIronBathFurnace::getCoilLevel))
-            .addElement(
-                'I',
-                buildHatchAdder(MTEIronBathFurnace.class).atLeast(InputBus)
-                    .casingIndex(STEEL_CASING_TEXTURE_INDEX)
-                    .hint(1)
-                    .buildAndChain(ofBlock(GregTechAPI.sBlockCasings2, 0)))
-            .addElement(
-                'O',
-                buildHatchAdder(MTEIronBathFurnace.class).atLeast(InputHatch)
-                    .casingIndex(STEEL_CASING_TEXTURE_INDEX)
-                    .hint(1)
-                    .buildAndChain(ofBlock(GregTechAPI.sBlockCasings2, 0)))
-            .addElement(
-                'V',
-                buildHatchAdder(MTEIronBathFurnace.class).atLeast(Maintenance)
-                    .casingIndex(STEEL_CASING_TEXTURE_INDEX)
-                    .hint(1)
-                    .buildAndChain(ofBlock(GregTechAPI.sBlockCasings2, 0)))
             .addElement(
                 'E',
                 buildHatchAdder(MTEIronBathFurnace.class).atLeast(Energy.or(ExoticEnergy))
                     .casingIndex(IronBathFurnace.CASING_TEXTURE_INDEX)
-                    .hint(1)
-                    .buildAndChain(ofChain(casing(0), casing(1))))
-            .addElement(
-                'Q',
-                ofChain(
-                    ofHatchAdder(MTEIronBathFurnace::addMeasurementHatch, IronBathFurnace.CASING_TEXTURE_INDEX, 1),
-                    ofBlock(GregTechAPI.sBlockCasings2, 0)))
+                    .hint(ENERGY_HINT)
+                    .shouldReject(machine -> machine.placingNeiPreview)
+                    .buildAndChain(measurementPort, casing(0), casing(1)))
             .addElement(
                 'T',
-                ofChain(
-                    ofHatchAdder(MTEIronBathFurnace::addTap, IronBathFurnace.CASING_TEXTURE_INDEX, 2),
-                    casing(0),
-                    casing(1)))
+                buildHatchAdder(MTEIronBathFurnace.class).hatchClass(MTEIronBathTap.class)
+                    .adder(MTEIronBathFurnace::addTap)
+                    .casingIndex(IronBathFurnace.CASING_TEXTURE_INDEX)
+                    .hint(TAPPING_HATCH_HINT)
+                    .cacheHint(() -> StatCollector.translateToLocal(TAP_NAME))
+                    .description(() -> TAP_NAME)
+                    .shouldReject(machine -> machine.placingNeiPreview || !machine.taps.isEmpty())
+                    .buildAndChain(measurementPort, casing(0), casing(1)))
             .build();
     }
 
@@ -160,6 +175,10 @@ public final class MTEIronBathFurnace extends MTEExtendedPowerMultiBlockBase<MTE
             if (metadata == 1) machine.reinforcedCasings++;
             return true;
         }, IronBathFurnace.casingBlock(), metadata);
+    }
+
+    private static boolean hasLocalInputBuffer(IMetaTileEntity hatch) {
+        return hatch != null && !(hatch instanceof IDualInputHatch) && !(hatch instanceof IRecipeProcessingAwareHatch);
     }
 
     private boolean addTap(IGregTechTileEntity tile, int texture) {
@@ -238,12 +257,14 @@ public final class MTEIronBathFurnace extends MTEExtendedPowerMultiBlockBase<MTE
         int energyHatches = mEnergyHatches.size() + mExoticEnergyHatches.size();
         if (energyHatches == 0 || energyHatches > 8)
             errors.add(StructureErrors.of("gtnhextranerf.iron_bath.energy_hatches"));
+        if (measurementHatches.size() > 1)
+            errors.add(StructureErrors.of("gtnhextranerf.iron_bath.measurement_hatches"));
         checkHasInputBus(errors);
         checkHasInputHatch(errors);
-        if (mInputBusses.stream()
-            .anyMatch(input -> input instanceof IRecipeProcessingAwareHatch)
+        if (!mDualInputHatches.isEmpty() || mInputBusses.stream()
+            .anyMatch(input -> !hasLocalInputBuffer(input))
             || mInputHatches.stream()
-                .anyMatch(input -> input instanceof IRecipeProcessingAwareHatch))
+                .anyMatch(input -> !hasLocalInputBuffer(input)))
             errors.add(StructureErrors.of("gtnhextranerf.iron_bath.buffered_inputs"));
         if (taps.isEmpty()) errors.add(StructureErrors.missingHatch(IronBathFurnace.tap(1)));
         if (getCoilLevel() == HeatingCoilLevel.None) errors.add(StructureErrorRegistry.COIL_LEVEL_NOT_ENOUGH);
@@ -277,6 +298,59 @@ public final class MTEIronBathFurnace extends MTEExtendedPowerMultiBlockBase<MTE
             environment,
             false,
             true);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void onPreviewConstruct(@NotNull ItemStack trigger) {
+        // Preplace the spouts and energy hatch before StructureLib fills in the casings
+        placingNeiPreview = true;
+        IronBathStructure.Offset tap = IronBathStructure.METAL_TAP;
+        for (int band = 0; band < IronBathStructure.TANK_HEIGHT; band++) {
+            placePreviewHatch(
+                IronBathFurnace.tap(1),
+                new IronBathStructure.Offset(tap.x(), tap.y() + band, tap.z()),
+                ForgeDirection.NORTH);
+        }
+        placePreviewHatch(ItemList.Hatch_Input_Bus_LV.get(1), IronBathStructure.INPUT_BUS, ForgeDirection.NORTH);
+        placePreviewHatch(ItemList.Hatch_Input_LV.get(1), IronBathStructure.OXYGEN_INPUT, ForgeDirection.NORTH);
+        placePreviewHatch(ItemList.Hatch_Maintenance.get(1), IronBathStructure.MAINTENANCE, ForgeDirection.SOUTH);
+        placePreviewHatch(ItemList.Hatch_Energy_LV.get(1), IronBathStructure.ENERGY_A, ForgeDirection.DOWN);
+        placePreviewHatch(
+            IronBathFurnace.measurementHatch(),
+            IronBathStructure.PREVIEW_MEASUREMENT,
+            ForgeDirection.NORTH);
+    }
+
+    @Override
+    public void onPreviewStructureComplete(@NotNull ItemStack trigger) {
+        placingNeiPreview = false;
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void placePreviewHatch(ItemStack stack, IronBathStructure.Offset offset, ForgeDirection front) {
+        IGregTechTileEntity controller = getBaseMetaTileEntity();
+        int[] worldOffset = new int[3];
+        getExtendedFacing().getWorldOffset(new int[] { -offset.x(), -offset.y(), offset.z() }, worldOffset);
+        int x = controller.getXCoord() + worldOffset[0];
+        int y = controller.getYCoord() + worldOffset[1];
+        int z = controller.getZCoord() + worldOffset[2];
+        var world = controller.getWorld();
+        ForgeDirection face = getExtendedFacing().getWorldDirection(front);
+        if (((ItemMachines) stack.getItem()).placeBlockAt(
+            stack,
+            Minecraft.getMinecraft().thePlayer,
+            world,
+            x,
+            y,
+            z,
+            face.ordinal(),
+            0.5f,
+            0.5f,
+            0.5f,
+            0) && world.getTileEntity(x, y, z) instanceof IGregTechTileEntity hatch) {
+            hatch.setFrontFacing(face);
+        }
     }
 
     @Override
@@ -558,36 +632,30 @@ public final class MTEIronBathFurnace extends MTEExtendedPowerMultiBlockBase<MTE
             .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.2"))
             .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.3"))
             .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.4"))
-            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.5"))
-            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.6"))
-            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.7"))
-            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.8"))
-            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.9"))
-            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.10"))
-            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.11"))
-            .addInfo(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.info.12"))
             .beginStructureBlock(IronBathStructure.WIDTH, IronBathStructure.HEIGHT, IronBathStructure.DEPTH, false)
             .addController(StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.controller"))
+            .addOtherStructurePart(
+                StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.coils"),
+                StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.coil_layers"),
+                new int[0])
             .addEnergyHatch(
                 "1-8",
                 StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.chimney_base"),
-                1)
-            .addInputBus(
-                "1+",
-                StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.buffered_inputs"),
-                1)
-            .addInputHatch(
-                "1+",
-                StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.buffered_inputs"),
-                1)
-            .addMaintenanceHatch(
-                "1",
-                StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.side_platform"),
-                1)
-            .addOutputHatch(
-                StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.taps"),
+                ENERGY_HINT)
+            .addOtherStructurePart(
+                StatCollector.translateToLocal(PLATFORM_HATCH_NAME),
+                StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.platform_casings"),
+                PLATFORM_PORT_HINT)
+            .addStructureInfo(
+                StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.platform_requirements"))
+            .addOtherStructurePart(
+                StatCollector.translateToLocal(TAP_NAME),
                 StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.tap_walls"),
-                2)
+                TAPPING_HATCH_HINT)
+            .addOtherStructurePart(
+                StatCollector.translateToLocal(MEASUREMENT_NAME),
+                StatCollector.translateToLocal("gtnhextranerf.iron_bath.tooltip.structure.measurement"),
+                MEASUREMENT_HATCH_HINT)
             .toolTipFinisher();
     }
 }

@@ -696,7 +696,7 @@ public final class IronBathScenarios {
     @GameTest(template = "native_fixture", timeoutTicks = 1000)
     public static void nativeBlueprintRequiresShellCoilsAndDedicatedPorts(GameTestHelper helper) {
         ClientTest.scenario(helper)
-            .server("validate the native blueprint and its dedicated port positions", () -> {
+            .server("validate the chimney and interchangeable controller platform ports", () -> {
                 Fixture fixture = new Fixture(helper);
                 check(
                     IronBathStructure.WIDTH == 13 && IronBathStructure.HEIGHT == 12 && IronBathStructure.DEPTH == 7,
@@ -743,18 +743,38 @@ public final class IronBathScenarios {
                 fixture.setBlock(IronBathStructure.EXTRA_ENERGY, IronBathFurnace.casingBlock(), 0);
                 check(fixture.forms(), "Restoring two energy hatches did not restore formation");
 
+                Offset rearPlatform = new Offset(0, 0, 2);
                 for (ItemStack misplaced : new ItemStack[] { ItemList.Hatch_Energy_HV.get(1),
-                    ItemList.Hatch_Input_Bus_HV.get(1), IronBathFurnace.tap(1) }) {
-                    fixture.place(placer, misplaced, IronBathStructure.MEASUREMENT);
-                    check(!fixture.forms(), "An energy hatch, input bus or tap was accepted at the measurement port");
-                    fixture.setBlock(IronBathStructure.MEASUREMENT, GregTechAPI.sBlockCasings2, 0);
-                    check(fixture.forms(), "Restoring the measurement platform did not restore formation");
+                    IronBathFurnace.tap(1) }) {
+                    fixture.place(placer, misplaced, rearPlatform);
+                    check(!fixture.forms(), "An energy hatch or tap was accepted on the controller platform");
+                    fixture.setBlock(rearPlatform, GregTechAPI.sBlockCasings2, 0);
+                    check(fixture.forms(), "Restoring the platform casing did not restore formation");
                 }
 
                 fixture.place(placer, ItemList.Hatch_Input_Bus_ME.get(1), IronBathStructure.INPUT_BUS);
-                check(!fixture.forms(), "A transactional network input bus was accepted at the dedicated feed port");
+                check(!fixture.forms(), "A transactional network input bus was accepted on the controller platform");
                 fixture.place(placer, ItemList.Hatch_Input_Bus_HV.get(1), IronBathStructure.INPUT_BUS);
                 check(fixture.forms(), "Restoring the buffered feed bus did not restore formation");
+
+                Offset[] initialPorts = { IronBathStructure.INPUT_BUS, IronBathStructure.OXYGEN_INPUT,
+                    IronBathStructure.MAINTENANCE };
+                Offset[] flexiblePorts = { new Offset(-1, -1, 0), rearPlatform, new Offset(1, 0, 1) };
+                ItemStack[] platformHatches = { ItemList.Hatch_Input_Bus_HV.get(1), ItemList.Hatch_Input_HV.get(1),
+                    ItemList.Hatch_Maintenance.get(1) };
+                for (Offset port : initialPorts) fixture.setBlock(port, GregTechAPI.sBlockCasings2, 0);
+                for (int shift = 0; shift < flexiblePorts.length; shift++) {
+                    for (int i = 0; i < flexiblePorts.length; i++) {
+                        fixture.place(placer, platformHatches[i], flexiblePorts[(i + shift) % flexiblePorts.length]);
+                    }
+                    check(fixture.forms(), "Interchanging input and maintenance hatches prevented formation");
+                }
+                for (ItemStack hatch : platformHatches) {
+                    fixture.place(placer, hatch, IronBathStructure.CRITICAL_CASING);
+                    check(!fixture.forms(), "A controller platform hatch was accepted in the chimney");
+                }
+                fixture.setBlock(IronBathStructure.CRITICAL_CASING, IronBathFurnace.casingBlock(), 0);
+                check(fixture.forms(), "Restoring the chimney casing did not restore formation");
 
                 BaseMetaTileEntity sample = fixture.place(placer, IronBathFurnace.tap(1), IronBathStructure.SAMPLE_TAP);
                 sample.setFrontFacing(ForgeDirection.NORTH);
@@ -1181,14 +1201,21 @@ public final class IronBathScenarios {
 
     @GameTest(template = "native_fixture", timeoutTicks = 1000)
     public static void measurementHatchReadsLiveBathThroughOpenComputers(GameTestHelper helper) {
+        Offset position = new Offset(9, 5, -1);
         Fixture[] fixture = new Fixture[1];
         Component[] component = new Component[1];
         ClientTest.scenario(helper)
             .server("install the optional LuV measurement hatch and discover its OC driver", () -> {
                 fixture[0] = new Fixture(helper);
                 FakePlayer placer = FakePlayerFactory.getMinecraft(fixture[0].world);
-                Offset position = IronBathStructure.MEASUREMENT;
+                for (Offset candidate : new Offset[] { IronBathStructure.PREVIEW_MEASUREMENT,
+                    IronBathStructure.EXTRA_ENERGY }) {
+                    fixture[0].place(placer, IronBathFurnace.measurementHatch(), candidate);
+                    check(fixture[0].forms(), "The measurement hatch was rejected at " + candidate);
+                    fixture[0].setBlock(candidate, IronBathFurnace.casingBlock(), 0);
+                }
                 BaseMetaTileEntity port = fixture[0].place(placer, IronBathFurnace.measurementHatch(), position);
+                port.setFrontFacing(ForgeDirection.NORTH);
                 check(
                     port.getMetaTileEntity() instanceof MTEIronBathMeasurement,
                     "Measurement hatch registration is missing");
@@ -1201,14 +1228,14 @@ public final class IronBathScenarios {
                     X + position.x(),
                     Y + position.y(),
                     Z + position.z(),
-                    ForgeDirection.SOUTH);
+                    ForgeDirection.NORTH);
                 check(driver != null, "OpenComputers did not register the measurement driver");
                 ManagedEnvironment environment = driver.createEnvironment(
                     fixture[0].world,
                     X + position.x(),
                     Y + position.y(),
                     Z + position.z(),
-                    ForgeDirection.SOUTH);
+                    ForgeDirection.NORTH);
                 check(
                     environment != null && environment.node() instanceof Component,
                     "OC did not create a measurement component");
@@ -1229,7 +1256,7 @@ public final class IronBathScenarios {
                 check(measurementRead(component[0])[0] == null, "Unassociated hatch exposed a bath");
                 check(
                     fixture[0].machine.checkStructure(true, fixture[0].controller),
-                    "Optional measurement hatch prevented formation");
+                    "The measurement hatch was rejected in a tapping position on the chimney");
                 NBTTagCompound tag = new NBTTagCompound();
                 fixture[0].machine.saveNBTData(tag);
                 NBTTagCompound bathTag = tag.getCompoundTag("IronBath");
@@ -1326,13 +1353,28 @@ public final class IronBathScenarios {
                 check(
                     measurementTable(component[0]).containsKey("metalMb"),
                     "Reformed furnace did not restore live measurements");
-                fixture[0].setBlock(IronBathStructure.MEASUREMENT, GregTechAPI.sBlockCasings2, 0);
+                fixture[0].place(
+                    FakePlayerFactory.getMinecraft(fixture[0].world),
+                    IronBathFurnace.measurementHatch(),
+                    IronBathStructure.PREVIEW_MEASUREMENT);
+                check(!fixture[0].forms(), "A second measurement hatch was accepted");
+                fixture[0].setBlock(IronBathStructure.PREVIEW_MEASUREMENT, IronBathFurnace.casingBlock(), 0);
+                check(fixture[0].forms(), "Removing the second measurement hatch did not restore formation");
+
+                fixture[0].setBlock(position, IronBathFurnace.casingBlock(), 0);
                 check(
                     measurementRead(component[0])[0] == null,
                     "Removed hatch retained access through its old OC environment");
                 check(
                     fixture[0].machine.checkStructure(true, fixture[0].controller),
                     "Measurement hatch became mandatory");
+
+                Offset steel = new Offset(1, 0, 0);
+                fixture[0]
+                    .place(FakePlayerFactory.getMinecraft(fixture[0].world), IronBathFurnace.measurementHatch(), steel);
+                check(!fixture[0].forms(), "The measurement hatch was accepted on the steel platform");
+                fixture[0].setBlock(steel, GregTechAPI.sBlockCasings2, 0);
+                check(fixture[0].forms(), "Restoring the steel casing did not restore formation");
             })
             .succeed();
     }
