@@ -38,6 +38,7 @@ public final class CraftingNerf implements RecipeModule {
         registry.register(AuditScope.MODIFY_LV_CIRCUIT_ASSEMBLER_HAND_CRAFTING, CraftingNerf::lvCircuitAssembler);
         registry.register(AuditScope.MODIFY_FLINT_AND_STEEL_HAND_CRAFTING, CraftingNerf::flintAndSteel);
         registry.register(AuditScope.MODIFY_TOOL_STATION_SLAB_HAND_CRAFTING, CraftingNerf::toolStationSlab);
+        registry.register(AuditScope.REMOVE_TOOL_FORGE_VARIANTS, CraftingNerf::removeToolForgeVariants);
         registry.register(AuditScope.REPLACE_MACHINE_CASING_HAND_CRAFTING, CraftingNerf::machineCasings);
         registry.register(AuditScope.REMOVE_GOOD_CIRCUIT_HAND_CRAFTING, CraftingNerf::removeGoodCircuitHandCrafting);
         registry.register(AuditScope.MODIFY_DIAMOND_SAWBLADE_HAND_CRAFTING, CraftingNerf::diamondSawblade);
@@ -157,6 +158,40 @@ public final class CraftingNerf implements RecipeModule {
                             OrePrefixes.circuit.get(Materials.LV)
                                 .toString()))
                     .build());
+    }
+
+    private static void removeToolForgeVariants(RecipeContext recipes) {
+        removeToolForge(recipes, 0, "blockIron");
+        removeToolForge(recipes, 1, "blockGold");
+        removeToolForge(recipes, 2, "blockDiamond");
+        removeToolForge(recipes, 3, "blockEmerald");
+        removeToolForge(recipes, 4, "blockCobalt");
+        removeToolForge(recipes, 5, "blockArdite");
+        removeToolForge(recipes, 6, "blockManyullyn");
+        removeToolForge(recipes, 7, "blockCopper");
+        removeToolForge(recipes, 8, "blockBronze");
+        removeToolForge(recipes, 9, "blockTin");
+        removeToolForge(recipes, 11, "blockAluminiumBrass");
+        removeToolForge(recipes, 12, "blockAlumite");
+    }
+
+    private static void removeToolForge(RecipeContext recipes, int variant, String blockOre) {
+        Mods tinkers = Mods.TinkerConstruct;
+        ItemStack output = RecipeItems.requireModItem(tinkers, "ToolForgeBlock", 1, variant);
+        recipes.crafting()
+            .removeOne(
+                CraftingRecipeBuilder.universalShaped()
+                    .pattern("PSP", "BTB", "BHB")
+                    .ingredient('P', RecipeItems.requireModItem(tinkers, "heavyPlate", 1, 15))
+                    .ingredient('S', RecipeItems.requireModItem(tinkers, "SearedSlab", 1, 1))
+                    .ingredient('T', RecipeItems.requireModItem(tinkers, "CraftingSlab", 1, 1))
+                    .ingredient('B', blockOre)
+                    .ingredient('H', ToolDictNames.craftingToolHardHammer.name())
+                    .output(output)
+                    .matchType(CraftingRecipeType.UNIVERSAL_SHAPED)
+                    .build());
+        recipes.crafting()
+            .expectOutputCount(output, 0);
     }
 
     private static void machineCasings(RecipeContext recipes) {

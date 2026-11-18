@@ -160,6 +160,7 @@ public enum AuditScope implements AuditDefinition {
     MODIFY_LARGE_CHEMICAL_REACTOR_HAND_CRAFTING(modified(1)),
     MODIFY_FLINT_AND_STEEL_HAND_CRAFTING(Mods.NewHorizonsCoreMod::isModLoaded, modified(1)),
     MODIFY_TOOL_STATION_SLAB_HAND_CRAFTING(Mods.NewHorizonsCoreMod::isModLoaded, modified(1)),
+    REMOVE_TOOL_FORGE_VARIANTS(Mods.NewHorizonsCoreMod::isModLoaded, removed(12)),
     MODIFY_LV_CIRCUIT_ASSEMBLER_HAND_CRAFTING(modified(1)),
     REMOVE_GOOD_CIRCUIT_HAND_CRAFTING(Mods.NewHorizonsCoreMod::isModLoaded, removed(1)),
     REMOVE_ILMENITE_CHEMICAL_BATH_RECIPES(removed(2)),

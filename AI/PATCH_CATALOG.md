@@ -666,6 +666,10 @@ Applied only when Dreamcraft is loaded.
   from the `circuitBasic` OreDictionary category.
 - Audit: MODIFY_TOOL_STATION_SLAB_HAND_CRAFTING, exactly one modification.
 
+### Tool Forge variants
+
+Tool Forge recipes that use neither Aluminium nor Steel are removed.
+
 ## Aluminium load-complete module
 
 All changes in this module use typed `AuditScope` contracts and fail fast.

@@ -8,6 +8,10 @@ catalog, including exact values, conditions and unchanged fields, is
 
 - Managlass, Alfglass and Bifrost Block count as HV glass in GregTech.
 
+## Tool Forge
+
+- Tool Forge recipes that use neither Aluminium nor Steel are removed.
+
 ## IV borosilicate glass
 
 - IV borosilicate glass is named TungTungTungstensteel Reinforced

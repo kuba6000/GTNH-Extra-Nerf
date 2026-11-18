@@ -651,6 +651,10 @@ The shapeless Tool Station Slab recipe requires:
 - a TConstruct Tool Station;
 - any LV circuit registered as `circuitBasic`.
 
+### TConstruct Tool Forge
+
+Tool Forge recipes that use neither Aluminium nor Steel are removed.
+
 ### LV Circuit Assembler
 
 - The two MV circuits in the shaped crafting recipe become LV circuits.
