@@ -1410,9 +1410,10 @@ shaft extruder shape are removed.
 
 Build a refractory chimney with exposed coils, Steel Frames and a raised Brass
 pipe conveyor. Start with Cupronickel coils. The structure occupies 13 x 12 x 7
-blocks when facing north. The controller sits on the side platform beside the
-buffered item input, Oxygen input and maintenance hatch. Place energy hatches
-at the chimney base and tapping hatches beside the coils on the narrow neck.
+blocks when facing north. Any steel casing on the controller platform can be
+replaced by an item input bus, oxygen input hatch or maintenance hatch.
+Place energy hatches at the chimney base and tapping hatches beside the coils
+on the narrow neck.
 The furnace supports up to eight energy hatches in the chimney base. Additional
 amperage at the same voltage scales throughput proportionally at the same energy
 cost per ingot. Higher voltage applies native EBF overclocks, including coil heat
@@ -1469,8 +1470,9 @@ is limited by the available metal and carbon.
 
 At LuV, a Bath Measurement Hatch exposes exact bath measurements to
 OpenComputers. Craft it in a LuV Assembler from one LuV Machine Hull, two LuV
-Sensors and two LuV circuits. Install the hatch in the side platform and place
-an OpenComputers Adapter against it.
+Sensors and two LuV circuits. Replace any refractory casing on the chimney with
+the hatch and place an OpenComputers Adapter against it. The bath accepts one
+Measurement Hatch.
 
 The `iron_bath_measurement` component returns a snapshot through `read()`:
 

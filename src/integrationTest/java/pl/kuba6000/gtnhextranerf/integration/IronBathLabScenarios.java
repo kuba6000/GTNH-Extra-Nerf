@@ -439,7 +439,7 @@ public final class IronBathLabScenarios {
             .awaitClient("the second group page shows its real items", client -> {
                 ItemStack item = ((ItemDisplayWidget) chargeWidget("bathChargeItem0")).getStackForRecipeViewer();
                 check(
-                    item != null && "Profile charge 24".equals(item.getDisplayName()),
+                    item != null && "Profile charge 12".equals(item.getDisplayName()),
                     "Group pagination did not synchronize its actual items: "
                         + (item == null ? "null" : item.getDisplayName()));
             })
@@ -478,7 +478,7 @@ public final class IronBathLabScenarios {
         report.addProperty(
             "limits",
             "GUI submission only, excludes world rendering, frame pacing and swap. "
-                + "At most 24 groups per page are synchronized. Cache thresholds are unknown, "
+                + "At most 12 groups per page are synchronized. Cache thresholds are unknown, "
                 + "so this is a capacity stress comparison and does not establish cache exhaustion");
         JsonArray cases = new JsonArray();
         boolean complete = true;
@@ -711,7 +711,7 @@ public final class IronBathLabScenarios {
                     + mc.thePlayer.openContainer.windowId);
             GuiContainerWrapper screen = (GuiContainerWrapper) mc.currentScreen;
             int occupied = 0;
-            for (int slot = 0; slot < 24; slot++)
+            for (int slot = 0; slot < 12; slot++)
                 if (((ItemDisplayWidget) chargeWidget("bathChargeItem" + slot)).getStackForRecipeViewer() != null)
                     occupied++;
             return screen.width + "x" + screen.height + ":groups=" + occupied;

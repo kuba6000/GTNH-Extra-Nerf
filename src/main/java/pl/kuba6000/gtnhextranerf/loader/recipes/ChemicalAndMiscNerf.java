@@ -19,6 +19,7 @@ import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 import static gregtech.api.util.GTRecipeBuilder.STACKS;
 import static gregtech.api.util.GTRecipeBuilder.TICKS;
 import static gregtech.api.util.GTRecipeConstants.FUSION_THRESHOLD;
+import static gregtech.api.util.GTRecipeConstants.QFT_CATALYST;
 import static gregtech.api.util.GTRecipeConstants.QFT_FOCUS_TIER;
 
 import net.minecraft.init.Blocks;
@@ -45,6 +46,7 @@ import gregtech.loaders.misc.GTBeeDefinition;
 import gregtech.loaders.misc.GTBees;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.core.material.MaterialsElements;
+import gtPlusPlus.xmod.gregtech.api.enums.GregtechItemList;
 import gtnhlanth.common.register.WerkstoffMaterialPool;
 import pl.kuba6000.gtnhextranerf.audit.AuditScope;
 import pl.kuba6000.gtnhextranerf.recipes.RecipeContext;
@@ -117,6 +119,7 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
     }
 
     private static void requireKevlarCombs(RecipeContext recipes) {
+        ItemStack catalyst = GregtechItemList.UltimatePlasticCatalyst.get(1);
         recipes.machine(quantumForceTransformerRecipes)
             .modifyOne(
                 RecipeMatch.builder()
@@ -131,7 +134,11 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
                     .duration(20 * SECONDS)
                     .eut(TierEU.RECIPE_UIV)
                     .build()
-                    .and(recipe -> recipe.getMetadataOrDefault(QFT_FOCUS_TIER, 0) == 4),
+                    .and(recipe -> {
+                        ItemStack requiredCatalyst = recipe.getMetadata(QFT_CATALYST);
+                        return recipe.getMetadataOrDefault(QFT_FOCUS_TIER, 0) == 4 && requiredCatalyst != null
+                            && catalyst.isItemEqual(requiredCatalyst);
+                    }),
                 RecipeChange.builder()
                     .addItemInput(GTBees.combs.getStackForType(CombType.KEVLAR, 64))
                     .build());

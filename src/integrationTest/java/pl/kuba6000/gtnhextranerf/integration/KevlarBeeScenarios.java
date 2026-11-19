@@ -35,7 +35,7 @@ public final class KevlarBeeScenarios {
     private KevlarBeeScenarios() {}
 
     @GameTest(template = "native_fixture")
-    public static void kevlarCanBreedBeforeUv(GameTestHelper helper) {
+    public static void kevlarRequiresOnlyZpmReplicator(GameTestHelper helper) {
         List<IBeeMutation> mutations = BeeManager.beeRoot.getMutations(false)
             .stream()
             .filter(
@@ -50,13 +50,12 @@ public final class KevlarBeeScenarios {
                 && mutation.isPartner(GTBeeDefinition.NAQUADAH.getSpecies()),
             "Kevlar must breed from Oil and Naquadah");
         helper.assertTrue(mutation.getBaseChance() == 4.0f, "Expected a 4% base mutation chance");
+        var conditions = ((Mutation) mutation).getMutationConditions();
+        helper.assertTrue(conditions.size() == 1, "Expected exactly one Kevlar mutation condition");
         helper.assertTrue(
-            ((Mutation) mutation).getMutationConditions()
-                .stream()
-                .anyMatch(
-                    condition -> condition instanceof MutationConditionRequiresResource resource
-                        && ItemList.ReplicatorZPM.get(1)
-                            .isItemEqual(resource.getBlockRequired())),
+            conditions.iterator()
+                .next() instanceof MutationConditionRequiresResource resource && ItemList.ReplicatorZPM.get(1)
+                    .isItemEqual(resource.getBlockRequired()),
             "Kevlar must still require a ZPM Replicator");
         helper.succeed();
     }

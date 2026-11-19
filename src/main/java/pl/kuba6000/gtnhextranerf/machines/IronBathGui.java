@@ -418,7 +418,7 @@ final class IronBathGui extends MTEMultiBlockBaseGui<MTEIronBathFurnace> {
                     () -> text("temperature_range", temperature.getValue(), maximumTemperature.getValue()),
                     94,
                     0,
-                    150))
+                    150).scale(0.85f))
             .child(
                 new IDrawable.DrawableWidget(temperatureGauge()).pos(94, 13)
                     .size(150, 8)
