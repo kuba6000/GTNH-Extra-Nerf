@@ -12,12 +12,16 @@ import com.gtnewhorizon.gtnhmixins.builders.MixinBuilder;
 
 public enum Mixin implements IMixins {
 
-    KevlarBees(
-        new MixinBuilder().addCommonMixins("MixinKevlarBeeInput", "MixinKevlarBeeMutation", "MixinKevlarRecipeLock")
-            .addRequiredMod(GT5U)
-            .addRequiredMod(TargetedMod.FORESTRY)
-            .addExcludedMod(GT6)
-            .setPhase(LATE)),
+    KevlarBees(new MixinBuilder()
+        .addCommonMixins(
+            "MixinKevlarBeeInput",
+            "MixinKevlarBeeMutation",
+            "MixinKevlarBeeParents",
+            "MixinKevlarRecipeLock")
+        .addRequiredMod(GT5U)
+        .addRequiredMod(TargetedMod.FORESTRY)
+        .addExcludedMod(GT6)
+        .setPhase(LATE)),
 
     AssemblerOutputs(new MixinBuilder().addCommonMixins("MixinAssemblerOutputs", "MixinAssemblerRecipeMap")
         .addRequiredMod(GT5U)

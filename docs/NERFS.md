@@ -327,13 +327,11 @@ uses one Radioactive Mineral Mix dust in place of the two Protactinium dust.
 ## Kevlar bee requirement
 
 The LCR consumes one Kevlar drone for 9000 mB Liquid Crystal Kevlar on circuit
-1, or seven drones for 63000 mB on circuit 9. Only the active species must be
-Kevlar. Other genetics, inactive species and analysis state are unrestricted.
-Queens and princesses do not qualify. The Kevlar mutation requires a ZPM
-Replicator beneath the housing. Parents, mutation chance, recipe chemicals,
-outputs, time and power are retained. Recipe locking accepts different valid
-Kevlar genetics, including after saving and loading the lock. QFT routes and
-remelting are unchanged.
+1, or seven drones for 63000 mB on circuit 9. The requirement checks the
+active species and caste, including when the recipe is locked.
+
+Naquadah replaces Infinity Catalyst as a parent of Kevlar bees. The mutation
+requires a ZPM Replicator beneath the housing.
 
 ## High-tier hull insulation
 

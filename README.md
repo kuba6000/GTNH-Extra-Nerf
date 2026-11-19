@@ -5,7 +5,7 @@ Horizons on Minecraft 1.7.10. The mod is built for the pinned full GTNH environm
 
 It just nerfs stuff.
 
-Liquid Crystal Kevlar production requires Kevlar drones. Their mutation requires a ZPM Replicator.
+Liquid Crystal Kevlar production requires Kevlar drones. Naquadah replaces Infinity Catalyst as a parent of Kevlar bees, and the mutation requires a ZPM Replicator.
 
 Steam Input Hatches hold 640,000 L to reduce power failures on high-demand recipes.
 

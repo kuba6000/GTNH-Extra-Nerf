@@ -1,7 +1,7 @@
 # Current gameplay changes
 
 This file is a concise summary of the active ruleset. The complete canonical
-catalog, including exact values, conditions and unchanged fields, is
+catalog, including exact values and requirements, is
 [`docs/NERFS.md`](docs/NERFS.md).
 
 ## Universal Wireless Terminal
@@ -23,8 +23,8 @@ catalog, including exact values, conditions and unchanged fields, is
 
 ## Kevlar bees
 
-- Liquid Crystal Kevlar consumes Kevlar drones in the LCR, with unrestricted
-  other genetics, including with recipe locking. The Kevlar mutation requires a ZPM Replicator
+- Liquid Crystal Kevlar consumes Kevlar drones in the LCR, including with recipe locking.
+- Naquadah replaces Infinity Catalyst as a parent of Kevlar bees. The mutation requires a ZPM Replicator.
 
 ## Chicken jockey warp effect
 

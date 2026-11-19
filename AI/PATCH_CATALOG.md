@@ -37,8 +37,10 @@ Other ingredients retain native matching.
 `MixinKevlarBeeMutation` changes resource metadata 11003 to 11001 only for
 GregTech's machine block and the Kevlar mutation, before Forestry constructs
 the condition and description. `MODIFY_KEVLAR_BEE_MUTATION_RESOURCE` requires
-one modification. All three mixins require GT5 and Forestry and exclude GT6.
-Each injector requires one target.
+one modification. `MixinKevlarBeeParents` substitutes Naquadah for Infinity
+Catalyst at Kevlar's native mutation registration.
+`MODIFY_KEVLAR_BEE_MUTATION_PARENT` requires one modification. These mixins
+require GT5 and Forestry and exclude GT6.
 
 `MixinKevlarRecipeLock` adapts `SingleRecipeCheck.checkRecipeInputs` only for
 Liquid Crystal Kevlar recipes in the LCR map. Counting and consumption use
