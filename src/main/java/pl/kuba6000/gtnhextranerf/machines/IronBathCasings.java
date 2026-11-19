@@ -6,14 +6,18 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.common.blocks.BlockCasingsAbstract;
 
 /** Refractory brick casings with an optional Wrought Iron reinforcement. */
 public final class IronBathCasings extends Block {
@@ -36,6 +40,11 @@ public final class IronBathCasings extends Block {
 
     public void register() {
         GameRegistry.registerBlock(this, Subtypes.class, "iron_bath_casing");
+    }
+
+    @Override
+    public boolean canCreatureSpawn(EnumCreatureType type, IBlockAccess world, int x, int y, int z) {
+        return false;
     }
 
     @Override
@@ -76,6 +85,13 @@ public final class IronBathCasings extends Block {
         @Override
         public int getMetadata(int damage) {
             return damage;
+        }
+
+        @Override
+        @SideOnly(Side.CLIENT)
+        public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
+            super.addInformation(stack, player, tooltip, advanced);
+            tooltip.add(BlockCasingsAbstract.NO_MOB_SPAWNING.get());
         }
 
         @Override

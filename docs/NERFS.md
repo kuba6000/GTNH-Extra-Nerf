@@ -1413,7 +1413,7 @@ pipe conveyor. Start with Cupronickel coils. The structure occupies 13 x 12 x 7
 blocks when facing north. Any steel casing on the controller platform can be
 replaced by an item input bus, oxygen input hatch or maintenance hatch.
 Place energy hatches at the chimney base and tapping hatches beside the coils
-on the narrow neck.
+on the narrow neck. Mobs cannot spawn on either refractory casing variant.
 The furnace supports up to eight energy hatches in the chimney base. Additional
 amperage at the same voltage scales throughput proportionally at the same energy
 cost per ingot. Higher voltage applies native EBF overclocks, including coil heat
