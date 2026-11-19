@@ -4,11 +4,13 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.UUID;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import gregtech.api.GregTechAPI;
+import gregtech.api.covers.CoverRegistry;
 import gregtech.api.enums.ItemList;
 import gregtech.api.metatileentity.BaseMetaTileEntity;
 import gregtech.api.metatileentity.MetaTileEntity;
@@ -16,6 +18,7 @@ import gregtech.api.metatileentity.implementations.MTEHatch;
 import gregtech.api.metatileentity.implementations.MTEHatchDynamo;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.metatileentity.implementations.MTEWirelessEnergy;
+import gregtech.common.covers.CoverEnergyWireless;
 import gregtech.common.misc.WirelessNetworkManager;
 import gregtech.common.tileentities.machines.multi.MTEElectricBlastFurnace;
 import pl.kuba6000.gtnhextranerf.GTNHExtraNerf;
@@ -66,6 +69,7 @@ final class HatchCertificationIntegrationTests {
             world.setBlockToAir(tile.xCoord, tile.yCoord, tile.zCoord);
         }
         verifyWirelessReceivers(world);
+        verifyWirelessCovers(world);
         verifyRegisteredHatches(world);
         verifyNetworkOutput(world, false);
         verifyNetworkOutput(world, true);
@@ -92,6 +96,66 @@ final class HatchCertificationIntegrationTests {
         controller.getExoticDynamoHatches()
             .add(new MTEHatchDynamo("test.iv", 5, new String[0], null));
         check(MachineProgression.requiredTier(controller) == ProgressionTier.IV, "Controller ignored exotic output");
+    }
+
+    private static void verifyWirelessCovers(WorldServer world) {
+        for (Class<? extends MetaTileEntity> type : Arrays.asList(MTEHatchEnergy.class, MTEHatchEnergyMulti.class)) {
+            MetaTileEntity prototype = (MetaTileEntity) Arrays.stream(GregTechAPI.METATILEENTITIES)
+                .filter(hatch -> hatch != null && hatch.getClass() == type)
+                .filter(hatch -> ((MTEHatch) hatch).mTier > 0)
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Native energy hatch is missing: " + type));
+            BaseMetaTileEntity tile = TransformerIntegrationTests.place(world, prototype.getStackForm(1));
+            UUID owner = tile.getOwnerUuid();
+            BigInteger previous = WirelessNetworkManager.getUserEU(owner);
+            BigInteger supply = BigInteger.ONE.shiftLeft(100);
+            try {
+                for (int tick = 0; tick < 25; tick++) tile.updateEntityProfiled();
+                ItemStack stack = ItemList.Cover_Wireless_Energy_IV.get(1);
+                ForgeDirection side = ForgeDirection.EAST;
+                check(prototype.allowCoverOnSide(side, stack), "Energy hatch rejects its wireless cover");
+                check(
+                    CoverRegistry.getCoverPlacer(stack)
+                        .isCoverPlaceable(side, stack, tile),
+                    "Wireless cover rejects its energy hatch");
+                CoverEnergyWireless cover = (CoverEnergyWireless) CoverRegistry.buildCover(stack, side, tile);
+                tile.attachCover(cover);
+                WirelessNetworkManager.setUserEU(owner, supply);
+                long interval = WirelessNetworkManager.ticks_between_energy_addition;
+                cover.doCoverThings((byte) 0, interval);
+                check(
+                    WirelessNetworkManager.getUserEU(owner)
+                        .equals(supply),
+                    "Uncertified wireless cover spent global energy");
+                certifyAll(world);
+                cover.doCoverThings((byte) 0, 2 * interval);
+                long stored = tile.getStoredEUuncapped();
+                check(stored > 0, "Certified wireless cover did not fill its hatch");
+                BigInteger balance = WirelessNetworkManager.getUserEU(owner);
+                check(balance.equals(supply.subtract(BigInteger.valueOf(stored))), "Wireless cover lost energy");
+                MachineProgression.revoke(world, ProgressionTier.LV);
+                cover.doCoverThings((byte) 0, 3 * interval);
+                cover.doCoverThings((byte) 0, 4 * interval);
+                check(
+                    WirelessNetworkManager.getUserEU(owner)
+                        .equals(balance),
+                    "Revoked wireless cover spent global energy");
+                check(tile.getStoredEUuncapped() == 0, "Revoked wireless cover exposes its hatch buffer");
+                MachineProgression.certify(world, ProgressionTier.LV);
+                check(tile.getStoredEUuncapped() == stored, "Wireless cover changed its locked hatch buffer");
+                check(tile.decreaseStoredEnergyUnits(stored, false), "Recertified hatch cannot supply energy");
+                cover.doCoverThings((byte) 0, 5 * interval);
+                check(tile.getStoredEUuncapped() == stored, "Recertified wireless cover did not refill its hatch");
+                check(
+                    WirelessNetworkManager.getUserEU(owner)
+                        .equals(balance.subtract(BigInteger.valueOf(stored))),
+                    "Recertified wireless cover lost energy");
+            } finally {
+                WirelessNetworkManager.setUserEU(owner, previous);
+                revokeAll(world);
+                world.setBlockToAir(tile.xCoord, tile.yCoord, tile.zCoord);
+            }
+        }
     }
 
     private static void verifyWirelessReceivers(WorldServer world) {

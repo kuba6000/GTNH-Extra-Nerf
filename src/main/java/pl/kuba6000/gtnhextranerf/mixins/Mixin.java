@@ -125,6 +125,7 @@ public enum Mixin implements IMixins {
             "MixinProgressionTickGate",
             "MixinMultiblockCertification",
             "MixinWirelessHatchCertification",
+            "MixinWirelessCoverCertification",
             "MixinProgressionMachineStatus",
             "MixinProgressionMachineGui",
             "MixinElectricalCableFire",

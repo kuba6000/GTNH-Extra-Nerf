@@ -24,6 +24,7 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchDynamo;
 import gregtech.api.metatileentity.implementations.MTEHatchEnergy;
 import gregtech.api.metatileentity.implementations.MTEWirelessEnergy;
+import gregtech.common.covers.CoverEnergyWireless;
 import pl.kuba6000.gtnhextranerf.GTNHExtraNerf;
 import pl.kuba6000.gtnhextranerf.audit.AuditManager;
 import pl.kuba6000.gtnhextranerf.audit.AuditScope;
@@ -97,6 +98,7 @@ public final class EnergyHatchCertification {
         AuditManager.run(AuditScope.VERIFY_ENERGY_HATCH_CERTIFICATION, audit -> {
             if (!PortHook.class.isAssignableFrom(BaseMetaTileEntity.class)
                 || !BufferHook.class.isAssignableFrom(MetaTileEntity.class)
+                || !WirelessInputHook.class.isAssignableFrom(CoverEnergyWireless.class)
                 || !WirelessInputHook.class.isAssignableFrom(MTEWirelessEnergy.class)
                 || !WirelessInputHook.class.isAssignableFrom(MTEHatchWirelessMulti.class))
                 throw new IllegalStateException("Energy hatch certification hooks are missing");
