@@ -35,6 +35,31 @@ public final class KevlarBeeScenarios {
     private KevlarBeeScenarios() {}
 
     @GameTest(template = "native_fixture")
+    public static void kevlarProducesOnlyCombs(GameTestHelper helper) {
+        var species = GTBeeDefinition.KEVLAR.getSpecies();
+        ItemStack nugget = Materials.Kevlar.getNuggets(1);
+        helper.assertTrue(
+            species.getProductChances()
+                .keySet()
+                .stream()
+                .noneMatch(nugget::isItemEqual),
+            "Kevlar bees must not produce Kevlar nuggets");
+        var specialties = species.getSpecialtyChances();
+        helper.assertTrue(
+            specialties.keySet()
+                .stream()
+                .noneMatch(nugget::isItemEqual),
+            "Kevlar bees must not produce Kevlar nugget specialties");
+        ItemStack comb = GTBees.combs.getStackForType(CombType.KEVLAR);
+        helper.assertTrue(
+            specialties.size() == 1 && specialties.entrySet()
+                .stream()
+                .anyMatch(entry -> comb.isItemEqual(entry.getKey()) && entry.getValue() == 0.075f),
+            "Kevlar bees must produce Kevlar Combs at the native 7.5% base chance");
+        helper.succeed();
+    }
+
+    @GameTest(template = "native_fixture")
     public static void kevlarRequiresOnlyZpmReplicator(GameTestHelper helper) {
         List<IBeeMutation> mutations = BeeManager.beeRoot.getMutations(false)
             .stream()

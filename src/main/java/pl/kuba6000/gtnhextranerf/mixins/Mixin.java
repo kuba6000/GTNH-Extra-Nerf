@@ -17,6 +17,7 @@ public enum Mixin implements IMixins {
             "MixinKevlarBeeInput",
             "MixinKevlarBeeMutation",
             "MixinKevlarBeeParents",
+            "MixinKevlarBeeProducts",
             "MixinKevlarRecipeLock")
         .addRequiredMod(GT5U)
         .addRequiredMod(TargetedMod.FORESTRY)

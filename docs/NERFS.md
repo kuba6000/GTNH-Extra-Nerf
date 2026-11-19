@@ -326,6 +326,7 @@ uses one Radioactive Mineral Mix dust in place of the two Protactinium dust.
 
 ## Kevlar bee requirement
 
+Kevlar bees produce Kevlar Combs as their only specialty, with a base chance of 7.5%.
 The LCR consumes one Kevlar drone for 9000 mB Liquid Crystal Kevlar on circuit
 1, or seven drones for 63000 mB on circuit 9. The requirement checks the
 active species and caste, including when the recipe is locked.

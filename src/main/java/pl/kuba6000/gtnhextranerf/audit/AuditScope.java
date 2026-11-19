@@ -64,6 +64,7 @@ public enum AuditScope implements AuditDefinition {
     ADD_KEVLAR_COMBS_TO_QFT_PLASTICS(modified(1)),
     MODIFY_KEVLAR_BEE_MUTATION_PARENT(modified(1)),
     MODIFY_KEVLAR_BEE_MUTATION_RESOURCE(modified(1)),
+    REMOVE_KEVLAR_BEE_NUGGET(removed(1)),
     MODIFY_AMERICIUM_BOULE(AuditExpectation.exact()
         .modified(1)
         .removed(7)

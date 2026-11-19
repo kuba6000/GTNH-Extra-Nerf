@@ -23,6 +23,7 @@ catalog, including exact values and requirements, is
 
 ## Kevlar bees
 
+- Kevlar bees produce Kevlar Combs as their only specialty.
 - Liquid Crystal Kevlar consumes Kevlar drones in the LCR, including with recipe locking.
 - Naquadah replaces Infinity Catalyst as a parent of Kevlar bees. The mutation requires a ZPM Replicator.
 - The QFT recipe for Radox Polymer and Molten Kevlar consumes 64 Kevlar Combs per batch.
