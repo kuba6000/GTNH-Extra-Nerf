@@ -13,10 +13,13 @@ import static gregtech.api.recipe.RecipeMaps.hammerRecipes;
 import static gregtech.api.recipe.RecipeMaps.mixerNonCellRecipes;
 import static gregtech.api.recipe.RecipeMaps.mixerRecipes;
 import static gregtech.api.recipe.RecipeMaps.multiblockChemicalReactorRecipes;
+import static gregtech.api.recipe.RecipeMaps.quantumForceTransformerRecipes;
 import static gregtech.api.util.GTRecipeBuilder.MINUTES;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
+import static gregtech.api.util.GTRecipeBuilder.STACKS;
 import static gregtech.api.util.GTRecipeBuilder.TICKS;
 import static gregtech.api.util.GTRecipeConstants.FUSION_THRESHOLD;
+import static gregtech.api.util.GTRecipeConstants.QFT_FOCUS_TIER;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -37,7 +40,9 @@ import gregtech.api.recipe.RecipeMap;
 import gregtech.api.util.GTModHandler;
 import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTUtility;
+import gregtech.common.items.CombType;
 import gregtech.loaders.misc.GTBeeDefinition;
+import gregtech.loaders.misc.GTBees;
 import gtPlusPlus.core.material.MaterialsAlloy;
 import gtPlusPlus.core.material.MaterialsElements;
 import gtnhlanth.common.register.WerkstoffMaterialPool;
@@ -59,6 +64,7 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
     public void register(RecipeRegistry registry) {
         registry
             .register(AuditScope.ADD_KEVLAR_DRONE_TO_LIQUID_CRYSTAL_KEVLAR, ChemicalAndMiscNerf::requireKevlarDrones);
+        registry.register(AuditScope.ADD_KEVLAR_COMBS_TO_QFT_PLASTICS, ChemicalAndMiscNerf::requireKevlarCombs);
         registry.register(AuditScope.REDUCE_TPV_MIXER_OUTPUT, ChemicalAndMiscNerf::reduceTpvMixerOutput);
         registry.register(AuditScope.ADD_CRYSTAL_BLOOD_CONVERSION, ChemicalAndMiscNerf::addCrystalBloodConversion);
         registry.register(AuditScope.MODIFY_INDIUM_CONCENTRATE_RECIPES, ChemicalAndMiscNerf::modifyIndiumConcentrate);
@@ -108,6 +114,27 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
                         .addItemInput(drone)
                         .build());
         }
+    }
+
+    private static void requireKevlarCombs(RecipeContext recipes) {
+        recipes.machine(quantumForceTransformerRecipes)
+            .modifyOne(
+                RecipeMatch.builder()
+                    .itemInputs(Materials.Carbon.getDust(64), Materials.Osmium.getDust(24))
+                    .itemOutputs()
+                    .fluidInputs(Materials.Hydrogen.getGas(16_000), Materials.Nitrogen.getGas(16_000))
+                    .fluidOutputs(
+                        Materials.Xenoxene.getFluid(16_000),
+                        Materials.RadoxPolymer.getMolten(STACKS),
+                        Materials.RadoxHeavy.getFluid(16_000),
+                        Materials.Kevlar.getMolten(STACKS))
+                    .duration(20 * SECONDS)
+                    .eut(TierEU.RECIPE_UIV)
+                    .build()
+                    .and(recipe -> recipe.getMetadataOrDefault(QFT_FOCUS_TIER, 0) == 4),
+                RecipeChange.builder()
+                    .addItemInput(GTBees.combs.getStackForType(CombType.KEVLAR, 64))
+                    .build());
     }
 
     private static void addCrystalBloodConversion(RecipeContext recipes) {

@@ -333,6 +333,9 @@ active species and caste, including when the recipe is locked.
 Naquadah replaces Infinity Catalyst as a parent of Kevlar bees. The mutation
 requires a ZPM Replicator beneath the housing.
 
+The QFT recipe for Radox Polymer and Molten Kevlar consumes 64 Kevlar Combs per
+batch.
+
 ## High-tier hull insulation
 
 UV and UHV hulls require Kevlar insulation: 288 mB molten Kevlar in the

@@ -18,6 +18,7 @@ The current project contains:
 - shorter nuclear fuel-rod lifetime;
 - Kevlar drones in Liquid Crystal Kevlar production;
 - a Naquadah parent and a ZPM Replicator for the Kevlar bee mutation;
+- 64 Kevlar Combs per batch of the QFT recipe for Radox Polymer and Molten Kevlar;
 - lower Naquadah small-ore generation;
 - restricted early Steel production and reworked MV blast-furnace routes;
 - modified aluminium, ilmenite, titanium, silicon, platinum, samarium and
