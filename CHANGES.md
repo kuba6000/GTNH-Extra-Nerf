@@ -222,7 +222,8 @@ catalog, including exact values and requirements, is
   Gravistars. The QFT route is retained; multi-amp UHV star production works.
 
 - All three Bio Vat Raw Bio Catalyst Medium recipes consume one additional
-  Radioactive Mineral Mix dust; cultures and native fluid amplification stay.
+  Small Pile of Radioactive Mineral Mix Dust (a quarter of a full dust);
+  cultures and native fluid amplification stay.
 
 - PCB Factory wetware/bioware boards use Copper Plasma in place of Sulfuric
   Acid, at the same fluid amount. Ordinary board-production alternatives stay.

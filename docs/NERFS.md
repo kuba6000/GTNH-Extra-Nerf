@@ -297,7 +297,8 @@ requires one Chemical Plant modification.
 ## Raw Bio Catalyst Medium
 
 All three Bacterial Vat variants producing Raw Bio Catalyst Medium consume
-one full Radioactive Mineral Mix dust as an additional item input. Existing
+one Small Pile of Radioactive Mineral Mix Dust (a quarter of a full dust) as
+an additional item input. Existing
 ingredients, cultures, glass and radiation requirements, time, voltage and
 native fluid amplification are retained. The item cost is per recipe run;
 fluid amplification does not multiply it. The startup audit requires three

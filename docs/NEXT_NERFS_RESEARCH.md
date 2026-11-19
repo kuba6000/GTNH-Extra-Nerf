@@ -389,23 +389,25 @@ Sources: [PCB variants][pcb], [plastic tiers][plastics],
 [FoTG plasma recipes][godforge], [base board alternatives][boardalternatives]
 and [chemical finishing alternatives][boardfinishing].
 
-### 8. Radioactive Mineral Mix Dust in Raw Bio Catalyst Medium
+### 8. Small Pile of Radioactive Mineral Mix Dust in Raw Bio Catalyst Medium
 
 Confirmed target: **all three Bacterial Vat recipes producing Raw Bio
 Catalyst Medium** (`Materials.BioMediumRaw`), registered by NHCore's
-`BacteriaRegistry`. Add **one consumed full Radioactive Mineral Mix dust**
-to each recipe. This is an extra item input, preserving the existing inputs,
+`BacteriaRegistry`. Add **one consumed Small Pile of Radioactive Mineral Mix
+Dust** (`dustSmall`, a quarter of a full dust) to each recipe. A full dust was
+considered first and rejected as too expensive; see the cost note below. This
+is an extra item input, preserving the existing inputs,
 cultures, time, EU/t, glass tier, radiation requirements and cleanroom flag.
 
 | Variant | Existing item inputs | Base fluid conversion | Added input |
 | --- | --- | --- | --- |
-| LuV, glass 6 | 64 Stemcell chips, 16 Unknown Crystals, 4 TCetiE Seaweed Extract, 4 Tritanium dust | 8 mB Raw Growth Medium -> 2 mB Raw Bio Catalyst Medium | 1 Mineral Mix dust |
-| ZPM, glass 7 | 16 Stemcell chips, 16 Unknown Crystals, 8 TCetiE Seaweed Extract, 4 tiny Infinity Catalyst dust | 5 mB Raw Growth Medium -> 5 mB Raw Bio Catalyst Medium | 1 Mineral Mix dust |
-| UV, glass 8 | 8 Biocell chips, 16 TCetiE Seaweed Extract, 4 Infinity Catalyst dust | 5 mB Raw Growth Medium -> 10 mB Raw Bio Catalyst Medium | 1 Mineral Mix dust |
+| LuV, glass 6 | 64 Stemcell chips, 16 Unknown Crystals, 4 TCetiE Seaweed Extract, 4 Tritanium dust | 8 mB Raw Growth Medium -> 2 mB Raw Bio Catalyst Medium | 1 Mineral Mix small pile |
+| ZPM, glass 7 | 16 Stemcell chips, 16 Unknown Crystals, 8 TCetiE Seaweed Extract, 4 tiny Infinity Catalyst dust | 5 mB Raw Growth Medium -> 5 mB Raw Bio Catalyst Medium | 1 Mineral Mix small pile |
+| UV, glass 8 | 8 Biocell chips, 16 TCetiE Seaweed Extract, 4 Infinity Catalyst dust | 5 mB Raw Growth Medium -> 10 mB Raw Bio Catalyst Medium | 1 Mineral Mix small pile |
 
 These are the source recipe's base fluid quantities, before native Bio Vat
 fluid amplification. `MTEBioVat.recipeWithMultiplier` scales fluid input
-and output, leaving item inputs unchanged. The new dust follows the same
+and output, leaving item inputs unchanged. The new small pile follows the same
 item-consumption semantics as the existing ingredients; do not introduce a
 separate per-mB charge or change that native amplification behavior. The
 recipes need 5, 5 and 4 normal item inputs after the addition, within the
@@ -416,8 +418,9 @@ variants. Match the target medium plus the full recipe identity and metadata,
 not every use of a similarly named catalyst. The Raw Intelligence Catalyst
 assembler recipe is outside this request and keeps its current inputs.
 
-The dust already exists as
-`MaterialsOres.DEEP_EARTH_REACTOR_FUEL_DEPOSIT.getDust(1)`. Its ore forms are
+The small pile already exists as
+`MaterialsOres.DEEP_EARTH_REACTOR_FUEL_DEPOSIT.getSmallDust(1)`
+(`miscutils:itemDustSmallRadioactiveMineralMix`). Its ore forms are
 registered by Toxic Everglades, but **ore registration alone does not prove
 natural generation**. The reviewed production-version Everglades vein list
 (`OreMixes.GTPP1` through `GTPP19`) contains no reference to this material.
@@ -432,6 +435,20 @@ the BeamCrafter recipe takes 2 seconds plus its required neutron beams.
 The proposed Everglades machine ban does not remove these recipes in other
 dimensions. If the intended catalyst gate specifically requires mining
 Mineral Mix in Everglades, its worldgen must be settled separately.
+
+Cost note (why a small pile and not a full dust). The BeamCrafter runs no
+overclock and up to 1024 parallels; its speed is set by the incoming beam,
+which is consumed at the beam rate (`MTEBeamCrafter`). The Mineral Mix recipe
+uses 500 neutron units per attempt at a 25% chance, so one full dust costs
+4 attempts (2000 units) plus 4 Plutonium-238 dust. Plutonium-238 through
+Neptunium-238 is expensive: that BeamCrafter recipe has a 5% chance per 500
+units, so one Plutonium-238 costs about 10000 units and a full dust about
+42000 units (roughly 210 Beryllium long rods at 200 units per Source Chamber
+item). Against a Bio Vat on 8 UHV hatches (about 5.3 LuV runs per minute) that
+needs well over a dozen neutron sources per vat. A quarter of that is
+acceptable. The Quantum Force Transformer recipe producing 64 Plutonium-238
+from 32 Thorium and 32 Uranium-238 dust avoids the neutron cost entirely, so
+the real cost of the gate depends on whether that route is used.
 
 Sources: [three Bio Vat recipes][biomedium], [native fluid multiplier][biovat],
 [Bio Vat map capacity][biovatmap], [material registration][evergladesores],

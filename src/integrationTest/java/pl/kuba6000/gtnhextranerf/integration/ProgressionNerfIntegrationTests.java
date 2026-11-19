@@ -246,7 +246,7 @@ final class ProgressionNerfIntegrationTests {
     }
 
     private static void verifyBioMineralMix() {
-        ItemStack dust = MaterialsOres.DEEP_EARTH_REACTOR_FUEL_DEPOSIT.getDust(1);
+        ItemStack dust = MaterialsOres.DEEP_EARTH_REACTOR_FUEL_DEPOSIT.getSmallDust(1);
         boolean found = false;
         for (GTRecipe recipe : BartWorksRecipeMaps.bacterialVatRecipes.getAllRecipes()) {
             if (Arrays.stream(recipe.mFluidOutputs)

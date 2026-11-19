@@ -202,10 +202,11 @@ The fixture checks consumed stars and preservation of QFT production. Native
 bootstrap deadlock. Actual multiblock construction is outside that power check.
 
 `ADD_MINERAL_MIX_TO_RAW_BIO_MEDIUM` finds exactly three Bacterial Vat recipes
-by `BioMediumRaw` fluid output and appends one consumed GT++ Mineral Mix dust.
-All special-slot/culture and recipe metadata are copied without changing
-the Bio Vat's native fluid multiplier. Native tests use the culture-sensitive
-recipe query and input consumption, including missing-dust rejection.
+by `BioMediumRaw` fluid output and appends one consumed GT++ Mineral Mix small
+pile (`getSmallDust(1)`, a quarter of a full dust). All special-slot/culture
+and recipe metadata are copied without changing the Bio Vat's native fluid
+multiplier. Native tests use the culture-sensitive recipe query and input
+consumption, including missing-item rejection.
 
 `MODIFY_PCB_FACTORY_WET_BIO_PLASMA` targets 12 Wetware Extreme and 9 Bioware
 Ultra recipes by native output identity. Each replaces its unique Sulfuric

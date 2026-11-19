@@ -303,9 +303,9 @@ public final class ProgressionRecipeNerf implements RecipeModule {
 
     private static void bioMineralMix(RecipeContext recipes) {
         FluidStack medium = Materials.BioMediumRaw.getFluid(1);
-        ItemStack dust = MaterialsOres.DEEP_EARTH_REACTOR_FUEL_DEPOSIT.getDust(1);
+        ItemStack dust = MaterialsOres.DEEP_EARTH_REACTOR_FUEL_DEPOSIT.getSmallDust(1);
         if (medium == null || dust == null)
-            throw new RecipeValidationException("Missing Raw Bio Medium or Mineral Mix dust");
+            throw new RecipeValidationException("Missing Raw Bio Medium or Small Pile of Mineral Mix dust");
         List<GTRecipe> targets = bacterialVatRecipes.getAllRecipes()
             .stream()
             .filter(
