@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.function.Supplier;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
@@ -33,8 +34,7 @@ import com.cleanroommc.modularui.widgets.ListWidget;
 import com.cleanroommc.modularui.widgets.TextWidget;
 import com.cleanroommc.modularui.widgets.TransformWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
-import com.cleanroommc.modularui.widgets.slot.ItemSlot;
-import com.cleanroommc.modularui.widgets.slot.ModularSlot;
+import com.github.bsideup.jabel.Desugar;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -50,17 +50,12 @@ import pl.kuba6000.gtnhextranerf.machines.ironbath.IronProduct;
 final class IronBathGui extends MTEMultiBlockBaseGui<MTEIronBathFurnace> {
 
     private static final int CHARGE_GROUPS_PER_PAGE = 12;
-    private static final int CONTENT_WIDTH = 248;
-    private static final int BATH_DISPLAY_HEIGHT = 112;
     private static final int CHARGE_GROUPS_HEIGHT = 21;
     private static final int DETAILS_HEIGHT = 42;
     private static final int CONTROLS_HEIGHT = 18;
     private static final int VERTICAL_PADDING = 3;
-    private static final int PANEL_WIDTH = CONTENT_WIDTH + 8;
-    private static final int PANEL_HEIGHT = BATH_DISPLAY_HEIGHT + DETAILS_HEIGHT
-        + CONTROLS_HEIGHT
-        + 2 * VERTICAL_PADDING;
     private static final int NEI_CENTER_OFFSET = 6;
+    private static final int NEI_EDGE_CLEARANCE = 24;
     private static final float SMALL_GUI_SCALE = 1.125f;
     private static final IronProduct[] PRODUCTS = IronProduct.values();
     // CIE-derived colors through 2200 K, extended with approximate white and blue incandescence
@@ -69,7 +64,7 @@ final class IronBathGui extends MTEMultiBlockBaseGui<MTEIronBathFurnace> {
     private static final int[] INCANDESCENCE_COLORS = { 0xFFFF0000, 0xFFFF1700, 0xFFFF4400, 0xFFFF5C00, 0xFFFF6F00,
         0xFFFF7E00, 0xFFFF8B16, 0xFFFF962F, 0xFFFFD6AE, 0xFFFFF1D9, 0xFFFFFDF9, 0xFFDCE8FF, 0xFFC7DBFF };
 
-    private final float contentScale;
+    private final ViewportLayout viewport;
     private final IntSyncValue temperature;
     private final IntSyncValue metal;
     private final IntSyncValue liquid;
@@ -92,9 +87,9 @@ final class IronBathGui extends MTEMultiBlockBaseGui<MTEIronBathFurnace> {
 
     IronBathGui(MTEIronBathFurnace machine) {
         super(machine);
-        contentScale = FMLCommonHandler.instance()
+        viewport = FMLCommonHandler.instance()
             .getEffectiveSide()
-            .isClient() ? clientContentScale() : 1;
+            .isClient() ? clientLayout() : new ViewportLayout(Layout.COMPACT, 1);
         temperature = new IntSyncValue(
             () -> (int) machine.bath()
                 .temperature());
@@ -229,42 +224,69 @@ final class IronBathGui extends MTEMultiBlockBaseGui<MTEIronBathFurnace> {
     public Flow createMainColumn(ModularPanel panel, PanelSyncManager sync) {
         // Reserve space for the title tab and the NEI search field
         panel.topRel(0.5f, NEI_CENTER_OFFSET, 0.5f);
+        Layout layout = viewport.layout();
         Flow content = Flow.column()
             .pos(0, 0)
-            .size(PANEL_WIDTH, PANEL_HEIGHT)
+            .size(layout.panelWidth(), layout.panelHeight())
             .paddingLeft(4)
             .paddingRight(4)
             .paddingTop(VERTICAL_PADDING)
             .paddingBottom(VERTICAL_PADDING)
-            .child(createBathDisplay())
+            .child(createBathDisplay(layout))
             .child(createBathControls(panel, sync))
-            .child(createBathDetails(panel, sync));
+            .child(createBathDetails(panel, sync, layout));
         return Flow.column()
-            .child(new TransformWidget(content).scale(contentScale, contentScale));
+            .child(new TransformWidget(content).scale(viewport.scale(), viewport.scale()));
     }
 
     @SideOnly(Side.CLIENT)
-    private static float clientContentScale() {
+    private static ViewportLayout clientLayout() {
         Minecraft client = Minecraft.getMinecraft();
-        return client.gameSettings.guiScale == 1 && client.displayWidth >= 320 && client.displayHeight >= 260
-            ? SMALL_GUI_SCALE
-            : 1;
+        ScaledResolution screen = new ScaledResolution(client, client.displayWidth, client.displayHeight);
+        int width = screen.getScaledWidth();
+        int height = screen.getScaledHeight();
+        boolean small = client.gameSettings.guiScale == 1;
+        Layout layout = Layout.FULL.fits(width, height, 1) ? Layout.FULL : Layout.COMPACT;
+        float scale = small && layout.fits(width, height, SMALL_GUI_SCALE) ? SMALL_GUI_SCALE : 1;
+        return new ViewportLayout(layout, scale);
     }
+
+    private enum Layout {
+
+        COMPACT(248, 112),
+        FULL(278, 174);
+
+        private final int contentWidth;
+        private final int displayHeight;
+
+        Layout(int contentWidth, int displayHeight) {
+            this.contentWidth = contentWidth;
+            this.displayHeight = displayHeight;
+        }
+
+        private int panelWidth() {
+            return contentWidth + 8;
+        }
+
+        private int panelHeight() {
+            return displayHeight + DETAILS_HEIGHT + CONTROLS_HEIGHT + 2 * VERTICAL_PADDING;
+        }
+
+        private boolean fits(int width, int height, float scale) {
+            return Math.ceil(panelWidth() * scale) + 2 * NEI_CENTER_OFFSET <= width
+                && Math.ceil(panelHeight() * scale) + 2 * (NEI_EDGE_CLEARANCE + NEI_CENTER_OFFSET) <= height;
+        }
+    }
+
+    @Desugar
+    private record ViewportLayout(Layout layout, float scale) {}
 
     private Flow createBathControls(ModularPanel panel, PanelSyncManager sync) {
         return Flow.row()
             .fullWidth()
             .height(CONTROLS_HEIGHT)
             .child(
-                new ItemSlot().slot(new ModularSlot(multiblock.inventoryHandler, multiblock.getControllerSlotIndex()) {
-
-                    @Override
-                    public int getSlotStackLimit() {
-                        return multiblock.getInventoryStackLimit();
-                    }
-                }.singletonSlotGroup()))
-            .child(
-                label(() -> text("melting_items", meltingItems.getValue()), 24, 3, 108)
+                label(() -> text("melting_items", meltingItems.getValue()), 4, 3, 128)
                     .addTooltipLine(IKey.lang("gtnhextranerf.iron_bath.gui.charge_help")))
             .child(chargePageButton(-1).pos(134, 1))
             .child(chargePageButton(1).pos(150, 1))
@@ -304,16 +326,17 @@ final class IronBathGui extends MTEMultiBlockBaseGui<MTEIronBathFurnace> {
             });
     }
 
-    private ParentWidget<?> createBathDetails(ModularPanel panel, PanelSyncManager sync) {
-        return new ParentWidget<>().size(CONTENT_WIDTH, DETAILS_HEIGHT)
-            .child(createChargeGroups().setEnabledIf(widget -> !showsDiagnostics()))
+    private ParentWidget<?> createBathDetails(ModularPanel panel, PanelSyncManager sync, Layout layout) {
+        return new ParentWidget<>().size(layout.contentWidth, DETAILS_HEIGHT)
+            .child(createChargeGroups(layout).setEnabledIf(widget -> !showsDiagnostics()))
             .child(
                 createTerminalTextWidget(sync, panel).pos(4, 0)
-                    .size(222, DETAILS_HEIGHT)
+                    .size(layout.contentWidth - 26, DETAILS_HEIGHT)
                     .setEnabledIf(widget -> showsDiagnostics()))
             .child(
-                new ParentWidget<>().pos(228, DETAILS_HEIGHT - 21)
-                    .size(18, 21)
+                new ParentWidget<>().size(18, 22)
+                    .right(2)
+                    .bottom(3)
                     .child(createMaintIssueHoverableTerminal(sync)));
     }
 
@@ -323,13 +346,14 @@ final class IronBathGui extends MTEMultiBlockBaseGui<MTEIronBathFurnace> {
                 .getDisplayString());
     }
 
-    private ParentWidget<?> createChargeGroups() {
+    private ParentWidget<?> createChargeGroups(Layout layout) {
         ParentWidget<?> groups = new ParentWidget<>().name("bathChargeGroups")
-            .size(CONTENT_WIDTH, CHARGE_GROUPS_HEIGHT);
+            .size(layout.contentWidth, CHARGE_GROUPS_HEIGHT);
+        int spacing = layout == Layout.FULL ? 22 : 20;
         for (int index = 0; index < CHARGE_GROUPS_PER_PAGE; index++) {
             final int slot = index;
             groups.child(
-                new ParentWidget<>().pos(4 + slot * 20, 0)
+                new ParentWidget<>().pos(4 + slot * spacing, 0)
                     .size(20, 21)
                     .setEnabledIf(widget -> displayedGroup(slot) != null)
                     .child(new ItemDisplayWidget() {
@@ -377,18 +401,27 @@ final class IronBathGui extends MTEMultiBlockBaseGui<MTEIronBathFurnace> {
         return groups;
     }
 
-    private ParentWidget<?> createBathDisplay() {
+    private ParentWidget<?> createBathDisplay(Layout layout) {
         FluidStack[] fluids = new FluidStack[IronProduct.values().length];
         for (IronProduct type : IronProduct.values()) {
             fluids[type.ordinal()] = IronBathFurnace.material(type)
                 .getMolten(1);
         }
-        return new ParentWidget<>().size(CONTENT_WIDTH, BATH_DISPLAY_HEIGHT)
-            .child(label(() -> text("vessel"), 4, 0, 84))
+        boolean full = layout == Layout.FULL;
+        int headerY = full ? 2 : 0;
+        int tankY = full ? 17 : 13;
+        int tankWidth = full ? 96 : 84;
+        int tankHeight = full ? 140 : 85;
+        int readoutX = full ? 112 : 94;
+        int readoutWidth = full ? 164 : 150;
+        int statsY = full ? 80 : 60;
+        int statSpacing = full ? 16 : 10;
+        return new ParentWidget<>().size(layout.contentWidth, layout.displayHeight)
+            .child(label(() -> text("vessel"), 4, headerY, tankWidth))
             .child(
                 new IDrawable.DrawableWidget(tank(fluids)).name("bathContents")
-                    .pos(4, 13)
-                    .size(84, 85)
+                    .pos(4, tankY)
+                    .size(tankWidth, tankHeight)
                     .tooltipAutoUpdate(true)
                     .tooltipDynamic(
                         t -> t.add(layerDescription(productName(), metal.getValue(), liquid.getValue()))
@@ -406,8 +439,8 @@ final class IronBathGui extends MTEMultiBlockBaseGui<MTEIronBathFurnace> {
                         GTUtility.formatShortenedLong(metal.getValue() + slag.getValue()),
                         GTUtility.formatShortenedLong(capacity.getValue())),
                     4,
-                    98,
-                    84).scale(0.85f)
+                    tankY + tankHeight + (full ? 3 : 0),
+                    tankWidth).scale(0.85f)
                         .tooltipAutoUpdate(true)
                         .tooltipDynamic(
                             t -> t.add(text("fill", metal.getValue() + slag.getValue(), capacity.getValue()))
@@ -416,37 +449,51 @@ final class IronBathGui extends MTEMultiBlockBaseGui<MTEIronBathFurnace> {
             .child(
                 label(
                     () -> text("temperature_range", temperature.getValue(), maximumTemperature.getValue()),
-                    94,
-                    0,
-                    150).scale(0.85f))
+                    readoutX,
+                    headerY,
+                    readoutWidth).scale(0.85f))
             .child(
-                new IDrawable.DrawableWidget(temperatureGauge()).pos(94, 13)
-                    .size(150, 8)
+                new IDrawable.DrawableWidget(temperatureGauge()).pos(readoutX, tankY)
+                    .size(full ? 160 : 150, full ? 7 : 8)
                     .tooltipAutoUpdate(true)
                     .tooltipDynamic(
                         t -> t.add(text("temperature", temperature.getValue()))
                             .newLine()
                             .add(text("maximum_temperature", maximumTemperature.getValue()))))
-            .child(label(() -> text("ratio", String.format(Locale.ROOT, "%.3f%%", carbonContent())), 94, 24, 150))
+            .child(
+                label(
+                    () -> text("ratio", String.format(Locale.ROOT, "%.3f%%", carbonContent())),
+                    readoutX,
+                    full ? 34 : 24,
+                    readoutWidth))
             .child(
                 new IDrawable.DrawableWidget(compositionGauge()).name("bathComposition")
-                    .pos(94, 37)
-                    .size(150, 22))
-            .child(label(() -> text("carbon", Math.round(carbon.getValue() / 1000.0)), 94, 60, 150))
-            .child(label(() -> text("impurities", impurities.getValue()), 94, 70, 150))
-            .child(label(() -> text("calcite", calcite.getValue(), calciteMaximum.getValue()), 94, 80, 150))
-            .child(label(() -> text("slag", slag.getValue()), 94, 90, 150))
-            .child(label(() -> text("power", power.getValue()), 94, 100, 150));
+                    .pos(readoutX, full ? 48 : 37)
+                    .size(full ? 160 : 150, full ? 25 : 22))
+            .child(label(() -> text("carbon", Math.round(carbon.getValue() / 1000.0)), readoutX, statsY, readoutWidth))
+            .child(label(() -> text("impurities", impurities.getValue()), readoutX, statsY + statSpacing, readoutWidth))
+            .child(
+                label(
+                    () -> text("calcite", calcite.getValue(), calciteMaximum.getValue()),
+                    readoutX,
+                    statsY + 2 * statSpacing,
+                    readoutWidth))
+            .child(label(() -> text("slag", slag.getValue()), readoutX, statsY + 3 * statSpacing, readoutWidth))
+            .child(label(() -> text("power", power.getValue()), readoutX, statsY + 4 * statSpacing, readoutWidth));
     }
 
     private IDrawable tank(FluidStack[] fluids) {
         return (context, x, y, width, height, theme) -> {
             GuiDraw.drawRect(x, y, width, height, 0xFF494A4D);
-            GuiDraw.drawRect(x + 2, y + 2, width - 4, height - 4, 0xFFAAA7A0);
-            GuiDraw.drawRect(x + 5, y + 3, width - 10, height - 9, 0xFF22252A);
-            int innerHeight = height - 9;
+            GuiDraw.drawRect(x + 2, y + 2, width - 4, height - 4, 0xFF626C79);
+            int rim = 5;
+            int innerLeft = x + rim;
+            int innerTop = y + rim;
+            int innerWidth = width - 2 * rim;
+            int innerHeight = height - 2 * rim;
+            GuiDraw.drawRect(innerLeft, innerTop, innerWidth, innerHeight, 0xFF22252A);
             float heightPerMb = innerHeight / (float) Math.max(1, capacity.getValue());
-            float bottom = y + height - 6;
+            float bottom = innerTop + innerHeight;
             float layerTop = bottom;
             float warmth = Math.max(0, Math.min(1, (temperature.getValue() - 900) / 1300f));
             float pulse = 0.92f + 0.08f * (float) Math.sin(System.nanoTime() / 800_000_000.0);
@@ -470,9 +517,9 @@ final class IronBathGui extends MTEMultiBlockBaseGui<MTEIronBathFurnace> {
                     // atlas.
                     GuiDraw.drawTiledTexture(
                         IronBathFurnace.FROZEN_BATH_TEXTURE,
-                        x + 5,
+                        innerLeft,
                         layerTop,
-                        width - 10,
+                        innerWidth,
                         solidHeight,
                         0,
                         0,
@@ -482,33 +529,39 @@ final class IronBathGui extends MTEMultiBlockBaseGui<MTEIronBathFurnace> {
                         16,
                         context.getCurrentDrawingZ());
                     GlStateManager.color(1, 1, 1, 1);
-                    GuiDraw.drawRect(x + 5, layerTop, width - 10, solidHeight, glowColor(warmth, 0.45f, slagLayer));
+                    GuiDraw.drawRect(innerLeft, layerTop, innerWidth, solidHeight, glowColor(warmth, 0.45f, slagLayer));
                 }
                 if (liquidHeight > 0) {
                     GuiDraw.drawFluidTexture(
                         fluid,
-                        x + 5,
+                        innerLeft,
                         layerTop + solidHeight,
-                        width - 10,
+                        innerWidth,
                         liquidHeight,
                         context.getCurrentDrawingZ());
                     GuiDraw.drawRect(
-                        x + 5,
+                        innerLeft,
                         layerTop + solidHeight,
-                        width - 10,
+                        innerWidth,
                         liquidHeight,
                         glowColor(warmth, pulse, slagLayer));
                 }
                 if (slagLayer && total > 0) {
                     // The line marks the surface, while the textured layer keeps its true volume.
-                    GuiDraw.drawRect(x + 5, layerTop, width - 10, 1, Color.lerp(0xFFB59C71, 0xFFFFD58A, warmth));
+                    GuiDraw.drawRect(innerLeft, layerTop, innerWidth, 1, Color.lerp(0xFFB59C71, 0xFFFFD58A, warmth));
                 }
             }
             for (int tick = 1; tick < 5; tick++) {
-                GuiDraw.drawRect(x + 5, bottom - innerHeight * tick / 5f, 5, 1, 0xFFBDBBB4);
-                GuiDraw.drawRect(x + width - 10, bottom - innerHeight * tick / 5f, 5, 1, 0xFFBDBBB4);
+                float markY = bottom - innerHeight * tick / 5f;
+                drawTankLevelMark(innerLeft, markY);
+                drawTankLevelMark(innerLeft + innerWidth - 5, markY);
             }
         };
+    }
+
+    private static void drawTankLevelMark(int x, float y) {
+        GuiDraw.drawRect(x, y - 1, 5, 1, 0xFFE9EDF3);
+        GuiDraw.drawRect(x, y, 5, 1, 0xFF292C30);
     }
 
     /** Temperature-driven glow over native fluid textures. */
@@ -630,11 +683,15 @@ final class IronBathGui extends MTEMultiBlockBaseGui<MTEIronBathFurnace> {
 
     @Override
     protected int getBasePanelWidth() {
-        return (int) Math.ceil(PANEL_WIDTH * contentScale);
+        return (int) Math.ceil(
+            viewport.layout()
+                .panelWidth() * viewport.scale());
     }
 
     @Override
     protected int getBasePanelHeight() {
-        return (int) Math.ceil(PANEL_HEIGHT * contentScale);
+        return (int) Math.ceil(
+            viewport.layout()
+                .panelHeight() * viewport.scale());
     }
 }
