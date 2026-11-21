@@ -23,7 +23,7 @@ import cpw.mods.fml.common.event.FMLServerStoppedEvent;
     acceptedMinecraftVersions = "[1.7.10]")
 public class GTNHExtraNerf {
 
-    public static final String SUPPORTED_GTNH_VERSION = "2.9.0";
+    public static final String SUPPORTED_GTNH_VERSION = "2.9.1";
 
     public static final String MODID = "gtnhextranerf";
     public static final Logger LOG = LogManager.getLogger(MODID);

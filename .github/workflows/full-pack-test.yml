@@ -39,10 +39,10 @@ jobs:
         run: |
           mkdir -p "$HOME/Downloads"
           curl --fail --location --retry 3 \
-            https://downloads.gtnewhorizons.com/Multi_mc_downloads/GT_New_Horizons_2.9.0_Java_17-26.zip \
-            --output "$HOME/Downloads/GT_New_Horizons_2.9.0_Java_17-26.zip"
-          printf '%s  %s\n' 6d0ebe7e6be18fb74b4fc920916cc5710e142a3f885072d324da05244d398b16 \
-            "$HOME/Downloads/GT_New_Horizons_2.9.0_Java_17-26.zip" | sha256sum --check
+            https://downloads.gtnewhorizons.com/Multi_mc_downloads/GT_New_Horizons_2.9.1_Java_17-26.zip \
+            --output "$HOME/Downloads/GT_New_Horizons_2.9.1_Java_17-26.zip"
+          printf '%s  %s\n' 998875d413ed5d9b16fed9992844b61dcb82e819a15ea56e4eb868f68ea98327 \
+            "$HOME/Downloads/GT_New_Horizons_2.9.1_Java_17-26.zip" | sha256sum --check
       - name: Run main Horizon-QA scenarios
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -119,10 +119,10 @@ jobs:
         run: |
           mkdir -p "$HOME/Downloads"
           curl --fail --location --retry 3 \
-            https://downloads.gtnewhorizons.com/ServerPacks/GT_New_Horizons_2.9.0_Server_Java_17-26.zip \
-            --output "$HOME/Downloads/GT_New_Horizons_2.9.0_Server_Java_17-26.zip"
-          printf '%s  %s\n' 0ab3de26e4d0de80a2df286916570d9af31c3394cb1f44aee8b9aa1f2ead9831 \
-            "$HOME/Downloads/GT_New_Horizons_2.9.0_Server_Java_17-26.zip" | sha256sum --check
+            https://downloads.gtnewhorizons.com/ServerPacks/GT_New_Horizons_2.9.1_Server_Java_17-26.zip \
+            --output "$HOME/Downloads/GT_New_Horizons_2.9.1_Server_Java_17-26.zip"
+          printf '%s  %s\n' df20c7bb5423f1b5170047498d4278ad8342aef7632b0bacf7352e100296cae0 \
+            "$HOME/Downloads/GT_New_Horizons_2.9.1_Server_Java_17-26.zip" | sha256sum --check
 
       - name: Test full-pack server harness
         run: python .github/scripts/test_run_full_pack_server.py

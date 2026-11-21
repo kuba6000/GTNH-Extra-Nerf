@@ -6,9 +6,9 @@
 | --- | --- |
 | Minecraft | 1.7.10 |
 | Forge | 10.13.4.1614 |
-| GT5-Unofficial dependency and target runtime | 5.09.54.261 |
-| NewHorizonsCoreMod dependency and target runtime | 2.9.99 |
-| NotEnoughItems dependency and target runtime | 2.8.171-GTNH |
+| GT5-Unofficial dependency and target runtime | 5.09.54.275 |
+| NewHorizonsCoreMod dependency and target runtime | 2.9.105 |
+| NotEnoughItems dependency and target runtime | 2.8.175-GTNH |
 | EnhancedLootBags development dependency and supported runtime | 1.3.5 |
 
 The build produces Java 8-compatible mod bytecode even though modern JDKs are
@@ -53,8 +53,8 @@ implementation, so a reduced custom installation is not a supported target.
 
 ## Optional behavior
 
-- Chromatic Tooltips 1.0.36-GTNH is compile-only. The full pack's Chromatic
-  Tooltips Compat 1.0.39-GTNH replaces NEI and ModularUI2 item rendering, so the
+- Chromatic Tooltips 1.0.38-GTNH is compile-only. The full pack's Chromatic
+  Tooltips Compat 1.0.42-GTNH replaces NEI and ModularUI2 item rendering, so the
   material image uses a native Chromatic tooltip section. Its listener is loaded
   only on clients with Chromatic present; reduced clients retain the legacy hooks.
 
@@ -100,7 +100,7 @@ mixin selectors.
 Do not bypass the integrity check to force compatibility. Port the affected
 patch and verify a complete GTNH server instead.
 
-The declared supported pack release is **GTNH 2.9.0**, configured by
+The declared supported pack release is **GTNH 2.9.1**, configured by
 `GTNHExtraNerf.SUPPORTED_GTNH_VERSION` and displayed on the startup error screen.
 The audit validates recipe contracts; it does not infer the pack version from
 the individually installed mods.

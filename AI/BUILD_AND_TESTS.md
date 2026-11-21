@@ -21,14 +21,15 @@ toolchains and Java 8-compatible output.
 
 `dependencies.gradle` declares:
 
-- `com.github.GTNewHorizons:GT5-Unofficial:5.09.54.261:dev`;
-- `com.github.GTNewHorizons:NewHorizonsCoreMod:2.9.99:dev`;
+- `com.github.GTNewHorizons:GT5-Unofficial:5.09.54.275:dev`;
+- `com.github.GTNewHorizons:NewHorizonsCoreMod:2.9.105:dev`;
 - EnhancedLootBags `1.3.5:dev` as an implementation dependency;
-- BetterQuesting `3.8.92-GTNH:dev`, Chisel `2.17.34-GTNH:dev`, Extra Utilities `2264384`, Custom Main Menu
-  `1.14.1:dev`, ChromaticTooltips `1.0.36-GTNH:dev` and Thaumic Energistics
-  `1.7.68-GTNH:dev` for compilation;
-- NotEnoughItems `2.8.171-GTNH:dev` for non-published runtime development;
-- JUnit Platform/Jupiter 6.1.3, Objenesis 3.6, fastutil 8.5.19 and LWJGL 2.9.3
+- BetterQuesting `3.8.94-GTNH:dev`, Chisel `2.17.37-GTNH:dev`, Extra Utilities `2264384`, Custom Main Menu
+  `1.14.1:dev`, ChromaticTooltips `1.0.38-GTNH:dev`, OpenComputers `1.12.71-GTNH:dev`,
+  WarpTheory `1.5.11-GTNH:dev` and Thaumic Energistics
+  `1.8.0-GTNH:dev` for compilation;
+- NotEnoughItems `2.8.175-GTNH:dev` for non-published runtime development;
+- JUnit Platform/Jupiter 6.1.3, Objenesis 3.6, fastutil 8.5.19, ForestryMC `4.11.41:dev` and LWJGL 2.9.3
   for tests.
 
 The mod is designed for the complete GTNH environment. Direct class
@@ -318,9 +319,9 @@ run in parallel while one owner schedules Gradle and runtime verification.
 
 ## Supported full-pack release
 
-`runFullPack`, `runFullPackServer` and their HQA runs use the supported GTNH 2.9.0
-distribution archives. Keep `GT_New_Horizons_2.9.0_Java_17-26.zip` and
-`GT_New_Horizons_2.9.0_Server_Java_17-26.zip` in `~/Downloads`, or supply their
+`runFullPack`, `runFullPackServer` and their HQA runs use the supported GTNH 2.9.1
+distribution archives. Keep `GT_New_Horizons_2.9.1_Java_17-26.zip` and
+`GT_New_Horizons_2.9.1_Server_Java_17-26.zip` in `~/Downloads`, or supply their
 paths through `-PfullPackClientArchive` and `-PfullPackServerArchive`.
 The preparation tasks verify each archive's pinned SHA-256 and produce a local
 manifest for the existing full-pack installer. The client preparation places the

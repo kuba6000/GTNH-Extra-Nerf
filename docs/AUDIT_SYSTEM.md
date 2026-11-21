@@ -138,9 +138,9 @@ Dedicated servers retain the fatal FML error behavior. Development validation
 warnings remain nonfatal unless a real fatal error occurs or preview is forced.
 
 The English support message uses the single constant
-`GTNHExtraNerf.SUPPORTED_GTNH_VERSION`, currently `2.9.0`:
+`GTNHExtraNerf.SUPPORTED_GTNH_VERSION`, currently `2.9.1`:
 
-> Extra Nerf is supported only on GT New Horizons (GTNH) 2.9.0.
+> Extra Nerf is supported only on GT New Horizons (GTNH) 2.9.1.
 
 This is the declared support target, not automatic detection of an installed
 pack's release number. The actual failure trigger remains the recipe audit.

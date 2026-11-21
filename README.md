@@ -9,7 +9,7 @@ Liquid Crystal Kevlar production requires Kevlar drones. Naquadah replaces Infin
 
 Steam Input Hatches hold 640,000 L to reduce power failures on high-demand recipes.
 
-Supported pack release: **GT New Horizons 2.9.0** (see
+Supported pack release: **GT New Horizons 2.9.1** (see
 [compatibility](docs/COMPATIBILITY.md)). Release JARs are published on the
 [GitHub releases page](https://github.com/kuba6000/GTNH-Extra-Nerf/releases).
 
