@@ -16,6 +16,7 @@ import gregtech.api.metatileentity.implementations.MTETieredMachineBlock;
 import gregtech.common.tileentities.machines.basic.MTEIceCreamMachine;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.base.MTESteamMultiBlockBase;
 import pl.kuba6000.gtnhextranerf.GTNHExtraNerf;
+import pl.kuba6000.gtnhextranerf.mixins.late.MixinLapotronicLaserHatchAccessor;
 
 /** Server-authoritative processing gate. Basic-machine GUIs sync the missing certificate. */
 public final class MachineProgression {
@@ -37,6 +38,15 @@ public final class MachineProgression {
             tier = maxEnergyHatchTier(controller.mDynamoHatches, tier);
             tier = maxEnergyHatchTier(controller.getExoticEnergyHatches(), tier);
             tier = maxEnergyHatchTier(controller.getExoticDynamoHatches(), tier);
+            if (controller instanceof MixinLapotronicLaserHatchAccessor lasers) {
+                // The Lapotronic Supercapacitor keeps laser hatches outside its exotic hatch lists
+                for (MTEHatch target : lasers.gtnhextranerf$getLaserTargets()) {
+                    if (target.isValid()) tier = Math.max(tier, target.mTier);
+                }
+                for (MTEHatch source : lasers.gtnhextranerf$getLaserSources()) {
+                    if (source.isValid()) tier = Math.max(tier, source.mTier);
+                }
+            }
             return ProgressionTier.forMachine(tier, false);
         }
         if (EnergyHatchCertification.isEnergyHatch(machine))

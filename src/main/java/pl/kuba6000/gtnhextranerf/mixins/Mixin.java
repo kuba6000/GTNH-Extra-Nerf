@@ -125,6 +125,7 @@ public enum Mixin implements IMixins {
         .addCommonMixins(
             "MixinProgressionTickGate",
             "MixinMultiblockCertification",
+            "MixinLapotronicLaserHatchAccessor",
             "MixinWirelessHatchCertification",
             "MixinWirelessCoverCertification",
             "MixinProgressionMachineStatus",
