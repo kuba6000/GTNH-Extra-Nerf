@@ -160,6 +160,11 @@ public enum Mixin implements IMixins {
         .addRequiredMod(TargetedMod.BETTER_QUESTING)
         .setPhase(LATE)),
 
+    PartyQuestCompletion(new MixinBuilder().addCommonMixins("MixinRewardQuestCompletion")
+        .addRequiredMod(TargetedMod.BETTER_QUESTING)
+        .addRequiredMod(TargetedMod.BQ_STANDARD)
+        .setPhase(LATE)),
+
     SmelteryQuestRewards(new MixinBuilder().addCommonMixins("MixinQuestInstance")
         .addRequiredMod(TargetedMod.BETTER_QUESTING)
         .setPhase(LATE)),

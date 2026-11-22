@@ -24,6 +24,7 @@ import betterquesting.questing.QuestDatabase;
 import betterquesting.questing.party.PartyManager;
 import betterquesting.storage.QuestSettings;
 import bq_standard.rewards.RewardItem;
+import bq_standard.rewards.RewardQuestCompletion;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import drethic.questbook.config.QBConfig;
 
@@ -41,6 +42,7 @@ final class PartyRewardIntegrationTests {
         Files.createDirectories(config.getParent());
         int partyId = PartyManager.INSTANCE.nextID();
         UUID questId = UUID.randomUUID();
+        UUID targetQuestId = UUID.randomUUID();
         try {
             QuestSettings.INSTANCE.setProperty(NativeProps.PARTY_ENABLE, true);
             EntityPlayerMP first = player(world, "RewardFirst");
@@ -56,6 +58,7 @@ final class PartyRewardIntegrationTests {
                     "general {\n B:syncQuestRewards=false\n B:spawnWithBook=false\n}\n"
                         .getBytes(StandardCharsets.UTF_8));
                 QBConfig.init(new FMLPreInitializationEvent(null, directory.toFile()));
+                IQuest targetQuest = QuestDatabase.INSTANCE.createNew(targetQuestId);
                 IQuest quest = QuestDatabase.INSTANCE.createNew(questId);
                 quest.setProperty(NativeProps.REPEAT_TIME, -1);
                 RewardItem reward = new RewardItem();
@@ -63,6 +66,11 @@ final class PartyRewardIntegrationTests {
                 reward.items.add(new BigItemStack(new ItemStack(Items.diamond)));
                 quest.getRewards()
                     .add(0, reward);
+                RewardQuestCompletion completionReward = new RewardQuestCompletion();
+                completionReward.questNum = targetQuestId;
+                completionReward.isSilent = true;
+                quest.getRewards()
+                    .add(1, completionReward);
                 for (UUID member : party.getMembers()) quest.setComplete(member, System.currentTimeMillis());
                 check(quest.canClaim(first, false), "First player could not claim a completed quest");
                 check(quest.canClaim(second, false), "Second player was blocked before any claim");
@@ -71,6 +79,9 @@ final class PartyRewardIntegrationTests {
                     !quest.canClaim(second, false),
                     "Party member can claim a second copy after config load " + attempt);
                 check(quest.hasClaimed(absent), "Absent party member was not marked claimed");
+                check(targetQuest.isComplete(first.getUniqueID()), "Claimant did not complete target quest");
+                check(targetQuest.isComplete(second.getUniqueID()), "Party member did not complete target quest");
+                check(targetQuest.isComplete(absent), "Absent party member did not complete target quest");
                 check(first.inventory.hasItem(Items.diamond), "Claimant did not receive the item");
                 check(!second.inventory.hasItem(Items.diamond), "Non-claimant received an extra reward");
                 check(!QBConfig.spawnWithBook, "Unrelated config option changed");
@@ -81,9 +92,11 @@ final class PartyRewardIntegrationTests {
                         .getBoolean(),
                     "Mixin overwrote the config file");
                 first.inventory.clearInventory(Items.diamond, -1);
+                QuestDatabase.INSTANCE.remove(targetQuestId);
             }
         } finally {
             QuestDatabase.INSTANCE.remove(questId);
+            QuestDatabase.INSTANCE.remove(targetQuestId);
             PartyManager.INSTANCE.removeID(partyId);
             QuestSettings.INSTANCE.setProperty(NativeProps.PARTY_ENABLE, savedParties);
             QBConfig.qbconfig = savedConfig;
