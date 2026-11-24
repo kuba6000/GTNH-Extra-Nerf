@@ -62,7 +62,6 @@ import gregtech.api.util.GTOreDictUnificator;
 import gregtech.api.util.GTRecipe;
 import gregtech.api.util.GTUtility;
 import gregtech.api.util.MultiblockTooltipBuilder;
-import gregtech.api.util.OverclockCalculator;
 import gregtech.api.util.shutdown.ShutDownReason;
 import gregtech.api.util.shutdown.SimpleShutDownReason;
 import mods.railcraft.common.blocks.machine.alpha.EnumMachineAlpha;
@@ -366,27 +365,6 @@ public final class MTEIndustrialBrainrotter extends MTEExtendedPowerMultiBlockBa
                     1 + 2 * Math.max(0, GTUtility.getTier(getAverageInputVoltage()) - GTUtility.getTier(recipe.mEUt)));
                 return CheckRecipeResultRegistry.SUCCESSFUL;
             }
-
-            @Override
-            protected OverclockCalculator createOverclockCalculator(GTRecipe recipe) {
-                return new OverclockCalculator() {
-
-                    @Override
-                    public double calculateMultiplierUnderOneTick() {
-                        // Sub-tick optimizations must not multiply the configured parallel limit.
-                        return 1;
-                    }
-                }.setRecipeEUt(recipe.mEUt)
-                    .setEUt(availableVoltage)
-                    .setAmperage(availableAmperage)
-                    .setDuration(recipe.mDuration)
-                    .setDurationModifier(speedBoost)
-                    .setEUtDiscount(euModifier)
-                    .setMaxTierSkips(maxTierSkips)
-                    .setAmperageOC(true)
-                    .setDurationDecreasePerOC(overClockTimeReduction)
-                    .setEUtIncreasePerOC(overClockPowerIncrease);
-            }
         }.setOverclock(3, 4)
             .noRecipeCaching();
     }
@@ -519,6 +497,7 @@ public final class MTEIndustrialBrainrotter extends MTEExtendedPowerMultiBlockBa
             .addMachineType(StatCollector.translateToLocal("gtnhextranerf.brainrotter.type"))
             .addInfo(StatCollector.translateToLocal("gtnhextranerf.brainrotter.power"))
             .addInfo(StatCollector.translateToLocal("gtnhextranerf.brainrotter.parallel"))
+            .addInfo(StatCollector.translateToLocal("gtnhextranerf.brainrotter.subtick"))
             .beginStructureBlock(5, 5, 3, true)
             .addController(StatCollector.translateToLocal("gtnhextranerf.brainrotter.structure.controller"))
             .addCasing("36", StatCollector.translateToLocal("GT5U.structure.tiered_glass"), false)

@@ -74,16 +74,27 @@ public final class NerfMaterials {
     }
 
     public static void registerBlocks() {
-        new BlockMetal(
+        registerMetalBlock(
             "raw_tungstensteel_block",
             new Materials[] { rawTungstenSteel() },
-            OrePrefixes.block,
-            new IIconContainer[] { Textures.BlockIcons.BLOCK_STEEL }) {
+            Textures.BlockIcons.BLOCK_STEEL);
+        // Keep material order fixed because these indices are saved as block metadata
+        registerMetalBlock(
+            "iron_bath_metal_block",
+            new Materials[] { IronBathMaterials.wroughtIron(), IronBathMaterials.overcarburizedIron() },
+            Textures.BlockIcons.BLOCK_CASTIRON,
+            Textures.BlockIcons.BLOCK_DARKIRON);
+    }
+
+    private static void registerMetalBlock(String name, Materials[] materials, IIconContainer... icons) {
+        new BlockMetal(name, materials, OrePrefixes.block, icons) {
 
             @Override
             @SideOnly(Side.CLIENT)
             public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> stacks) {
-                stacks.add(new ItemStack(item, 1, 0));
+                for (int metadata = 0; metadata < materials.length; metadata++) {
+                    stacks.add(new ItemStack(item, 1, metadata));
+                }
             }
         };
     }

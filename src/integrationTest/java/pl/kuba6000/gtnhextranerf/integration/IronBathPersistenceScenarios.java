@@ -111,6 +111,45 @@ public final class IronBathPersistenceScenarios {
     }
 
     @GameTest(template = "gtnhextranerftests:native_fixture")
+    public static void breakingControllerDropsFreshItem(GameTestHelper helper) {
+        WorldServer world = helper.getWorld();
+        FixtureWorld.loadAround(world, X, Z);
+        helper.afterTest(() -> world.setBlockToAir(X, Y, Z));
+        FakePlayer player = FakePlayerFactory.getMinecraft(world);
+        ItemStack original = IronBathFurnace.controller();
+        BaseMetaTileEntity controller = place(world, player, original, 0, 0, 0);
+        MTEIronBathFurnace machine = (MTEIronBathFurnace) controller.getMetaTileEntity();
+        NBTTagCompound initial = machineTag(machine);
+        NBTTagCompound seed = (NBTTagCompound) initial.copy();
+        NBTTagCompound bath = seed.getCompoundTag("IronBath");
+        bath.setInteger("Metal", 1440);
+        bath.setInteger("Slag", 32);
+        bath.setDouble("Carbon", 10);
+        bath.setInteger("Calcite", 10);
+        IronBath contents = new IronBath(0);
+        contents.load(bath);
+        bath.setDouble("Heat", contents.heatDemand(IronBath.WORKING_TEMPERATURE));
+        machine.loadNBTData(seed);
+        controller.setColorization((byte) 5);
+        check(state(machine).liquidMetalMb() == 1440, "Pickup fixture is not full of molten metal");
+        check(controller.getColorization() == 5, "Pickup fixture is not painted");
+        check(bath.equals(machineTag(machine).getCompoundTag("IronBath")), "World save lost loaded bath state");
+
+        var drops = world.getBlock(X, Y, Z)
+            .getDrops(world, X, Y, Z, world.getBlockMetadata(X, Y, Z), 0);
+        check(
+            drops.size() == 1 && drops.get(0)
+                .isItemEqual(original),
+            "Wrong controller drop");
+        ItemStack dropped = drops.get(0);
+        check(!dropped.hasTagCompound(), "Broken controller retained item NBT");
+        BaseMetaTileEntity replacement = place(world, player, dropped, 0, 0, 0);
+        NBTTagCompound replaced = machineTag((MTEIronBathFurnace) replacement.getMetaTileEntity());
+        check(initial.equals(replaced), "Replaced controller is not fresh");
+        helper.succeed();
+    }
+
+    @GameTest(template = "gtnhextranerftests:native_fixture")
     public static void tappingHatchRespectsFluidLockWithEmptyBuffer(GameTestHelper helper) {
         WorldServer world = helper.getWorld();
         FixtureWorld.loadAround(world, X, Z);

@@ -190,13 +190,12 @@ positions sharing the same voltage tier. Energy hatches may not exceed that tier
 Laser receivers require at least UEV glass, with the same upper bound on hatch tier.
 Normal and exotic energy inputs use GT's native energy lists and draining.
 
-Each overclock multiplies EU/t by four and divides duration by three. The parallel
-limit is `1 + 2 * max(0, energyVoltageTier - recipeVoltageTier)`, calculated for
-the matched recipe, so future recipes do not inherit a fixed EV baseline. For an
-EV recipe the limits are EV=1, IV=3, LuV=5, UEV=13 and UXV=19. GT's sub-tick
-parallel multiplier is disabled to keep this limit; batch mode remains sequential
-batching. Amperage overclocking uses available power to add overclocks beyond the
-input voltage tier without increasing the voltage-based parallel limit.
+Each overclock multiplies EU/t by four and divides duration by three. The base
+parallel is one, plus two for each voltage tier above the matched recipe. For an
+EV recipe, that starts at 1 on EV, 3 on IV and 5 on LuV. When available power
+would shorten a recipe below one tick, GregTech adds parallel while the cycle
+stays at one tick. Amperage counts toward overclocking, and batch mode still runs
+batches sequentially.
 
 Controller and hatch backgrounds share a pixel wood casing. The controller has
 its own CRT/knob/lamp front, with separate active and emissive layers. Casing

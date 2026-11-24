@@ -51,6 +51,8 @@ import pl.kuba6000.gtnhextranerf.machines.MTEIndustrialBrainrotter;
 import pl.kuba6000.gtnhextranerf.materials.NerfMaterials;
 import pl.kuba6000.gtnhextranerf.mixins.early.MixinCraftingManagerAccessor;
 import pl.kuba6000.gtnhextranerf.mixins.early.MixinRecipeAccessor;
+import pl.kuba6000.gtnhextranerf.progression.MachineProgression;
+import pl.kuba6000.gtnhextranerf.progression.ProgressionTier;
 import pl.kuba6000.gtnhextranerf.recipes.machine.RecipeMatch;
 import tectech.recipe.TecTechRecipeMaps;
 import tectech.thing.CustomItemList;
@@ -517,7 +519,15 @@ public final class BrainrotterIntegrationTests {
             "FoTG molten must refine into finished molten in Brainrotter");
     }
 
-    private static void verifyPower(WorldServer world) {
+    @GameTest(template = "gtnhextranerftests:native_fixture", timeoutTicks = 1200)
+    public static void subTickOverclocksIncreaseParallel(GameTestHelper helper) {
+        for (ProgressionTier tier : ProgressionTier.values()) MachineProgression.certify(helper.getWorld(), tier);
+        int uxvParallel = verifyPower(helper.getWorld());
+        helper.recordDiagnostic("UXV completed " + uxvParallel + " recipes in one tick");
+        helper.succeed();
+    }
+
+    private static int verifyPower(WorldServer world) {
         FakePlayer player = FakePlayerFactory.get(world, new GameProfile(UUID.randomUUID(), "BrainrotterPower"));
         BaseMetaTileEntity controller = place(world, player, Brainrotter.controller(), 56, 240, 8);
         controller.setFrontFacing(ForgeDirection.NORTH);
@@ -547,7 +557,9 @@ public final class BrainrotterIntegrationTests {
             ItemList.Hatch_Energy_LuV.get(1), CustomItemList.eM_energyTunnel1_UEV.get(1),
             CustomItemList.eM_energyTunnel1_UXV.get(1) };
         int[] tiers = { VoltageIndex.EV, VoltageIndex.IV, VoltageIndex.LuV, VoltageIndex.UEV, VoltageIndex.UXV };
-        int[] limits = { 1, 3, 5, 13, 19 };
+        int[] baseParallels = { 1, 3, 5, 13, 19 };
+        int uxvParallel = 0;
+        GTRecipe recipe = find(Brainrotter.RECIPES, new ItemStack[] { raw, Brainrotter.compilation(1), pulp });
         for (int i = 0; i < power.length; i++) {
             energy = replace(world, player, power[i], floor.get(2));
             glass(world, shell, tiers[i]);
@@ -556,21 +568,33 @@ public final class BrainrotterIntegrationTests {
                 "valid glass/energy combination did not form at " + tiers[i]);
             machine.fixAllIssues();
             for (int slot = 0; slot < input.getSizeInventory(); slot++) input.setInventorySlotContents(slot, null);
-            input.setInventorySlotContents(0, GTUtility.copyAmount(32, raw));
-            input.setInventorySlotContents(1, Brainrotter.compilation(1));
-            input.setInventorySlotContents(2, pulp.copy());
+            input.setInventorySlotContents(0, GTUtility.copyAmount(64, raw));
+            input.setInventorySlotContents(1, GTUtility.copyAmount(64, raw));
+            input.setInventorySlotContents(2, Brainrotter.compilation(1));
+            input.setInventorySlotContents(3, pulp.copy());
+            input.setInventorySlotContents(4, pulp.copy());
             controller.enableWorking();
             BaseMetaTileEntity[] tiles = { inputTile, outputTile, energy, maintenance, fluidOutput, controller };
             start(tiles, machine);
-            check(
-                32 - items(input, raw) == limits[i],
-                "voltage-based parallel limit was not respected at " + tiers[i]
-                    + ": consumed "
-                    + (32 - items(input, raw)));
+            int parallel = 128 - items(input, raw);
+            if (tiers[i] < VoltageIndex.UEV) {
+                check(parallel == baseParallels[i], "Wrong base parallel at " + tiers[i] + ": " + parallel);
+            }
+            if (tiers[i] == VoltageIndex.UXV) {
+                check(machine.mMaxProgresstime == 1, "UXV did not reach the one-tick cycle");
+                check(parallel > baseParallels[i], "Sub-tick overclocks did not increase UXV parallel: " + parallel);
+                uxvParallel = parallel;
+            }
             check(
                 machine.getPedestal()
                     .getStackInSlot(0).stackSize == 1,
                 "parallel cycle displayed multiple ingots");
+            if (tiers[i] == VoltageIndex.UXV) {
+                tick(tiles, 1);
+                check(outputs(output) == parallel, "UXV did not output its full sub-tick batch");
+                for (int slot = 0; slot < output.getSizeInventory(); slot++)
+                    output.setInventorySlotContents(slot, null);
+            }
             machine.stopMachine(ShutDownReasonRegistry.NONE);
         }
         energy = replace(world, player, CustomItemList.eM_energyTunnel1_UV.get(1), floor.get(2));
@@ -586,7 +610,6 @@ public final class BrainrotterIntegrationTests {
         controller.enableWorking();
         BaseMetaTileEntity[] tiles = { inputTile, outputTile, energy, maintenance, fluidOutput, controller };
         start(tiles, machine);
-        GTRecipe recipe = find(Brainrotter.RECIPES, new ItemStack[] { raw, Brainrotter.compilation(1), pulp });
         check(
             machine.mMaxProgresstime * 3 <= recipe.mDuration && machine.mMaxProgresstime * 3 >= recipe.mDuration - 3,
             "one overclock did not divide duration by three");
@@ -594,6 +617,7 @@ public final class BrainrotterIntegrationTests {
         tick(tiles, machine.mMaxProgresstime + 1);
         check(outputs(output) == 1, "overclocked recipe did not complete on native ticks");
         world.setBlockToAir(controller.xCoord, controller.yCoord, controller.zCoord);
+        return uxvParallel;
     }
 
     private static void glass(WorldServer world, List<int[]> positions, int tier) {
@@ -679,7 +703,7 @@ public final class BrainrotterIntegrationTests {
         }
         throw new AssertionError(
             "Brainrotter did not start processing: " + machine.getCheckRecipeResult()
-                .getID());
+                .getDisplayString());
     }
 
     private static int outputs(MTEHatchOutputBus bus) {

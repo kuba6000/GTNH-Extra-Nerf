@@ -104,7 +104,7 @@ public enum AuditScope implements AuditDefinition {
         .added(5)
         .build()),
     ADD_IRON_BATH_RECIPES(AuditExpectation.exact()
-        .added(24)
+        .added(36)
         .modified(3)
         .build()),
     MODIFY_IRON_BATH_ALLOY_MIXTURES(modified(10)),

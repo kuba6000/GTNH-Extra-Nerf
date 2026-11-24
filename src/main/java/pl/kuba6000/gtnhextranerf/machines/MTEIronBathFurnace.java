@@ -582,19 +582,16 @@ public final class MTEIronBathFurnace extends MTEExtendedPowerMultiBlockBase<MTE
     @Override
     public void saveNBTData(NBTTagCompound tag) {
         super.saveNBTData(tag);
-        saveBathState(tag);
+        NBTTagCompound state = new NBTTagCompound();
+        bath.save(state);
+        tag.setTag("IronBath", state);
     }
 
     @Override
     public void setItemNBT(NBTTagCompound tag) {
-        super.setItemNBT(tag);
-        saveBathState(tag);
-    }
-
-    private void saveBathState(NBTTagCompound tag) {
-        NBTTagCompound state = new NBTTagCompound();
-        bath.save(state);
-        tag.setTag("IronBath", state);
+        // GregTech writes covers, paint and upgrades before this drop hook
+        tag.func_150296_c()
+            .clear();
     }
 
     @Override

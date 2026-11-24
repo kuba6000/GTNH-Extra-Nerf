@@ -207,6 +207,18 @@ public final class IronBathFurnace implements RecipeModule {
         preserveCastIron(recipes, OrePrefixes.ingot, ItemList.Shape_Mold_Ingot, 144, 32, 7);
         preserveCastIron(recipes, OrePrefixes.nugget, ItemList.Shape_Mold_Nugget, 16, 16, 4);
         preserveCastIron(recipes, OrePrefixes.block, ItemList.Shape_Mold_Block, 1296, 288, 7);
+        addCastIronCasting(recipes, OrePrefixes.plate, ItemList.Shape_Mold_Plate);
+        addCastIronCasting(recipes, OrePrefixes.itemCasing, ItemList.Shape_Mold_Casing);
+        addCastIronCasting(recipes, OrePrefixes.gearGt, ItemList.Shape_Mold_Gear);
+        addCastIronCasting(recipes, OrePrefixes.gearGtSmall, ItemList.Shape_Mold_Gear_Small);
+        addCastIronCasting(recipes, OrePrefixes.rotor, ItemList.Shape_Mold_Rotor);
+        addCastIronCasting(recipes, OrePrefixes.ring, ItemList.Shape_Mold_Ring);
+        addCastIronCasting(recipes, OrePrefixes.screw, ItemList.Shape_Mold_Screw);
+        addCastIronCasting(recipes, OrePrefixes.stick, ItemList.Shape_Mold_Rod);
+        addCastIronCasting(recipes, OrePrefixes.bolt, ItemList.Shape_Mold_Bolt);
+        addCastIronCasting(recipes, OrePrefixes.round, ItemList.Shape_Mold_Round);
+        addCastIronCasting(recipes, OrePrefixes.stickLong, ItemList.Shape_Mold_Rod_Long);
+        addCastIronCasting(recipes, OrePrefixes.turbineBlade, ItemList.Shape_Mold_Turbine_Blade);
         cast(
             recipes,
             IronBathMaterials.slag(),
@@ -300,6 +312,41 @@ public final class IronBathFurnace implements RecipeModule {
                 RecipeChange.builder()
                     .replaceItemOutput(iron, part(form, Materials.CastIron, 1))
                     .build());
+    }
+
+    private static void addCastIronCasting(RecipeContext recipes, OrePrefixes form, ItemList mold) {
+        int amount = (int) (form.getMaterialAmount() * GTRecipeBuilder.INGOTS / GTValues.M);
+        ItemStack shape = mold.get(0);
+        ItemStack iron = part(form, Materials.Iron, 1);
+        ItemStack castIron = part(form, Materials.CastIron, 1);
+        var moltenIron = Materials.Iron.getMolten(amount);
+        var moltenCastIron = Materials.CastIron.getMolten(amount);
+        var map = RecipeMaps.fluidSolidifierRecipes;
+        var original = map.findRecipeQuery()
+            .items(mold.get(1))
+            .fluids(moltenIron)
+            .voltage(Long.MAX_VALUE)
+            .find();
+        if (original == null || !RecipeMatch.builder()
+            .itemInputs(shape)
+            .fluidInputs(moltenIron)
+            .itemOutputs(iron)
+            .build()
+            .test(original)) {
+            throw new RecipeValidationException("Missing native Iron casting for " + form);
+        }
+        var solidifier = recipes.machine(map);
+        solidifier.addCopyOne(
+            original,
+            RecipeChange.builder()
+                .replaceFluidInput(moltenIron, moltenCastIron)
+                .replaceItemOutput(iron, castIron)
+                .build(),
+            RecipeMatch.builder()
+                .itemInputs(shape)
+                .fluidInputs(moltenCastIron)
+                .itemOutputs(castIron)
+                .build());
     }
 
     private static void cast(RecipeContext recipes, Materials material, ItemStack shape, ItemStack output) {

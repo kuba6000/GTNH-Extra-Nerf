@@ -2552,14 +2552,10 @@ public final class IronBathScenarios {
                 "Pickup fixture no longer contains heat");
             List<ItemStack> drops = controller.getDrops();
             check(
-                drops.size() == 1 && drops.get(0)
+                drops.size() == 1 && !drops.get(0)
                     .hasTagCompound(),
-                "Native controller drop lost item NBT");
+                "Native controller drop retained item NBT");
             ItemStack dropped = drops.get(0);
-            check(
-                dropped.getTagCompound()
-                    .hasKey("IronBath"),
-                "Native item drop omitted the loaded bath");
             world.setBlockToAir(X, Y, Z);
             FakePlayer placer = FakePlayerFactory.get(world, new GameProfile(UUID.randomUUID(), "IronBathReplace"));
             BaseMetaTileEntity replacement = place(placer, dropped, 0, 0, 0);
@@ -2568,11 +2564,9 @@ public final class IronBathScenarios {
                 "Native item placement did not restore the furnace controller");
             NBTTagCompound after = new NBTTagCompound();
             ((MTEIronBathFurnace) replacement.getMetaTileEntity()).saveNBTData(after);
-            check(
-                before.getCompoundTag("IronBath")
-                    .equals(after.getCompoundTag("IronBath")),
-                "Controller pickup/placement changed metal, queued charge, carbon, slag or heat");
-
+            NBTTagCompound freshBath = new NBTTagCompound();
+            new IronBath(0).save(freshBath);
+            check(freshBath.equals(after.getCompoundTag("IronBath")), "Replaced controller retained the loaded bath");
         }
 
         private IronBath state() {

@@ -1383,10 +1383,11 @@ contents and melting progress. NEI diagrams show the feed, molten layers and
 outputs for each product and carbon additive. Hovering shows composition ranges
 and additive quantities. NEI also lists cumulative Steel material balances.
 
-Wrought Iron, Cast Iron and Pig Iron have distinct ingots, dusts and molten
-fluids. Maceration and casting preserve each metal's identity.
+Wrought Iron, Cast Iron, Pig Iron and Overcarburized Iron have their own
+GregTech metal parts, including plates, rods, gears and rotors. Casting and
+recycling preserve the metal's identity.
 
-These metals are required by the alloy mixtures below. All ingredients and
+Wrought Iron, Cast Iron and Pig Iron are used in the alloy mixtures below. All ingredients and
 products in this table are dusts.
 
 | Product | Ingredients | Output |
@@ -1464,7 +1465,8 @@ can change on the next discharge as the layers move. Its GUI offers an
 editable amount and named modes: one discharge per redstone pulse, discharge
 every powered tick, always flowing, or stopped. Cooling solidifies the contents,
 and reheating melts
-them again. The controller retains its loaded bath when picked up and replaced.
+them again. Breaking the controller discards the bath's contents and drops a
+fresh controller. Saving and reloading the world preserves the bath.
 
 Each metal batch uses the composition at the start of its discharge. Removing
 the batch can move the remaining bath into another product range. The amount
