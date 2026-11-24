@@ -23,6 +23,7 @@ import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.recipe.RecipeMaps;
 import gregtech.api.util.GTRecipe;
+import gregtech.api.util.GTUtility;
 import gregtech.common.items.CombType;
 import gregtech.loaders.misc.GTBeeDefinition;
 import gregtech.loaders.misc.GTBees;
@@ -85,7 +86,7 @@ public final class KevlarBeeScenarios {
         helper.succeed();
     }
 
-    /** Checks the input threshold and consumption through GregTech's recipe matcher. */
+    /** Checks recipe selection and consumption through GregTech's recipe matcher. */
     @GameTest(template = "native_fixture")
     public static void qftPlasticsConsumeKevlarCombs(GameTestHelper helper) {
         List<GTRecipe> plastics = RecipeMaps.quantumForceTransformerRecipes.getAllRecipes()
@@ -107,11 +108,50 @@ public final class KevlarBeeScenarios {
         ItemStack combs = GTBees.combs.getStackForType(CombType.KEVLAR, 63);
         ItemStack carbon = Materials.Carbon.getDust(64);
         ItemStack osmium = Materials.Osmium.getDust(24);
+        ItemStack pulp = Materials.RadoxPolymer.getDust(1);
         FluidStack[] gases = { Materials.Hydrogen.getGas(16_000), Materials.Nitrogen.getGas(16_000) };
-        helper.assertTrue(!recipe.isRecipeInputEqual(false, gases, carbon, osmium, combs), "63 combs must not suffice");
+        helper.assertTrue(
+            !recipe.isRecipeInputEqual(false, gases, carbon, osmium, combs, pulp),
+            "63 combs must not suffice");
         combs.stackSize = 64;
-        helper.assertTrue(recipe.isRecipeInputEqual(true, gases, carbon, osmium, combs), "64 combs must suffice");
+        var map = RecipeMaps.quantumForceTransformerRecipes;
+        ItemStack kevlarCombs = GTBees.combs.getStackForType(CombType.KEVLAR, 24);
+        ItemStack kevlarDust = Materials.Kevlar.getDust(1);
+        var kevlarMatches = map.findRecipeQuery()
+            .items(carbon, kevlarCombs, kevlarDust)
+            .fluids(gases)
+            .cachedRecipe(recipe)
+            .findAll()
+            .collect(Collectors.toList());
+        helper.assertTrue(
+            kevlarMatches.size() == 1 && Arrays.stream(kevlarMatches.get(0).mFluidOutputs)
+                .anyMatch(Materials.LiquidCrystalKevlar.getFluid(1)::isFluidEqual),
+            "The Kevlar load must match only the Liquid Crystal Kevlar recipe");
+        GTRecipe kevlar = kevlarMatches.get(0);
+        var plasticsMatches = map.findRecipeQuery()
+            .items(carbon, osmium, combs, pulp)
+            .fluids(gases)
+            .cachedRecipe(kevlar)
+            .findAll()
+            .collect(Collectors.toList());
+        helper.assertTrue(
+            plasticsMatches.size() == 1 && plasticsMatches.get(0) == recipe,
+            "A plastics load must match only the plastics recipe");
+        helper.assertTrue(
+            !kevlar.isRecipeInputEqual(false, gases, carbon, kevlarCombs, pulp),
+            "Radox Polymer Pulp cannot replace Kevlar Dust");
+        helper.assertTrue(
+            !recipe.isRecipeInputEqual(false, gases, carbon, osmium, combs, kevlarDust),
+            "Kevlar Dust cannot replace Radox Polymer Pulp");
+        helper.assertTrue(
+            kevlar.isRecipeInputEqual(true, GTUtility.copyFluidArray(gases), carbon.copy(), kevlarCombs, kevlarDust),
+            "The Kevlar load must run");
+        helper.assertTrue(
+            kevlarCombs.stackSize == 0 && kevlarDust.stackSize == 1,
+            "Consume combs and retain Kevlar Dust");
+        helper.assertTrue(recipe.isRecipeInputEqual(true, gases, carbon, osmium, combs, pulp), "64 combs must suffice");
         helper.assertTrue(combs.stackSize == 0, "A batch must consume all 64 combs");
+        helper.assertTrue(pulp.stackSize == 1, "A batch must retain Radox Polymer Pulp");
         helper
             .assertTrue(carbon.stackSize == 0 && osmium.stackSize == 0, "A batch must still consume carbon and osmium");
         helper.succeed();

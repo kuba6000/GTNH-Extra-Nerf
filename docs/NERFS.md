@@ -337,6 +337,8 @@ requires a ZPM Replicator beneath the housing.
 
 The QFT recipe for Radox Polymer and Molten Kevlar consumes 64 Kevlar Combs per
 batch.
+The QFT requires one Radox Polymer Pulp for that recipe and one Kevlar Dust
+for the 24-comb recipe. Each recipe leaves its own dust intact.
 
 ## High-tier hull insulation
 

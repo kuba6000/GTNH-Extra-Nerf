@@ -27,6 +27,7 @@ catalog, including exact values and requirements, is
 - Liquid Crystal Kevlar consumes Kevlar drones in the LCR, including with recipe locking.
 - Naquadah replaces Infinity Catalyst as a parent of Kevlar bees. The mutation requires a ZPM Replicator.
 - The QFT recipe for Radox Polymer and Molten Kevlar consumes 64 Kevlar Combs per batch.
+- The 24-comb and Radox Polymer QFT recipes require one Kevlar Dust and one Radox Polymer Pulp respectively, without consuming them.
 
 ## Chicken jockey warp effect
 

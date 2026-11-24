@@ -29,9 +29,12 @@ Liquid Crystal Kevlar LCR recipes. Circuit 1 consumes one for 9000 mB and
 circuit 9 consumes seven for 63000 mB.
 `ADD_KEVLAR_DRONE_TO_LIQUID_CRYSTAL_KEVLAR` requires two modifications.
 
-`ChemicalAndMiscNerf.requireKevlarCombs` adds 64 Kevlar Combs as a consumed
-input to the QFT recipe for Radox Polymer and Molten Kevlar.
+`ChemicalAndMiscNerf.requireKevlarCombs` adds 64 consumed Kevlar Combs and one
+non-consumed Radox Polymer Pulp to the QFT recipe for Radox Polymer and Molten Kevlar.
 `ADD_KEVLAR_COMBS_TO_QFT_PLASTICS` requires one modification.
+`ChemicalAndMiscNerf.separateQftKevlarInputs` adds one non-consumed Kevlar Dust
+to the 24-comb recipe.
+`SEPARATE_QFT_KEVLAR_INPUTS` requires one modification.
 
 `MixinKevlarBeeInput` preserves required Kevlar drones' NBT in native
 `RecipeItemInput` and matches drone type and active species through Forestry.

@@ -62,6 +62,7 @@ public enum AuditScope implements AuditDefinition {
     MODIFY_HIGH_TIER_HULL_INSULATION(modified(12)),
     ADD_KEVLAR_DRONE_TO_LIQUID_CRYSTAL_KEVLAR(modified(2)),
     ADD_KEVLAR_COMBS_TO_QFT_PLASTICS(modified(1)),
+    SEPARATE_QFT_KEVLAR_INPUTS(modified(1)),
     MODIFY_KEVLAR_BEE_MUTATION_PARENT(modified(1)),
     MODIFY_KEVLAR_BEE_MUTATION_RESOURCE(modified(1)),
     REMOVE_KEVLAR_BEE_NUGGET(removed(1)),

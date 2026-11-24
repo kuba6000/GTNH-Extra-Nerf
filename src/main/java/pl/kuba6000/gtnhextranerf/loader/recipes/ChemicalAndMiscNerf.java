@@ -14,6 +14,7 @@ import static gregtech.api.recipe.RecipeMaps.mixerNonCellRecipes;
 import static gregtech.api.recipe.RecipeMaps.mixerRecipes;
 import static gregtech.api.recipe.RecipeMaps.multiblockChemicalReactorRecipes;
 import static gregtech.api.recipe.RecipeMaps.quantumForceTransformerRecipes;
+import static gregtech.api.util.GTRecipeBuilder.INGOTS;
 import static gregtech.api.util.GTRecipeBuilder.MINUTES;
 import static gregtech.api.util.GTRecipeBuilder.SECONDS;
 import static gregtech.api.util.GTRecipeBuilder.STACKS;
@@ -67,6 +68,7 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
         registry
             .register(AuditScope.ADD_KEVLAR_DRONE_TO_LIQUID_CRYSTAL_KEVLAR, ChemicalAndMiscNerf::requireKevlarDrones);
         registry.register(AuditScope.ADD_KEVLAR_COMBS_TO_QFT_PLASTICS, ChemicalAndMiscNerf::requireKevlarCombs);
+        registry.register(AuditScope.SEPARATE_QFT_KEVLAR_INPUTS, ChemicalAndMiscNerf::separateQftKevlarInputs);
         registry.register(AuditScope.REDUCE_TPV_MIXER_OUTPUT, ChemicalAndMiscNerf::reduceTpvMixerOutput);
         registry.register(AuditScope.ADD_CRYSTAL_BLOOD_CONVERSION, ChemicalAndMiscNerf::addCrystalBloodConversion);
         registry.register(AuditScope.MODIFY_INDIUM_CONCENTRATE_RECIPES, ChemicalAndMiscNerf::modifyIndiumConcentrate);
@@ -140,7 +142,40 @@ public final class ChemicalAndMiscNerf implements RecipeModule {
                             && catalyst.isItemEqual(requiredCatalyst);
                     }),
                 RecipeChange.builder()
-                    .addItemInput(GTBees.combs.getStackForType(CombType.KEVLAR, 64))
+                    .itemInputs(
+                        Materials.Carbon.getDust(64),
+                        Materials.Osmium.getDust(24),
+                        GTBees.combs.getStackForType(CombType.KEVLAR, 64),
+                        GTUtility.copyAmount(0, Materials.RadoxPolymer.getDust(1)))
+                    .build());
+    }
+
+    private static void separateQftKevlarInputs(RecipeContext recipes) {
+        ItemStack combs = GTBees.combs.getStackForType(CombType.KEVLAR, 24);
+        ItemStack catalyst = GregtechItemList.UltimatePlasticCatalyst.get(1);
+        recipes.machine(quantumForceTransformerRecipes)
+            .modifyOne(
+                RecipeMatch.builder()
+                    .itemInputs(combs, Materials.Carbon.getDust(64))
+                    .itemOutputs()
+                    .fluidInputs(Materials.Nitrogen.getGas(16_000), Materials.Hydrogen.getGas(16_000))
+                    .fluidOutputs(
+                        Materials.PolyurethaneResin.getFluid(32_000),
+                        Materials.LiquidCrystalKevlar.getFluid(32 * INGOTS),
+                        Materials.Kevlar.getMolten(STACKS))
+                    .duration(20 * SECONDS)
+                    .eut(TierEU.RECIPE_UIV)
+                    .build()
+                    .and(recipe -> {
+                        ItemStack requiredCatalyst = recipe.getMetadata(QFT_CATALYST);
+                        return recipe.getMetadataOrDefault(QFT_FOCUS_TIER, 0) == 4 && requiredCatalyst != null
+                            && catalyst.isItemEqual(requiredCatalyst);
+                    }),
+                RecipeChange.builder()
+                    .itemInputs(
+                        combs,
+                        Materials.Carbon.getDust(64),
+                        GTUtility.copyAmount(0, Materials.Kevlar.getDust(1)))
                     .build());
     }
 
