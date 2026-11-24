@@ -85,7 +85,9 @@ Each Bath Tapping Hatch covers one of five equal vertical bands, each spanning 2
 
 If any liquid slag overlaps the hatch's band, it selects slag. Otherwise it selects liquid metal in that band. It waits if neither is present. As the layers move, the same hatch can switch between slag and metal.
 
-Each discharge contains **one fluid type**, selected at its start even if composition changes. Amount depends on the setting, selected liquid above the band's lower edge, available carbon and tank space. The fluid first enters the hatch's own tank. An incompatible fluid already in that tank blocks the discharge.
+The hatch pours a batch in steps. Each step draws up to 10% of the hatch tier's maximum batch size, rounded up to the next mB. The first step can start immediately. Later steps are at least five ticks apart, even across batches.
+
+Drain the outlet completely to allow the next step. Metal already in the hatch keeps its type. When the outlet clears, the hatch draws whichever liquid is now at its height. One batch can therefore contain several fluids.
 
 ## Amount and redstone controls
 
@@ -98,7 +100,7 @@ Set **Amount** in the hatch GUI, from <Color color="#89DCEB">1 mB</Color> to the
 | HV | &nbsp;<Color color="#89DCEB">2304 mB</Color> |
 | etc. | &nbsp;<Color color="#89DCEB">×4 per tier</Color> |
 
-The hatch has four control modes: <Color color="#BAC2DE">**Stopped**</Color>, <Color color="#A6E3A1">**Always**</Color>, <Color color="#F9E2AF">**Powered**</Color>, and <Color color="#89DCEB">**On pulse**</Color>. <Color color="#A6E3A1">**Always**</Color> discharges every tick, <Color color="#F9E2AF">**Powered**</Color> repeats while redstone is on, and <Color color="#89DCEB">**On pulse**</Color> makes one discharge attempt when the signal turns on. If no liquid or tank space is available, send another pulse once it is.
+<Color color="#89DCEB">**On pulse**</Color> starts one batch on a rising edge. Extra pulses during that batch are ignored. <Color color="#A6E3A1">**Always**</Color> repeats batches, and <Color color="#F9E2AF">**Powered**</Color> pauses when the redstone signal drops. <Color color="#BAC2DE">**Stopped**</Color> cancels the remaining amount.
 
 A screwdriver cycles amounts through <Color color="#89DCEB">1, 16, 144 and the tier maximum</Color>. Sneak to cycle modes. The GUI allows exact amounts and direct mode selection.
 

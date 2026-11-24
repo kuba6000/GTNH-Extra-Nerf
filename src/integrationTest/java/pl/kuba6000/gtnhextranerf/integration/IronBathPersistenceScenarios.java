@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -42,7 +44,6 @@ import pl.kuba6000.gtnhextranerf.machines.MTEIronBathFurnace;
 import pl.kuba6000.gtnhextranerf.machines.MTEIronBathTap;
 import pl.kuba6000.gtnhextranerf.machines.ironbath.IronBath;
 import pl.kuba6000.gtnhextranerf.machines.ironbath.IronProduct;
-import pl.kuba6000.gtnhextranerf.materials.IronBathMaterials;
 import pl.kuba6000.gtnhextranerf.progression.MachineProgression;
 import pl.kuba6000.gtnhextranerf.progression.ProgressionTier;
 
@@ -150,14 +151,20 @@ public final class IronBathPersistenceScenarios {
     }
 
     @GameTest(template = "gtnhextranerftests:native_fixture")
-    public static void tappingHatchRespectsFluidLockWithEmptyBuffer(GameTestHelper helper) {
+    public static void tappingHatchSamplesEachPourStep(GameTestHelper helper) {
         WorldServer world = helper.getWorld();
-        FixtureWorld.loadAround(world, X, Z);
-        helper.afterTest(() -> world.setBlockToAir(X, Y, Z));
-        BaseMetaTileEntity tile = place(world, FakePlayerFactory.getMinecraft(world), IronBathFurnace.tap(1), 0, 0, 0);
+        int tapX = X - 32;
+        FixtureWorld.loadAround(world, tapX, Z);
+        helper.afterTest(() -> world.setBlockToAir(tapX, Y, Z));
+        BaseMetaTileEntity tile = place(
+            world,
+            FakePlayerFactory.getMinecraft(world),
+            IronBathFurnace.tap(1),
+            tapX - X,
+            0,
+            0);
         tile.enableWorking();
         MTEIronBathTap tap = (MTEIronBathTap) tile.getMetaTileEntity();
-        tap.setRedstoneMode(2);
         int metal = 4 * 144;
         NBTTagCompound contents = new NBTTagCompound();
         contents.setInteger("Metal", metal);
@@ -167,27 +174,69 @@ public final class IronBathPersistenceScenarios {
         contents.setDouble("Heat", bath.heatDemand(IronBath.WORKING_TEMPERATURE));
         bath.load(contents);
 
-        FluidStack wroughtIron = IronBathMaterials.wroughtIron()
-            .getMolten(1);
-        FluidStack steel = Materials.Steel.getMolten(1);
-        tap.setLockedFluid(wroughtIron.getFluid());
-        tap.lockFluid(true);
+        tap.setRedstoneMode(0);
+        tap.setAmountPerPulse(32);
+        helper.afterTest(() -> world.setBlockToAir(tapX + 1, Y, Z));
+        world.setBlock(tapX + 1, Y, Z, Blocks.redstone_block);
+        check(!tap.setFilter(Materials.Iron.getMolten(1)), "Tap accepted a manual fluid filter");
         helper.startSequence()
             .thenExecute(() -> {
-                check(!tap.discharge(bath, 0), "Empty tapping hatch discharged Steel while locked to Wrought Iron");
-                check(tap.getFluidAmount() == 0, "Mismatched fluid reached the hatch buffer");
-                check(bath.metalMb() == metal, "A blocked discharge removed metal from the bath");
+                check(tap.discharge(bath, 0), "A rising edge did not start the pour");
+                FluidStack first = tap.drain(14, true);
+                check(
+                    first != null && first.isFluidEqual(Materials.Steel.getMolten(1)) && first.amount == 14,
+                    "Expected 15 mB of Steel in the first step");
+                world.setBlockToAir(tapX + 1, Y, Z);
+                bath.addOxygen(112);
+                check(bath.currentProduct() == IronProduct.WROUGHT_IRON, "Expected Wrought Iron while blocked");
+            })
+            .thenIdle(6)
+            .thenExecute(() -> {
+                check(!tap.discharge(bath, 0), "Tap overwrote the last mB of Steel");
+                check(bath.metalMb() == metal - 15, "Blocked tap removed metal");
+                bath.addOxygen(100);
+                FluidStack last = tap.drain(1, true);
+                check(
+                    last != null && last.amount == 1 && last.isFluidEqual(Materials.Steel.getMolten(1)),
+                    "The buffered Steel changed while blocked");
+                check(tap.discharge(bath, 0), "The original pulse did not resume");
+                FluidStack iron = tap.drain(Integer.MAX_VALUE, true);
+                check(
+                    iron != null && iron.isFluidEqual(Materials.Iron.getMolten(1)) && iron.amount == 15,
+                    "Tap did not resample Iron");
+                NBTTagCompound saved = new NBTTagCompound();
+                tap.saveNBTData(saved);
+                tap.loadNBTData(saved);
+                check(!tap.discharge(bath, 0), "Reload bypassed the five-tick interval");
+            })
+            .thenIdle(5)
+            .thenExecute(() -> {
+                check(tap.discharge(bath, 0), "Reload lost the last step");
+                check(tap.getFluidAmount() == 2 && bath.metalMb() == metal - 32, "Batch size was not conserved");
+                tap.drain(2, true);
+            })
+            .thenIdle(5)
+            .thenExecute(() -> {
+                check(!tap.discharge(bath, 0), "Pulse started another batch");
+                tap.setRedstoneMode(1);
+                world.setBlock(tapX + 1, Y, Z, Blocks.redstone_block);
             })
             .thenIdle(1)
             .thenExecute(() -> {
-                tap.setLockedFluid(steel.getFluid());
-                check(tap.discharge(bath, 0), "Empty tapping hatch refused its selected Steel");
-                FluidStack output = tap.getFluid();
-                check(
-                    output != null && output.isFluidEqual(steel) && output.amount == 144,
-                    "Matching fluid did not fill the hatch");
-                check(bath.metalMb() == metal - 144, "Matching discharge removed the wrong amount");
+                check(tap.discharge(bath, 0) && tap.drain(15, true).amount == 15, "Powered did not start the batch");
+                world.setBlockToAir(tapX + 1, Y, Z);
             })
+            .thenIdle(6)
+            .thenExecute(() -> {
+                check(!tap.discharge(bath, 0), "Powered poured while the signal was low");
+                world.setBlock(tapX + 1, Y, Z, Blocks.redstone_block);
+            })
+            .thenIdle(1)
+            .thenExecute(
+                () -> check(tap.discharge(bath, 0) && tap.drain(15, true).amount == 15, "Powered did not resume"))
+            .thenIdle(5)
+            .thenExecute(
+                () -> check(tap.discharge(bath, 0) && tap.getFluidAmount() == 2, "Powered restarted the paused batch"))
             .thenSucceed();
     }
 
@@ -217,13 +266,27 @@ public final class IronBathPersistenceScenarios {
         machine.loadNBTData(saved);
         check(machine.checkStructure(true, controller), "The full bath did not form");
         input.setInventorySlotContents(0, GTOreDictUnificator.get(OrePrefixes.ingot, Materials.Iron, 1));
-        input.setInventorySlotContents(1, GTOreDictUnificator.get(OrePrefixes.gem, Materials.Charcoal, 1));
+        input.setInventorySlotContents(1, new ItemStack(Items.coal, 1, 1));
         input.setInventorySlotContents(2, GTOreDictUnificator.get(OrePrefixes.dust, Materials.Calcite, 1));
         controller.enableWorking();
+        int[] drainedSlag = { 0 };
+        int[] drainedMetal = { 0 };
         helper.startSequence()
             .thenWaitUntil(() -> {
                 IronBath observed = state(machine);
-                helper.assertTrue(observed.impurities() == 10, "Waiting for the full bath to melt Charcoal");
+                helper.assertTrue(
+                    observed.impurities() == 10,
+                    "Waiting for Charcoal: impurities=" + observed.impurities()
+                        + ", calcite="
+                        + observed.calciteCapacity()
+                        + ", metal="
+                        + observed.metalMb()
+                        + ", slag="
+                        + observed.slagMb()
+                        + ", formed="
+                        + machine.mMachine
+                        + ", enabled="
+                        + controller.isAllowedToWork());
                 check(input.getStackInSlot(1) == null, "The full bath did not accept the carbon additive");
                 check(input.getStackInSlot(0).stackSize == 1, "The full bath consumed excess Iron");
                 check(observed.metalMb() == 496 * 144 && observed.pendingMetalMb() == 0, "Metal exceeded its limit");
@@ -236,22 +299,28 @@ public final class IronBathPersistenceScenarios {
             })
             .thenWaitUntil(() -> {
                 IronBath observed = state(machine);
-                helper.assertTrue(observed.impurities() == 0, "Waiting for native slag drainage and cleanup");
-                FluidStack discharged = upper.getFluid();
-                check(
-                    discharged != null && discharged.isFluidEqual(
-                        IronBathFurnace.material(IronProduct.SLAG)
-                            .getMolten(1))
-                        && discharged.amount >= 320,
-                    "The upper tap did not discharge Slag above the full metal bath");
+                FluidStack discharged = upper.drain(Integer.MAX_VALUE, true);
+                if (discharged != null) {
+                    check(
+                        discharged.isFluidEqual(
+                            IronBathFurnace.material(IronProduct.SLAG)
+                                .getMolten(1)),
+                        "The upper tap discharged metal during slag cleanup");
+                    drainedSlag[0] += discharged.amount;
+                }
+                helper.assertTrue(
+                    observed.impurities() == 0 && drainedSlag[0] >= 320,
+                    "Waiting for slag drainage and cleanup");
                 check(observed.calciteCapacity() == 10, "Cleanup used the wrong amount of Calcite");
                 check(observed.occupiedMb() <= observed.capacityMb(), "Slag binding overflowed the native bath");
                 lower.setAmountPerPulse(144);
                 lower.setRedstoneMode(2);
             })
             .thenWaitUntil(() -> {
+                FluidStack out = lower.drain(Integer.MAX_VALUE, true);
+                if (out != null) drainedMetal[0] += out.amount;
                 helper.assertTrue(input.getStackInSlot(0) == null, "Waiting for freed capacity to admit Iron");
-                check(lower.getFluid() != null, "The lower tap did not resume metal output");
+                check(drainedMetal[0] > 0, "The lower tap did not resume metal output");
                 check(state(machine).occupiedMb() <= 512 * 144, "Native feed exceeded total capacity");
             })
             .thenSucceed();

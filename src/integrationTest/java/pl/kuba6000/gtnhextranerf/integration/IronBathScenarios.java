@@ -1036,7 +1036,7 @@ public final class IronBathScenarios {
                     f.energy.add(tile);
                 }
                 check(f.forms(), "Eight UHV energy hatches did not form");
-                BaseMetaTileEntity outlet = f.place(placer, IronBathFurnace.tap(6), IronBathStructure.METAL_TAP);
+                BaseMetaTileEntity outlet = f.place(placer, IronBathFurnace.tap(9), IronBathStructure.METAL_TAP);
                 outlet.setFrontFacing(ForgeDirection.NORTH);
                 f.meterTap = (MTEIronBathTap) outlet.getMetaTileEntity();
                 f.meterTap.setAmountPerPulse(f.meterTap.getPulseLimit());
@@ -1451,11 +1451,11 @@ public final class IronBathScenarios {
             .awaitServerAccelerated("the next discharge chooses the remaining metal", 1, () -> {
                 fixture[0].refillPower();
                 check(
-                    fluid(outlet[0], Materials.Iron.getMolten(1)) == 144,
+                    fluid(outlet[0], Materials.Iron.getMolten(1)) == 15,
                     "The emptied band tap did not switch to Iron on the next discharge");
                 check(
                     fixture[0].state()
-                        .metalMb() == 30000 - 144,
+                        .metalMb() == 30000 - 15,
                     "Metal discharge did not remove exactly its requested amount");
                 check(
                     fixture[0].state()
@@ -1517,6 +1517,7 @@ public final class IronBathScenarios {
                 check(
                     fluid(restoredTap[0], Materials.Steel.getMolten(1)) == 1,
                     "Reload did not retain the first sample");
+                restoredTap[0].drain(1, true);
                 check(
                     fixture[0].machine.checkStructure(true, fixture[0].controller),
                     "Reloaded tap did not rejoin the furnace");
@@ -1524,9 +1525,7 @@ public final class IronBathScenarios {
         scenario.serverSequence()
             .thenIdle(10);
         scenario.server("held high signal must not become another rising edge", () -> {
-            check(
-                fluid(restoredTap[0], Materials.Steel.getMolten(1)) == 1,
-                "Reloaded HIGH signal extracted a duplicate sample");
+            check(restoredTap[0].getFluidAmount() == 0, "Reloaded HIGH signal extracted a duplicate sample");
             check(
                 fixture[0].state()
                     .metalMb() == metal - 1,
@@ -1536,13 +1535,13 @@ public final class IronBathScenarios {
         scenario.serverSequence()
             .thenIdle(5);
         scenario.server("a fresh low-to-high transition requests the next sample", () -> {
-            check(fluid(restoredTap[0], Materials.Steel.getMolten(1)) == 1, "LOW signal extracted metal");
+            check(restoredTap[0].getFluidAmount() == 0, "LOW signal extracted metal");
             fixture[0].powerMetalTap(true);
         })
             .awaitServerAccelerated("observe the second sample only after the new edge", 1, () -> {
                 fixture[0].refillPower();
                 check(
-                    fluid(restoredTap[0], Materials.Steel.getMolten(1)) == 2,
+                    fluid(restoredTap[0], Materials.Steel.getMolten(1)) == 1,
                     "Fresh rising edge did not extract the next one mB");
                 check(
                     fixture[0].state()
@@ -1786,27 +1785,28 @@ public final class IronBathScenarios {
                     == 1,
                 "Held redstone signal repeated a pulse");
             fixture[0].powerSlagTap(false);
+            fixture[0].metalTap.setAmountPerPulse(1);
             fixture[0].powerMetalTap(true);
         })
             .awaitServerAccelerated("observe real molten Steel in the bottom outlet", 1, () -> {
                 fixture[0].refillPower();
                 check(
-                    fluid(fixture[0].metalTap, Materials.Steel.getMolten(1)) == 144,
-                    "Bottom outlet did not extract a Steel ingot-equivalent");
+                    fluid(fixture[0].metalTap, Materials.Steel.getMolten(1)) == 1,
+                    "Bottom outlet did not extract one mB of Steel");
             });
         scenario.serverSequence()
             .thenIdle(5);
         scenario.server("keep the Steel pulse stable and enable continuous discharge", () -> {
-            check(
-                fluid(fixture[0].metalTap, Materials.Steel.getMolten(1)) == 144,
-                "Held lower signal repeated a pulse");
+            check(fluid(fixture[0].metalTap, Materials.Steel.getMolten(1)) == 1, "Held lower signal repeated a pulse");
             fixture[0].powerMetalTap(false);
+            fixture[0].metalTap.drain(1, true);
+            fixture[0].metalTap.setAmountPerPulse(144);
             fixture[0].metalTap.setRedstoneMode(2);
         })
             .awaitServerAccelerated("continuous mode transfers further actual product", 1, () -> {
                 fixture[0].refillPower();
                 check(
-                    fluid(fixture[0].metalTap, Materials.Steel.getMolten(1)) >= 288,
+                    fluid(fixture[0].metalTap, Materials.Steel.getMolten(1)) == 15,
                     "Continuous outlet did not continue production");
                 fixture[0].metalTap.setRedstoneMode(3);
             });
@@ -2279,7 +2279,7 @@ public final class IronBathScenarios {
             ItemStack coil = (tier < 4 ? ItemList.Casing_Coil_Cupronickel : ItemList.Casing_Coil_Eternal).get(1);
             for (Offset offset : IronBathStructure.COIL_POSITIONS)
                 setBlock(offset, Block.getBlockFromItem(coil.getItem()), coil.getItemDamage());
-            BaseMetaTileEntity outlet = place(placer, IronBathFurnace.tap(5), IronBathStructure.METAL_TAP);
+            BaseMetaTileEntity outlet = place(placer, IronBathFurnace.tap(8), IronBathStructure.METAL_TAP);
             outlet.setFrontFacing(ForgeDirection.NORTH);
             meterTap = (MTEIronBathTap) outlet.getMetaTileEntity();
             meterTap.setAmountPerPulse(meterTap.getPulseLimit());

@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.cleanroommc.modularui.api.drawable.IKey;
@@ -25,16 +26,21 @@ import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.MTEHatchOutput;
 import gregtech.api.modularui2.GTGuiTextures;
-import gregtech.common.gui.modularui.hatch.MTEHatchOutputGui;
+import gregtech.common.gui.modularui.hatch.base.MTEHatchBaseGui;
 import pl.kuba6000.gtnhextranerf.machines.ironbath.IronBath;
 
 /** A physical outlet whose ordinary output tank contains only material already removed from the bath. */
 public final class MTEIronBathTap extends MTEHatchOutput {
 
+    private static final int STOPPED = 3;
+    private static final int STEPS_PER_FULL_BATCH = 10;
+    private static final int TICKS_BETWEEN_STEPS = 5;
+
     private int amountPerPulse = 144;
     private int redstoneMode;
     private boolean wasPowered;
-    private long lastDischargeTick = Long.MIN_VALUE;
+    private int remainingMb;
+    private long nextPourTick;
 
     public MTEIronBathTap(int id, String name, String regionalName, int tier) {
         super(id, name, regionalName, tier);
@@ -79,17 +85,22 @@ public final class MTEIronBathTap extends MTEHatchOutput {
     }
 
     public void setRedstoneMode(int mode) {
-        redstoneMode = Math.max(0, Math.min(3, mode));
+        redstoneMode = Math.max(0, Math.min(STOPPED, mode));
+        if (redstoneMode == STOPPED) remainingMb = 0;
         if (getBaseMetaTileEntity() != null) getBaseMetaTileEntity().markDirty();
     }
 
+    /**
+     * Advances the current batch by at most one step.
+     *
+     * @return whether fluid left the bath
+     * @throws IllegalStateException if the molten product is missing or the outlet cannot accept the promised amount
+     */
     public boolean discharge(IronBath bath, int band) {
         IGregTechTileEntity tile = getBaseMetaTileEntity();
         if (tile == null || !tile.isServerSide()) return false;
         long tick = tile.getWorld()
             .getTotalWorldTime();
-        if (lastDischargeTick == tick) return false;
-        lastDischargeTick = tick;
         boolean powered = false;
         for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
             powered |= tile.getInternalInputRedstoneSignal(side) > 0;
@@ -99,9 +110,16 @@ public final class MTEIronBathTap extends MTEHatchOutput {
             wasPowered = powered;
             tile.markDirty();
         }
-        if (!requested || !tile.isAllowedToWork()) return false;
+        if (!tile.isAllowedToWork() || redstoneMode == STOPPED || (redstoneMode == 1 && !powered)) return false;
+        if (remainingMb == 0) {
+            if (!requested) return false;
+            remainingMb = amountPerPulse;
+            tile.markDirty();
+        }
+        if (tick < nextPourTick || getFluidAmount() > 0) return false;
 
-        IronBath.Tap preview = bath.previewTap(band, amountPerPulse);
+        int stepMb = (int) (((long) getPulseLimit() + STEPS_PER_FULL_BATCH - 1) / STEPS_PER_FULL_BATCH);
+        IronBath.Tap preview = bath.previewTap(band, Math.min(remainingMb, stepMb));
         if (preview.amountMb() == 0) return false;
         FluidStack fluid = IronBathFurnace.material(preview.product())
             .getMolten(preview.amountMb());
@@ -114,9 +132,30 @@ public final class MTEIronBathTap extends MTEHatchOutput {
         fluid.amount = removed.amountMb();
         if (fill(fluid, true) != removed.amountMb())
             throw new IllegalStateException("Iron bath outlet changed during discharge");
+        remainingMb -= removed.amountMb();
+        nextPourTick = tick + TICKS_BETWEEN_STEPS;
         tile.markDirty();
         return true;
     }
+
+    @Override
+    public boolean acceptsConfigCopy() {
+        return false;
+    }
+
+    @Override
+    public boolean acceptsFluidLock(Fluid fluid) {
+        return false;
+    }
+
+    @Override
+    public void lockFluid(boolean lock) {}
+
+    @Override
+    public void setLockedFluid(Fluid fluid) {}
+
+    @Override
+    public void setMode(byte mode) {}
 
     @Override
     public void onScrewdriverRightClick(ForgeDirection side, EntityPlayer player, float x, float y, float z,
@@ -142,14 +181,20 @@ public final class MTEIronBathTap extends MTEHatchOutput {
         nbt.setInteger("BathTapAmount", amountPerPulse);
         nbt.setInteger("BathTapRedstone", redstoneMode);
         nbt.setBoolean("BathTapWasPowered", wasPowered);
+        nbt.setInteger("BathTapRemaining", remainingMb);
+        nbt.setLong("BathTapNextPour", nextPourTick);
     }
 
     @Override
     public void loadNBTData(NBTTagCompound nbt) {
         super.loadNBTData(nbt);
+        mMode = 0;
         if (nbt.hasKey("BathTapAmount")) setAmountPerPulse(nbt.getInteger("BathTapAmount"));
         setRedstoneMode(nbt.getInteger("BathTapRedstone"));
         wasPowered = nbt.getBoolean("BathTapWasPowered");
+        remainingMb = redstoneMode == STOPPED ? 0
+            : Math.max(0, Math.min(nbt.getInteger("BathTapRemaining"), getPulseLimit()));
+        nextPourTick = nbt.getLong("BathTapNextPour");
     }
 
     @Override
@@ -157,7 +202,7 @@ public final class MTEIronBathTap extends MTEHatchOutput {
         return new TapGui(this).build(data, sync, settings);
     }
 
-    private static final class TapGui extends MTEHatchOutputGui {
+    private static final class TapGui extends MTEHatchBaseGui<MTEIronBathTap> {
 
         private final MTEIronBathTap tap;
 
@@ -235,7 +280,12 @@ public final class MTEIronBathTap extends MTEHatchOutput {
                 .fullWidth()
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .childPadding(8)
-                .child(super.createContentSection(panel, sync).height(54))
+                .child(
+                    Flow.row()
+                        .coverChildren()
+                        .childPadding(1)
+                        .child(createScreen(panel, sync))
+                        .child(createScreenIO(panel, sync)))
                 .child(settings);
         }
     }
