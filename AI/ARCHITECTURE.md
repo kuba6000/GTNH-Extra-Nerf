@@ -78,7 +78,8 @@ independently of the controller's elevation.
 `IronBathCasings` registers dedicated refractory side and top textures. Reinforced
 walls use a separate side texture with Wrought Iron straps. Both casing variants
 use the refractory brick top.
-World and controller-item NBT share the same process serialization.
+Only world NBT stores the bath. A broken controller drops without the bath and
+keeps only the covers, paint and upgrades GregTech writes itself.
 
 ## Bee recipe inputs
 

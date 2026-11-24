@@ -120,7 +120,12 @@ public final class MTEIronBathTap extends MTEHatchOutput {
 
         int stepMb = (int) (((long) getPulseLimit() + STEPS_PER_FULL_BATCH - 1) / STEPS_PER_FULL_BATCH);
         IronBath.Tap preview = bath.previewTap(band, Math.min(remainingMb, stepMb));
-        if (preview.amountMb() == 0) return false;
+        if (preview.amountMb() == 0) {
+            // A dry band ends the batch, so a later refill never pours without a new request
+            remainingMb = 0;
+            tile.markDirty();
+            return false;
+        }
         FluidStack fluid = IronBathFurnace.material(preview.product())
             .getMolten(preview.amountMb());
         if (fluid == null) throw new IllegalStateException("Missing molten bath product: " + preview.product());

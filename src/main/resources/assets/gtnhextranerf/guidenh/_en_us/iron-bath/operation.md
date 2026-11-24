@@ -87,7 +87,7 @@ If any liquid slag overlaps the hatch's band, it selects slag. Otherwise it sele
 
 The hatch pours a batch in steps. Each step draws up to 10% of the hatch tier's maximum batch size, rounded up to the next mB. The first step can start immediately. Later steps are at least five ticks apart, even across batches.
 
-Drain the outlet completely to allow the next step. Metal already in the hatch keeps its type. When the outlet clears, the hatch draws whichever liquid is now at its height. One batch can therefore contain several fluids.
+Drain the outlet completely to allow the next step. Metal already in the hatch keeps its type. When the outlet clears, the hatch draws whichever liquid is now at its height. One batch can therefore contain several fluids. If no liquid is at the hatch's height, the rest of the batch is cancelled.
 
 ## Amount and redstone controls
 

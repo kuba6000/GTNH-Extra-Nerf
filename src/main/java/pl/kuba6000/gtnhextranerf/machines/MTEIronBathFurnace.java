@@ -589,9 +589,7 @@ public final class MTEIronBathFurnace extends MTEExtendedPowerMultiBlockBase<MTE
 
     @Override
     public void setItemNBT(NBTTagCompound tag) {
-        // GregTech writes covers, paint and upgrades before this drop hook
-        tag.func_150296_c()
-            .clear();
+        // The bath stays in the world; keep only the covers, paint and upgrades GregTech wrote before this hook
     }
 
     @Override

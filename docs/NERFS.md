@@ -1464,10 +1464,12 @@ above the controller. Each band spans 20% of the tank. Liquid slag in the band
 has priority over metal, even when only a small amount of slag remains. If the
 band contains no slag, the hatch can draw its liquid metal. A redstone pulse starts
 one batch. The hatch can also pour continuously or while powered. Stopping it
-cancels the rest of the batch. Cooling solidifies the contents,
+cancels the rest of the batch, and so does finding no liquid at its height.
+Cooling solidifies the contents,
 and reheating melts
-them again. Breaking the controller discards the bath's contents and drops a
-fresh controller. Saving and reloading the world preserves the bath.
+them again. Breaking the controller discards the bath's contents; the dropped
+controller keeps only its covers, paint and upgrades. Saving and reloading the
+world preserves the bath.
 
 Each step transfers up to one tenth of the tier's maximum batch, rounded up to
 whole mB. Steps are at least five ticks apart and the outlet must empty between
