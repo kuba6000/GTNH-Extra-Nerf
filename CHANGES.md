@@ -55,6 +55,7 @@ catalog, including exact values and requirements, is
   inventory without consuming them. Crafting remains valid, and saved task IDs
   are preserved.
 - The Smeltery crafting quest **You Are Not Prepared!!!** has no rewards.
+- Quest rewards that complete another quest complete it for the whole party.
 
 ## Telemetry consent
 
@@ -126,6 +127,8 @@ catalog, including exact values and requirements, is
 - Steam multiblocks pause while Steam certification is missing and resume their
   active batch after certification is restored.
 - The unpowered Ice Cream Machine no longer requires certification.
+- The Lapotronic Supercapacitor requires certification for the tier of its laser
+  hatches too.
 - The Industrial Apiary requires certificates only up to HV instead of UV, which is the
   tier GregTech registers it at.
 

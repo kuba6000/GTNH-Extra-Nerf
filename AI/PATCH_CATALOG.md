@@ -286,6 +286,16 @@ claimant and marks all current party members claimed, including absent members.
 `NativeScenarios.partyRewards` exercises native parties, item delivery, claim
 eligibility and repeated configuration loading from a false setting.
 
+`MixinRewardQuestCompletion` is a hotfix for BetterQuesting Standard's quest
+completion reward, which natively completes the target quest only for the
+claimant. Injected at the `TAIL` of `RewardQuestCompletion.claimReward0`
+(exactly one target), it marks the target quest complete for every current
+party member who has not completed it, including absent members. Online
+members get a quest cache refresh and, unless the reward is silent, the
+completion notice. Members who already completed the quest are skipped, so the
+hotfix becomes a no-op if upstream adds party syncing.
+`PartyRewardIntegrationTests` covers it.
+
 On the server, `MixinQuestInstance` clears the rewards of quest UUID
 `00000000-0000-0000-0000-000000000bd7` (3031) after BetterQuesting reads
 its definition. The split default questbook supplies the ID in the definition
@@ -1015,6 +1025,12 @@ directly. `MachineProgression` recognizes their contiguous registered LV–UMV I
 and uses their voltage tier to gate harvesting and crop care through the same tick.
 Electric `MTEMultiBlockBase` controllers also require
 the highest tier among their normal/exotic energy and dynamo hatches.
+The Lapotronic Supercapacitor keeps its laser hatches in separate
+`mEnergyTunnelsTT`/`mDynamoTunnelsTT` sets, outside those lists;
+`MixinLapotronicLaserHatchAccessor` exposes both sets and `MachineProgression`
+adds the tier of each valid laser hatch. `LapotronicCertificationScenarios`
+revokes and restores certification on a laser-connected capacitor and checks
+that the stored energy is conserved and output resumes.
 `MixinMultiblockCertification` checks again immediately before `runMachine` in
 `onPostTick` (exactly one injection), after structure validation has discovered
 hatches on a freshly loaded controller. Locked batches retain their progress and

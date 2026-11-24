@@ -194,6 +194,9 @@ marked as having claimed it. Extra Nerf forces `syncQuestRewards=true` in memory
 after each Quest Book configuration initialization, without rewriting the file.
 This uses BQ's existing claim semantics, not a new permanent team-wide ledger.
 
+A reward that completes another quest completes it for every current party
+member, including absent players, not only for the claiming player.
+
 All BetterQuesting Standard crafting tasks also accept their required items
 from the inventory without consuming them. Detection runs on inventory changes
 or with Detect and uses each task's existing quantity, OreDictionary and NBT
@@ -410,7 +413,7 @@ the paid certificates up to their tier, from MV through MAX. Energy and dynamo
 hatches from LV upwards require the same prerequisite chain, including multi-amp,
 laser and wireless variants. Electric multiblock controllers pause intact when a
 connected energy or dynamo hatch lacks certification, including after a world
-reload. Recertification resumes the batch without a certificate-induced power failure.
+reload. For the Lapotronic Supercapacitor this includes its laser hatches. Recertification resumes the batch without a certificate-induced power failure.
 ULV machines and controllers without gated hatches remain outside the gate. The unpowered Ice
 Cream Machine is also exempt from certification. Right-clicking the certificate
 unlocks gated machines for all players and dimensions in the save, consuming it

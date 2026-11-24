@@ -20,7 +20,8 @@ up to their own voltage tier, including multi-amp, laser and wireless variants.
 Multiblock overclocking and parallel rules remain native; certification does not
 impose a separate recipe-voltage cap.
 Electric multiblock controllers require the highest tier among their connected
-normal/exotic energy and dynamo hatches. They pause intact while certification
+normal/exotic energy and dynamo hatches. The Lapotronic Supercapacitor also
+counts its laser hatches, which it keeps outside those hatch lists. They pause intact while certification
 is missing. ULV electric machines and controllers without gated hatches remain
 outside the direct processing gate. The legacy electrical item/tier IDs stay
 `lv_certificate`/`lv` for save compatibility; its player-facing category is

@@ -10,7 +10,9 @@ resulting maps, casting, ore matching and immediate construction ingredients.
 
 `MixinProgressionTickGate` and `MixinMultiblockCertification` both consult
 `MachineProgression`. Electric controller requirements come from the native
-normal/exotic energy and dynamo hatch lists. The second gate runs after those
+normal/exotic energy and dynamo hatch lists, plus the Lapotronic
+Supercapacitor's separate laser hatch sets through
+`MixinLapotronicLaserHatchAccessor`. The second gate runs after those
 lists are rebuilt during structure validation and before `runMachine` can drain
 a locked buffer. `HatchCertificationIntegrationTests` checks the controller's
 hatch-derived requirements in the game runtime.
@@ -43,6 +45,8 @@ changes; `LootAllowancePreview` rejects packets from previous connections.
 `MixinQuestBookConfig` forces the native party-reward setting after `QBConfig.init`.
 `CommonProxy` verifies it through `VERIFY_PARTY_REWARDS` at load-complete.
 BetterQuesting retains ownership of claim checks, delivery and per-member progress.
+`MixinRewardQuestCompletion` extends BQ Standard's quest completion reward to the
+claimant's current party members; it only adds completions BetterQuesting lacks.
 `MixinQuestInstance` clears the Smeltery crafting quest's rewards on the server
 when BetterQuesting reads its definition. `SmelteryQuestRewards` owns the quest
 ID and `CommonProxy.serverStarted` uses it to verify the loaded questbook.
